@@ -1,0 +1,140 @@
+/* --- Cấu hình chung cho cả 2 nút --- */
+.btn-edit,
+.btn-delete {
+  border-radius: 7px;
+  padding: 4px 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  min-width: 80px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  /* box-shadow: var(--icon-shadow); */
+}
+
+.btn-edit {
+  color: #0040a6;
+  background-color: #e4eeff;
+  font-weight: bolder;
+}
+
+.btn-delete {
+  color: #cc0000;
+  font-weight: bolder;
+  background-color: #ffeaea;
+}
+
+.text-edit,
+.text-delete {
+  transition: all 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.icon-white {
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.5) translateY(10px);
+  transition: all 0.3s ease;
+  filter: brightness(0) invert(1);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 3px white solid;
+  padding: 3px;
+  /* font-weight: bolder; */
+}
+
+.btn-edit:hover {
+  background-color: #064dbe;
+}
+
+.btn-edit:hover .text-edit {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.btn-edit:hover .icon-white {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.btn-delete:hover {
+  background-color: #a80000;
+}
+
+.btn-delete:hover .text-delete {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.btn-delete:hover .icon-white {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+.btn-create {
+  width: 150px;
+  background: var(--bg-button) !important;
+  border-radius: 14px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  padding: 12px 10px !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  height: 50px;
+  overflow: hidden;
+}
+
+.btn-create:hover {
+  transform: translateY(-1px);
+}
+.icon-create {
+  left: 5%;
+  height: 75%;
+  position: absolute;
+  border-radius: 10px;
+  width: 37px;
+  display: flex;
+  box-shadow: 0 0 10px 0 white inset;
+  align-items: center;
+  justify-content: center;
+  transition:
+    width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s ease;
+  font-size: 20px;
+  color: white;
+  /* mix-blend-mode: screen; */
+}
+.icon-create img {
+  filter: brightness(0) invert(1);
+  transition:
+    width 0.3s ease-in-out,
+    height 0.3s ease-in-out;
+}
+.btn-create:hover .icon-create {
+  width: 90%;
+}
+.btn-create:hover .icon-create img {
+  width: 30px;
+  height: 30px;
+}
+.text-create {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.8s ease;
+}
+
+.btn-create:hover .text-create {
+  left: 100%;
+  transform: translateX(100%);
+}

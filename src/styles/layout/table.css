@@ -1,0 +1,89 @@
+/* /*----------------------------------------table /*----------------------------------------*/
+.custom-table-container {
+  border-radius: 16px !important;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05) !important;
+  overflow: auto;
+}
+
+/* Chrome, Safari, Edge */
+.custom-table-container::-webkit-scrollbar {
+  height: 10px;
+}
+
+.custom-table-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-table-container::-webkit-scrollbar-thumb {
+  background: var(--gradient);
+  border-radius: 10px;
+}
+
+.custom-table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient);
+}
+
+/*---------------------------------------- permission/role------------------------------------- */
+.permission-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, max-content);
+}
+
+.permission-card {
+  border: 1px solid #d4d4d4;
+  border-radius: 20px;
+  padding: 5px 12px;
+  background: rgba(188, 205, 255, 0.107);
+  box-sizing: border-box;
+  user-select: none;
+  width: fit-content;
+  display: flex;
+}
+
+.permission-title {
+  font-weight: 1000;
+  margin-right: 8px;
+  color: var(--accent);
+  margin: auto 5px;
+  font-size: 13px;
+}
+
+.permission-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.permission-tag {
+  background: #e0e7ff;
+  color: #7a73dc;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.permission-tag:hover {
+  background: #c7d2fe;
+}
+
+.role-badge:hover {
+  filter: brightness(0.95);
+  cursor: default;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}

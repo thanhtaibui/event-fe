@@ -1,0 +1,113 @@
+.dashboard {
+  padding: 20px;
+}
+/*  CARD */
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+  height: auto;
+}
+
+/*  CHART */
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+/* box chung cho chart */
+.chart-box {
+  border-radius: 16px;
+  padding: 20px;
+  min-height: 300px;
+  box-shadow: var(--shadow-dashboard);
+}
+/* CARD */
+.stat-card {
+  background: #faf8ff;
+  border-radius: 16px;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-dashboard);
+  transition: all 0.25s ease;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+
+.stat-card:hover {
+  transform: translateY(-10px);
+  box-shadow: -7px 7px 20px 0px rgba(112, 73, 253, 0.4);
+}
+
+/* header */
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* title */
+.stat-title {
+  font-size: 24px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* icon */
+.stat-icon {
+  font-size: 22px;
+  background: rgba(255, 255, 255, 0.08);
+  /* padding: px; */
+  margin-right: 10px;
+  border-radius: 10px;
+  box-shadow: 30px -30px 30px 5px rgba(112, 73, 253, 0.2);
+}
+
+/* value */
+.stat-value {
+  font-size: 40px;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  margin: 25px 0;
+  color: var(--accent);
+  text-align: left;
+}
+
+/* -----------------------------------------------pie chart----------------------------------------------- */
+.pie-chart-card {
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.chart-box-inset {
+  box-shadow: var(--shadow-dashboard-inset) inset;
+  border-radius: 20px;
+}
+.chart-box-inset .pie-chart-card svg {
+  filter: drop-shadow(0px 4px 8px rgba(48, 25, 130, 0.3))
+    drop-shadow(0px 12px 20px rgba(112, 73, 253, 0.4));
+}
+/* ---------------------------------------------------responsive---------------------------------- */
+
+@media (max-width: 1024px) {
+  /*  CARD */
+  .dashboard-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  /*  CHART */
+  .dashboard-charts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
