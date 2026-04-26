@@ -1,7 +1,8 @@
 import { Breadcrumb } from "../../components/layout/Breadcrumb";
 import { useHeader } from "../../hooks/layout/useHeader.ts";
 import { useInfo } from "../../hooks/layout/useInfo.ts";
-
+import { Facehash } from "facehash";
+// import Avatar from "react-avatar";
 export const Header = () => {
   const title = useHeader();
   const userInfo = useInfo();
@@ -25,7 +26,27 @@ export const Header = () => {
           />
         </div>
         <div className="user-info">
-          <img src="https://i.pravatar.cc/40" alt="avatar" className="avatar" />
+          <div
+            style={{
+              borderRadius: "50%",
+              overflow: "hidden",
+            }}
+          >
+            {/* <Avatar
+              name={userInfo?.fullName || "Admin"}
+              size="48"
+              round={true}
+              maxInitials={2}
+            /> */}
+            <Facehash
+              style={{ userSelect: "none" }}
+              name={userInfo?.fullName || "Admin"}
+              size={48}
+              colors={["#5917bec2"]}
+              enableBlink={true}
+            />
+          </div>
+
           <div className="user-text">
             <div className="name">{userInfo?.fullName || "Admin"}</div>
             <div className="role">Admin</div>

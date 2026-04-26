@@ -7,7 +7,7 @@
 }
 
 /* Chrome, Safari, Edge */
-.custom-table-container::-webkit-scrollbar {
+/* .custom-table-container::-webkit-scrollbar {
   height: 10px;
 }
 
@@ -22,7 +22,7 @@
 
 .custom-table-container::-webkit-scrollbar-thumb:hover {
   background: var(--gradient);
-}
+} */
 
 /*---------------------------------------- permission/role------------------------------------- */
 .permission-grid {

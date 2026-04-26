@@ -251,6 +251,7 @@
 
 ::-webkit-scrollbar {
   width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
@@ -267,7 +268,7 @@
 /* 4. Hiệu ứng khi di chuột vào (Hover) */
 ::-webkit-scrollbar-thumb:hover {
   /* Bạn có thể dùng gradient tím-xanh của bạn ở đây */
-  background: linear-gradient(180deg, #8c01ba, #3945f7);
+  background: linear-gradient(135deg, #8c01ba, #3945f7);
 }
 
 /* -------------------------------------------------select custom------------------------------------------------------------- */
@@ -439,7 +440,7 @@
 .evt-del-attach {
   position: fixed;
   bottom: 30px;
-  z-index: 998;
+  z-index: 101;
   opacity: 1;
   pointer-events: none;
   transform: translateY(20px);

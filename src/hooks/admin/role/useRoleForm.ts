@@ -2,8 +2,10 @@ import { useState } from "react";
 import { ROLE_COLOR_PALETTE } from "../../../styles/status-styles";
 import { toast } from "react-toastify";
 import { useCreateRole } from "./useCreate";
+import type { RolePayload } from "../../../types/role/payload";
+import { useUpdateRole } from "./useUpdate";
 
-export const useRoleForm = (onClose: () => void, onSuccess: () => void) => {
+export const useRoleForm = (onClose: () => void, onSuccess: () => void, roleById?: any) => {
   const [selectedPerms, setSelectedPerms] = useState<string[]>([]);
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
   const [selectedColorHex, setSelectedColorHex] = useState(ROLE_COLOR_PALETTE.gray.text);
@@ -17,7 +19,7 @@ export const useRoleForm = (onClose: () => void, onSuccess: () => void) => {
   });
 
   const { createRole } = useCreateRole();
-
+  const { updateRole } = useUpdateRole();
   const toggleExpand = (groupName: string) => {
     setExpandedGroups((prev) =>
       prev.includes(groupName) ? prev.filter((g) => g !== groupName) : [...prev, groupName]
@@ -59,10 +61,26 @@ export const useRoleForm = (onClose: () => void, onSuccess: () => void) => {
     }
   };
 
-  const handleChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    // console.log("name", name)
+    let updatedForm = { ...form, [name]: value };
 
+    if (name === "role_name") {
+      const autoCode = value
+        .replace(/đ/g, "d")             // Xử lý chữ đ thường
+        .replace(/Đ/g, "D")             // Xử lý chữ Đ hoa
+        .normalize("NFD")               // Tách dấu các chữ còn lại
+        .replace(/[\u0300-\u036f]/g, "") // Xóa các dấu vừa tách
+        .toUpperCase()                  // Chuyển hoa
+        .replace(/[^\w\s]/gi, "")       // Xóa ký tự đặc biệt
+        .trim()
+        .replace(/\s+/g, "_");
+
+      updatedForm = { ...updatedForm, role_code: autoCode };
+    }
+    setForm(updatedForm);
+  };
   const handleSelectColor = (colorHex: string, colorKey: string) => {
     setSelectedColorHex(colorHex);
     setForm((prev) => ({
@@ -78,21 +96,36 @@ export const useRoleForm = (onClose: () => void, onSuccess: () => void) => {
     }
 
     setUiLoading(true);
-    // Lưu ý: Bạn cần truyền đúng data role lên API thay vì data user
-    const success = await createRole({
+
+    const payload: RolePayload = {
       role_name: form.role_name,
       role_code: form.role_code,
       orgId: form.orgId,
       colorKey: form.colorKey,
       permissionIds: selectedPerms,
-    } as any);
+    };
 
-    if (success) {
-      toast.success("Create role successfully");
-      onClose();
-      onSuccess();
+    const roleId = roleById?.data?.id;
+
+    try {
+      let result;
+
+      if (roleId) {
+        result = await updateRole(roleId, payload);
+      } else {
+        result = await createRole(payload);
+      }
+
+      if (result) {
+        toast.success(`${roleId ? "Update" : "Create"} role successfully`);
+        onClose();
+        onSuccess();
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
+    } finally {
+      setUiLoading(false);
     }
-    setUiLoading(false);
   };
 
   return {
@@ -107,6 +140,7 @@ export const useRoleForm = (onClose: () => void, onSuccess: () => void) => {
     handleChange,
     handleSelectColor,
     handleSubmit,
-    setForm
+    setForm,
+    setSelectedPerms
   };
 };

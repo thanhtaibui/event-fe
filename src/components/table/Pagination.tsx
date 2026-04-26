@@ -22,6 +22,7 @@ export default function CustomPagination({
 }: PaginationProps) {
   return (
     <TablePagination
+      style={{ userSelect: "none" }}
       rowsPerPageOptions={[10, 15, 20]}
       component="div"
       count={totalCount}

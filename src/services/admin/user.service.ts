@@ -13,6 +13,7 @@ export const userService = {
   },
   getOrgsByUser: async (userId: string) => {
     const res = await api.get(`/users/${userId}/organizations`);
+    console.log(res)
     return res.data;
   },
   updateActive: async (id: string, active: boolean) => {

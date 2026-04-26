@@ -176,16 +176,19 @@ a:has(li.active) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30px;
+  padding: 20px;
   border-radius: 15px;
   margin: 10px;
   box-sizing: border-box;
   z-index: 10;
+  height: 20vh;
 }
 .header-left {
-  display: block;
-  align-items: center;
-  gap: 20px;
+  display: flex;
+  /* flex-direction: column; */
+  gap: 10px;
+  height: 100%;
+  justify-content: center;
 }
 .header-left h3 {
   color: var(--accent-header);
@@ -203,15 +206,18 @@ a:has(li.active) {
   align-items: center;
   gap: 10px;
   margin-right: 40px;
+  user-select: none;
 }
 .header-right .round-button {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background: var(--bg-button);
+  border-radius: 10px;
+  /* background: var(--bg-button); */
+  background-color: rgb(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid rgb(209, 209, 209, 0.5);
 }
 
 .header-right img {
@@ -230,6 +236,11 @@ a:has(li.active) {
   gap: 12px;
   height: 40px;
   width: auto;
+  background-color: rgb(255, 255, 255, 0.2);
+  border: 1px solid rgb(209, 209, 209, 0.5);
+  padding: 10px;
+  color: #ffffff;
+  border-radius: 15px;
 }
 
 /* text */
@@ -245,6 +256,5 @@ a:has(li.active) {
 
 .role {
   font-size: 13px;
-  color: #888;
   text-align: left;
 }

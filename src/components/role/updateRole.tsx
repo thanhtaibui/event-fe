@@ -7,22 +7,27 @@ import { useSwitchOrg } from "../../hooks/admin/org/useSwitchOrg";
 import { useRoleForm } from "../../hooks/admin/role/useRoleForm";
 import { UsePermission } from "../../hooks/admin/permission/usePermission";
 import type { PermissionTree } from "../../types/permission/permissionTree";
+import { useRoleById } from "../../hooks/admin/role/useRoleId";
+import { useEffect } from "react";
 
-export const CreateRolePopup = ({
+export const UpdateRolePopup = ({
+  id,
   onClose,
   onSuccess,
 }: {
+  id: string;
   onClose: () => void;
   onSuccess: () => void;
 }) => {
   const { data: switchOrgs } = useSwitchOrg();
   const { data: apiPermissions } = UsePermission();
+  const roleById = useRoleById(id);
+
   // Sử dụng hook
   const {
     form,
     selectedPerms,
     expandedGroups,
-    selectedColorHex,
     uiLoading,
     toggleExpand,
     togglePermission,
@@ -31,8 +36,34 @@ export const CreateRolePopup = ({
     handleSelectColor,
     handleSubmit,
     setForm,
-  } = useRoleForm(onClose, onSuccess);
+    setSelectedPerms,
+  } = useRoleForm(onClose, onSuccess, roleById);
 
+  useEffect(() => {
+    const loadData = async () => {
+      if (roleById.data) {
+        setForm({
+          role_name: roleById.data.role_name || "",
+          role_code: roleById.data.role_code || "",
+          orgId: roleById.data.org.id,
+          colorKey: roleById.data.colorKey,
+        });
+        const allIds: string[] = [];
+        const extractIds = (items: any[]) => {
+          items.forEach((item) => {
+            allIds.push(String(item.id));
+            if (item.children && item.children.length > 0) {
+              extractIds(item.children); // Nếu có con thì chui vào lấy tiếp
+            }
+          });
+        };
+        extractIds(roleById.data.permissions);
+        // console.log("Full Permission IDs (Cha + Con):", allIds);
+        setSelectedPerms(allIds);
+      }
+    };
+    loadData();
+  }, [roleById.data]);
   return createPortal(
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-box" onClick={(e) => e.stopPropagation()}>
@@ -46,7 +77,7 @@ export const CreateRolePopup = ({
                 alt="user-shield"
               />
             </div>
-            <h2>Create Role</h2>
+            <h2>Update Role</h2>
           </div>
 
           <button className="close-btn" onClick={onClose}>
@@ -99,6 +130,15 @@ export const CreateRolePopup = ({
                 label: o.name,
                 type: "org",
               }))}
+              value={
+                switchOrgs
+                  ?.map((o: any) => ({
+                    value: o.id,
+                    label: o.name,
+                    type: "org",
+                  }))
+                  .find((o: any) => o.value === form.orgId) || null
+              }
               onChange={(selected: any) =>
                 setForm({ ...form, orgId: selected?.value })
               }
@@ -115,7 +155,7 @@ export const CreateRolePopup = ({
               {Object.entries(ROLE_COLOR_PALETTE).map(([key, styles]) => (
                 <div
                   key={key}
-                  className={`color-dot-item ${selectedColorHex === styles.text ? "active" : ""}`}
+                  className={`color-dot-item ${form.colorKey === key ? "active" : ""}`}
                   style={
                     {
                       backgroundColor: styles.text,
@@ -212,7 +252,7 @@ export const CreateRolePopup = ({
             Cancel
           </button>
           <button type="submit" form="popup-form" disabled={uiLoading}>
-            {uiLoading ? "Creating..." : "Create"}
+            {uiLoading ? "Save Changes..." : "Save Changes"}
           </button>
         </div>
       </div>

@@ -9,37 +9,29 @@ import type { Role } from "../../types/role/role";
 import "../../styles/layout/table.css";
 // import { useState } from "react";
 import { ROLE_COLOR_PALETTE } from "../../styles/status-styles";
-import { useState } from "react";
 import { CreateRolePopup } from "../../components/role/createRole";
+import ConfirmDialog from "../../components/layout/DialogConfirm";
+import { usePageActions } from "../../hooks/admin/usePageActions";
+import { UpdateRolePopup } from "../../components/role/updateRole";
 export default function Role() {
-  const [popupType, setPopupType] = useState<
-    "create" | "update" | "confirm" | null
-  >(null);
+  const onSearchChange = (val: string) => {
+    search.handleSearchChange(val);
+  };
+
   const { data, loading, search, table, pagination, refetch } =
     useDataTable<Role>({
       fetchHook: UseRole,
       // updateApi: userService.updateActive,
     });
-  const handleDelete = async () => {};
-
-  const handleCloseAndClear = () => {
-    handleDelete;
-    table.handleSelectAll(false, []);
-  };
-  const onSearchChange = (val: string) => {
-    search.handleSearchChange(val);
-  };
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-
-    return date.toLocaleString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  const {
+    popupType,
+    setPopupType,
+    onFinalDelete,
+    selectedIds,
+    handleCloseAndClear,
+    handleOpenConfirm,
+    setSelectedIds,
+  } = usePageActions(refetch, table);
 
   const reportColumns: Column<Role>[] = [
     {
@@ -71,8 +63,11 @@ export default function Role() {
       sortable: false,
     },
     {
-      id: "orgName",
+      id: "org",
       label: "Org Name",
+      render: (r) => {
+        return r.org.name;
+      },
       sortable: false,
     },
     {
@@ -110,7 +105,13 @@ export default function Role() {
       label: "Actions",
       render: (user) => (
         <div style={{ display: "flex", gap: "8px" }}>
-          <button className="btn-edit" onClick={() => handleEdit(user.id)}>
+          <button
+            className="btn-edit"
+            onClick={() => {
+              setPopupType("update");
+              setSelectedIds([user.id]);
+            }}
+          >
             <img
               width="20"
               height="20"
@@ -120,7 +121,13 @@ export default function Role() {
             />
             <span className="text-edit">Edit</span>
           </button>
-          <button className="btn-delete" onClick={() => {}}>
+          <button
+            className="btn-delete"
+            onClick={() => {
+              setPopupType("confirm");
+              setSelectedIds([user.id]);
+            }}
+          >
             <img
               width="20"
               height="20"
@@ -138,13 +145,25 @@ export default function Role() {
 
   return (
     <div className="report">
+      <ConfirmDialog
+        open={popupType === "confirm"}
+        onConfirm={() => onFinalDelete()}
+        onClose={() => setPopupType(null)}
+      />
       <PopupHideItems
-        title="Spam"
-        count={data.items.length}
+        title="Delete"
+        count={table.selected.length}
         show={table.selected.length > 0}
-        onConfirm={handleDelete}
+        onConfirm={() => handleOpenConfirm(table.selected.map(String))}
         onClose={() => handleCloseAndClear()}
       />
+      {popupType === "update" && (
+        <UpdateRolePopup
+          id={selectedIds.length === 1 ? selectedIds[0] : ""}
+          onSuccess={() => refetch?.()}
+          onClose={() => setPopupType(null)}
+        />
+      )}
       {popupType === "create" && (
         <CreateRolePopup
           onSuccess={() => refetch?.()}

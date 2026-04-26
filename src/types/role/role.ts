@@ -5,7 +5,7 @@ export interface Role {
 
   role_code: string;
 
-  orgName: string;
+  org: Org;
 
   permissions: Permission[];
 
@@ -20,4 +20,9 @@ export interface Permission {
   children?: Permission[];
 
   isAll?: boolean;
+}
+export interface Org {
+  id: string;
+
+  name: string;
 }

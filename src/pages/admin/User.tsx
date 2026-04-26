@@ -16,53 +16,33 @@ import { PopupHideItems } from "../../components/layout/PopupHideItems";
 import ConfirmDialog from "../../components/layout/DialogConfirm";
 //  hook
 import { useDataTable } from "../../hooks/admin/useDataTable";
-import { useState } from "react";
 import { useUser } from "../../hooks/admin/user/useUser";
 import { userService } from "../../services/admin/user.service";
-import { toast } from "react-toastify";
-import { useDelete } from "../../hooks/admin/user/useDelete";
 import { UpdateUserPopup } from "../../components/user/updateUser";
+import { usePageActions } from "../../hooks/admin/usePageActions";
 
 export default function User() {
   // useatate ẩn hiện
-  const [popupType, setPopupType] = useState<
-    "create" | "update" | "confirm" | null
-  >(null);
 
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const { deleteSort } = useDelete();
   const { data, loading, search, table, pagination, actions, refetch } =
     useDataTable<User>({
       fetchHook: useUser,
       updateApi: userService.updateActive,
     });
+  const {
+    popupType,
+    setPopupType,
+    onFinalDelete,
+    selectedIds,
+    handleCloseAndClear,
+    handleOpenConfirm,
+    setSelectedIds,
+  } = usePageActions(refetch, table);
 
   const onSearchChange = (val: string) => {
     search.handleSearchChange(val);
   };
 
-  const handleOpenConfirm = (selectedIds: string[]) => {
-    setSelectedIds(selectedIds);
-    setPopupType("confirm");
-  };
-
-  // Hàm xóa thực sự sau khi đã bấm OK ở ConfirmDialog
-  const onFinalDelete = async () => {
-    await handleDelete(selectedIds);
-    setPopupType(null);
-    table.handleSelectAll(false, []);
-  };
-  const handleDelete = async (ids: string[]) => {
-    const res = await deleteSort(ids);
-    toast.success(res?.message);
-    handleCloseAndClear();
-    setPopupType(null);
-    await refetch?.();
-  };
-  const handleCloseAndClear = () => {
-    table.handleSelectAll(false, []);
-  };
   // setup column
   const userColumns: Column<User>[] = [
     { id: "fullName", label: "FullName", sortable: true },

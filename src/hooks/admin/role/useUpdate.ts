@@ -1,15 +1,15 @@
 import { useState } from "react";
-// import type { CreateUser } from "../../../types/Role/create"
 import { roleService } from "../../../services/admin/role.service";
 import type { RolePayload } from "../../../types/role/payload";
 
-export const useCreateRole = () => {
+export const useUpdateRole = () => {
   const [loading, setLoading] = useState(false);
 
-  const createRole = async (payload: RolePayload) => {
+  const updateRole = async (id: string, payload: RolePayload) => {
     try {
       setLoading(true);
-      await roleService.createRole(payload);
+      console.log(payload)
+      await roleService.updateRole(id, payload);
       return true;
     } catch (error) {
       // console.error(error);
@@ -18,9 +18,8 @@ export const useCreateRole = () => {
       setLoading(false);
     }
   };
-
   return {
-    createRole,
+    updateRole,
     loading,
   };
-};
+}

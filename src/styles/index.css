@@ -44,7 +44,7 @@
   }
 }
 .Toastify__toast-container {
-  z-index: 1000 !important;
+  z-index: 1301 !important;
 }
 /* @media (prefers-color-scheme: dark) {
   :root {
