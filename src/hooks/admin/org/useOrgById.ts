@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import { userService } from "../../../services/admin/user.service";
+import { orgService } from "../../../services/admin/organization.service";
 
-export const useUserById = (id: string) => {
+export const useOrgById = (id: string) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const fetchUserById = async () => {
+  const fetchOrgById = async () => {
     try {
       setLoading(true);
-      const res = await userService.getUserById(id);
+      const res = await orgService.getOrgById(id);
       setData(res.data);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
-    fetchUserById();
+    fetchOrgById();
   }, [id]);
   return { data, loading };
 }

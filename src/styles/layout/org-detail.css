@@ -1,0 +1,326 @@
+/* Container chung */
+.org-detail {
+  padding: 24px;
+  /* background: #f9fafb; */
+}
+
+/* Header Wrapper */
+.org-detail__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #edf2f7;
+  margin-bottom: 2rem;
+}
+
+/* Nhóm bên trái: Title & Subtitle */
+.header-left-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.org-detail__subtitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #718096; /* Màu xám nhẹ cho tiêu đề phụ */
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.org-detail__title {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #4e5a72;
+  line-height: 1.2;
+}
+
+/* Nhóm bên phải: Buttons */
+.org-detail__actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Button Base Style */
+.org-detail__btn {
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease; /* Hiệu ứng mượt mà */
+  border: 1px solid transparent;
+}
+
+/* Nút Back (Phụ) */
+.btn-back {
+  background-color: #ffffff;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-back:hover {
+  background-color: #f7fafc;
+  border-color: #cbd5e0;
+  color: #2d3748;
+}
+
+/* Hiệu ứng khi nhấn (Active) */
+.org-detail__btn:active {
+  transform: scale(0.98);
+}
+
+.org-detail__btn {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.org-detail__btn--secondary,
+.org-detail__back-btn {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.org-detail__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.org-detail__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+}
+
+.org-detail__panel {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  user-select: none;
+}
+.org-detail__right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.org-detail__map {
+  border-radius: 16px;
+  overflow: hidden;
+  height: 180px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.org-detail__map iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.org-detail__map {
+  position: relative;
+}
+
+.org-detail__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Chia đôi 50/50 */
+  gap: 20px;
+}
+.org-detail__panel-title::after {
+  margin-left: 15px;
+  content: "";
+  flex: 1;
+  height: 2px;
+  background-color: #eee;
+}
+.org-detail__panel-title {
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  text-align: left;
+}
+.org-detail__field {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.org-detail__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 1px;
+  text-transform: uppercase; /* Tự động viết hoa */
+}
+
+.org-detail__value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0 0.8rem;
+  line-height: 1.4;
+}
+.bio-text {
+  font-weight: 400;
+  color: #444;
+  max-width: 800px; /* Giới hạn độ rộng để dễ đọc */
+}
+.full-width {
+  grid-column: span 2;
+  margin: 10px 0;
+}
+.org-detail__empty {
+  color: #9ca3af;
+}
+
+.org-detail__not-found {
+  padding: 2rem;
+  text-align: center;
+}
+
+/*----------------------------------------------------- avatar----------------------------------------------- */
+
+/* COVER */
+.org-detail__cover {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+  background: #f9f8ff;
+  border-radius: 20px;
+}
+
+.org-detail__cover img {
+  border: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  /* Chống mờ ảnh khi scale trên các trình duyệt hiện đại */
+  image-rendering: -webkit-optimize-contrast;
+  /* Tránh việc ảnh bị kéo giãn khi load chậm */
+  display: block;
+}
+.org-detail__cover-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+}
+.org-detail__cover-btn img {
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  filter: brightness(0) invert(1);
+  image-rendering: -webkit-optimize-contrast;
+  filter: sharp(0.5);
+}
+/* hover */
+.org-detail__cover-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+/* AVATAR */
+.org-detail__avatar {
+  background: #ffffffc1;
+  position: absolute;
+  left: 0;
+  top: -55px;
+  width: 9rem;
+  height: 9rem;
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: 0 4px 20px rgba(115, 0, 255, 0.3);
+}
+
+.org-detail__avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.org-detail__badge {
+  position: absolute;
+  bottom: 5px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  background: #00ff08;
+  color: white;
+  border-radius: 50%;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid white;
+  font-weight: bold;
+}
+/* HEADER */
+.org-detail__header {
+  position: relative;
+  margin-top: 30px;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LEFT */
+.header-left-detail {
+  user-select: none;
+  margin-left: 150px; /* né avatar */
+  text-align: left;
+}
+
+.org-detail__subtitle {
+  font-size: 12px;
+  color: #6b7280;
+  letter-spacing: 1px;
+}
+
+.org-detail__title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* BUTTON */
+.org-detail__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.org-detail__btn {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-back {
+  background: #e5e7eb;
+}

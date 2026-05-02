@@ -4,12 +4,23 @@ import "./styles/App.css";
 import { router } from "./routes/index"; // Đảm bảo router được import
 import { RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./hooks/auth/AuthProvider";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <>
       <AuthProvider>
         <RouterProvider router={router} />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              fontSize: "16px",
+              padding: "14px 18px",
+              borderRadius: "10px",
+            },
+          }}
+        />
         <ToastContainer
           position="top-right"
           autoClose={2000}

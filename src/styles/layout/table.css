@@ -86,4 +86,19 @@
   text-transform: capitalize;
   border: 1px solid transparent;
   white-space: nowrap;
+  user-select: none;
+}
+.table-textarea textarea {
+  padding: 12px 16px;
+  font-size: 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  color: #1e293b;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+  caret-color: #7b2cbf;
+  cursor: pointer;
+  resize: vertical;
 }

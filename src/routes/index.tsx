@@ -6,9 +6,13 @@ import LoginPage from "../pages/auth/LoginPage";
 import Dashboard from "../pages/admin/Dashboard";
 import User from "../pages/admin/User";
 import Role from "../pages/admin/Role";
+import Event from "../pages/admin/event/Event";
 
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 import Report from "../pages/admin/Report";
+import Organization from "../pages/admin/org/Organization";
+import OrganizationDetail from "../pages/admin/org/OrganizationDetail";
+
 export const router = createBrowserRouter([
   {
     path: "/login",
@@ -48,6 +52,23 @@ export const router = createBrowserRouter([
       {
         path: "roles",
         element: <Role />,
+      },
+      {
+        path: "events",
+        element: <Event />,
+      },
+      {
+        path: "organizations",
+        children: [
+          {
+            index: true,
+            element: <Organization />,
+          },
+          {
+            path: ":slug",
+            element: <OrganizationDetail />,
+          },
+        ],
       },
     ],
   },

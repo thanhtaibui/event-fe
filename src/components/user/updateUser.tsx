@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useUpdateUser } from "../../hooks/admin/user/useUpdate";
 import { useUserById } from "../../hooks/admin/user/useUserId";
-import { useOrg } from "../../hooks/admin/org/useOrg";
+import { useOrgsByUser } from "../../hooks/admin/org/useOrgsByUser";
 import "../../styles/layout/popup.css";
 import { toast } from "react-toastify";
 import { useSwitchOrg } from "../../hooks/admin/org/useSwitchOrg";
@@ -33,7 +33,7 @@ export const UpdateUserPopup = ({
 
   const userById = useUserById(id);
 
-  const { data: userDetail } = useOrg(id); //lấy ra danh sách org với role của user
+  const { data: userDetail } = useOrgsByUser(id); //lấy ra danh sách org với role của user
   const { data: switchOrgs } = useSwitchOrg(); //danh sách full org của org
   const { fetchRolesOrgs } = useRolesOrg(); //danh sách role full của org
   const [rolesByOrg, setRolesByOrg] = useState<Record<string, any[]>>({});
@@ -41,16 +41,21 @@ export const UpdateUserPopup = ({
   useEffect(() => {
     const loadData = async () => {
       if (userById.data) {
+        // console.log("userById.data", userById.data);
         setForm({
           fullName: userById.data.fullName || "",
           phoneNumber: userById.data.phoneNumber || "",
         });
       }
       if (userDetail && Array.isArray(userDetail)) {
+        // console.log("userDetail", userDetail);
+
         const newMemberships = userDetail.map((ud: any) => ({
           orgId: ud?.organizationId,
           roleId: ud?.roleId,
         }));
+        // console.log("newMemberships", newMemberships);
+
         setMemberships(newMemberships);
         const allOrgIds = newMemberships.map((m) => m.orgId).filter(Boolean);
         // Chạy vòng lặp

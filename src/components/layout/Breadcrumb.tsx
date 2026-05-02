@@ -2,28 +2,58 @@ import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 
 export const Breadcrumb = () => {
-  const location = useLocation();
-  const path = location.pathname;
-  let current = "";
+  const { pathname } = useLocation();
+  const segments = pathname.split("/").filter(Boolean);
 
-  if (path.includes("users")) current = "Users";
-  else if (path.includes("events")) current = "Events";
-  else if (path.includes("dashboard")) current = "";
+  const module = segments[1]; // organizations, users, v.v.
+  const isDetail = segments.length > 2;
+
+  // Map label cho đẹp
+  const labels: Record<string, string> = {
+    organizations: "Organizations",
+    users: "Users",
+    events: "Events",
+    reports: "Reports",
+    roles: "roles",
+  };
+
+  const moduleLabel = labels[module] || "";
 
   return (
     <Breadcrumbs
       aria-label="breadcrumb"
+      separator="/"
       sx={{
-        "& .MuiBreadcrumbs-separator": {
-          color: "white", // Đổi thành màu tím accent của bạn cho nổi
-          fontWeight: "bold",
-        },
+        "& .MuiBreadcrumbs-separator": { color: "white", fontWeight: "bold" },
       }}
     >
-      <Link component={RouterLink} to="/admin/dashboard" underline="hover">
+      {/* 1. Luôn có Link Dashboard */}
+      <Link
+        component={RouterLink}
+        to="/admin/dashboard"
+        underline="hover"
+        sx={{ color: "white" }}
+      >
         Dashboard
       </Link>
-      {current && <Typography sx={{ color: "white" }}>{current}</Typography>}
+
+      {/* 2. Nếu là trang DETAIL: Hiện thêm 1 Link để bấm quay lại trang danh sách */}
+      {isDetail && moduleLabel && (
+        <Link
+          component={RouterLink}
+          to={`/admin/${module}`}
+          underline="hover"
+          sx={{ color: "white" }}
+        >
+          {moduleLabel}
+        </Link>
+      )}
+
+      {moduleLabel && (
+        <Typography sx={{ color: "white", fontWeight: 500 }}>
+          {isDetail ? "Detail" : moduleLabel}
+        </Typography>
+      )}
     </Breadcrumbs>
   );
 };

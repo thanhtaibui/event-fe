@@ -1,4 +1,4 @@
-import "../../styles/admin/user.css";
+import "../../styles/admin/btn-action.css";
 import "../../styles/layout/table.css";
 
 import type { User } from "../../types/user/user";
@@ -20,6 +20,7 @@ import { useUser } from "../../hooks/admin/user/useUser";
 import { userService } from "../../services/admin/user.service";
 import { UpdateUserPopup } from "../../components/user/updateUser";
 import { usePageActions } from "../../hooks/admin/usePageActions";
+import { useDelete } from "../../hooks/admin/user/useDelete";
 
 export default function User() {
   // useatate ẩn hiện
@@ -29,6 +30,7 @@ export default function User() {
       fetchHook: useUser,
       updateApi: userService.updateActive,
     });
+  const { deleteSort } = useDelete();
   const {
     popupType,
     setPopupType,
@@ -37,7 +39,7 @@ export default function User() {
     handleCloseAndClear,
     handleOpenConfirm,
     setSelectedIds,
-  } = usePageActions(refetch, table);
+  } = usePageActions(refetch, table, deleteSort);
 
   const onSearchChange = (val: string) => {
     search.handleSearchChange(val);

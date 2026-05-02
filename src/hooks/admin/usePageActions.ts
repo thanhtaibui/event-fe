@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useDelete } from "./role/useDelete";
 
 // usePageActions.ts
-export const usePageActions = (refetch: any, table: any) => {
+export const usePageActions = (refetch: any, table: any, deleteApi?: any) => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [popupType, setPopupType] = useState<"create" | "update" | "confirm" | null>(null);
   const [currentItem, setCurrentItem] = useState<any>(null);
-
-  const { deleteSort } = useDelete();
 
   // Mở popup confirm xóa
   const openDeleteConfirm = (ids: string[]) => {
@@ -24,13 +21,18 @@ export const usePageActions = (refetch: any, table: any) => {
 
   // Hàm thực thi xóa cuối cùng
   const onFinalDelete = async () => {
-    const res = await deleteSort(selectedIds);
-    if (res) {
+    if (!deleteApi) return;
+    try {
+      const res = await deleteApi(selectedIds);
+      await refetch?.();
+      table.handleSelectAll(false, []);
       toast.success(res.message);
       setPopupType(null);
-      table.handleSelectAll(false, []);
-      await refetch?.();
+      handleCloseAndClear();
+    } catch (error) {
+      console.error("Delete Failed", error);
     }
+
   };
   const handleOpenConfirm = (selectedIds: string[]) => {
     setSelectedIds(selectedIds);

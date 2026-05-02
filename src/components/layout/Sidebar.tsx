@@ -44,7 +44,20 @@ export const Sidebar = ({ isCollapsed, onToggleSidebar }: SidebarProps) => {
             activeIcon="https://img.icons8.com/nolan/64/test-account.png"
             isCollapsed={isCollapsed}
           />
-
+          <SidebarItem
+            to="/admin/organizations"
+            label="Organizations"
+            icon="https://img.icons8.com/nolan/64/B0B0B0/2E2E2E/organization.png"
+            activeIcon="https://img.icons8.com/nolan/64/organization.png"
+            isCollapsed={isCollapsed}
+          />
+          <SidebarItem
+            to="/admin/events"
+            label="Events"
+            icon="https://img.icons8.com/nolan/64/B0B0B0/2E2E2E/event-accepted.png"
+            activeIcon="https://img.icons8.com/nolan/64/event-accepted.png"
+            isCollapsed={isCollapsed}
+          />
           <SidebarItem
             to="/admin/reports"
             label="Reports"

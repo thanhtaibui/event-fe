@@ -187,7 +187,7 @@ export const UpdateRolePopup = ({
                       className={`group-header ${isGroupActive ? "active" : ""}`}
                       onClick={() => toggleGroup(group.id, childIds)}
                     >
-                      <div className="header-left">
+                      <div className="header-left-popup">
                         <div
                           className={`custom-checkbox ${isGroupAllSelected ? "checked" : isGroupActive ? "indeterminate" : ""}`}
                         >

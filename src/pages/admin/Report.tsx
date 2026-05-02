@@ -55,27 +55,16 @@ export default function Report() {
         const styleStatus =
           STATUS_STYLES[statusKey] || STATUS_STYLES["PENDING"];
         return (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span
-              className="status-badge"
-              style={{
-                cursor: "pointer",
-                userSelect: "none",
-                background: styleStatus.bg,
-                color: styleStatus.text,
-                border: `1px solid ${styleStatus.border}`,
-                padding: "6px 30px",
-                borderRadius: "20px",
-                fontSize: "12px",
-                fontWeight: 700,
-                textTransform: "capitalize",
-                display: "inline-block",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {row.status.toLowerCase()}
-            </span>
-          </div>
+          <span
+            className="role-badge"
+            style={{
+              background: styleStatus.bg,
+              color: styleStatus.text,
+              border: `1px solid ${styleStatus.border}`,
+            }}
+          >
+            {row.status.toLowerCase()}
+          </span>
         );
       },
       sortable: false,

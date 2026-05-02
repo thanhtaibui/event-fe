@@ -13,6 +13,7 @@ import { CreateRolePopup } from "../../components/role/createRole";
 import ConfirmDialog from "../../components/layout/DialogConfirm";
 import { usePageActions } from "../../hooks/admin/usePageActions";
 import { UpdateRolePopup } from "../../components/role/updateRole";
+import { useDelete } from "../../hooks/admin/role/useDelete";
 export default function Role() {
   const onSearchChange = (val: string) => {
     search.handleSearchChange(val);
@@ -23,6 +24,8 @@ export default function Role() {
       fetchHook: UseRole,
       // updateApi: userService.updateActive,
     });
+  const { deleteSort } = useDelete();
+
   const {
     popupType,
     setPopupType,
@@ -31,7 +34,7 @@ export default function Role() {
     handleCloseAndClear,
     handleOpenConfirm,
     setSelectedIds,
-  } = usePageActions(refetch, table);
+  } = usePageActions(refetch, table, deleteSort);
 
   const reportColumns: Column<Role>[] = [
     {

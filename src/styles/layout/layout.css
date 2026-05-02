@@ -185,10 +185,11 @@ a:has(li.active) {
 }
 .header-left {
   display: flex;
-  /* flex-direction: column; */
+  flex-direction: column;
   gap: 10px;
   height: 100%;
   justify-content: center;
+  user-select: none;
 }
 .header-left h3 {
   color: var(--accent-header);

@@ -1,6 +1,7 @@
 /* --- Cấu hình chung cho cả 2 nút --- */
 .btn-edit,
-.btn-delete {
+.btn-delete,
+.btn-detail {
   border-radius: 7px;
   padding: 4px 10px;
   border: none;
@@ -19,19 +20,29 @@
 }
 
 .btn-edit {
-  color: #0040a6;
-  background-color: #e4eeff;
+  color: #7c3aed;
+  background-color: #f5f3ff;
+  border: 1px solid #ddd6fe;
   font-weight: bolder;
 }
 
 .btn-delete {
-  color: #cc0000;
+  color: #ef4444;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
   font-weight: bolder;
-  background-color: #ffeaea;
+}
+
+.btn-detail {
+  color: #64748b;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-weight: bolder;
 }
 
 .text-edit,
-.text-delete {
+.text-delete,
+.text-detail {
   transition: all 0.3s ease;
   opacity: 1;
   transform: translateY(0);
@@ -78,6 +89,20 @@
 }
 
 .btn-delete:hover .icon-white {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.btn-detail:hover {
+  background-color: #065f46;
+}
+
+.btn-detail:hover .text-detail {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.btn-detail:hover .icon-white {
   opacity: 1;
   transform: scale(1) translateY(0);
 }

@@ -9,6 +9,7 @@ export const useUser = (query?: Query) => {
     try {
       setLoading(true);
       const res = await userService.getUsers(query);
+      // console.log(res)
       setData(res.data);
     } finally {
       setLoading(false);
