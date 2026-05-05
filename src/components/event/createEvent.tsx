@@ -12,6 +12,7 @@ import Flatpickr from "react-flatpickr";
 import { Vietnamese } from "flatpickr/dist/l10n/vn.js";
 import "flatpickr/dist/themes/dark.css";
 import { useUpload } from "../../hooks/admin/useUpload";
+import { PlaceInput } from "../layout/Place";
 
 // mặc định (không cần import theme)
 // import "flatpickr/dist/flatpickr.min.css";
@@ -291,11 +292,9 @@ export const CreateEventPopup = ({
           </div>
           <div className="form-group full-width">
             <label className="required">Place</label>
-            <input
-              name="place"
-              placeholder="Event place"
+            <PlaceInput
               value={form.place || ""}
-              onChange={handleChange}
+              onChange={(val) => setForm((prev) => ({ ...prev, place: val }))}
             />
           </div>
         </form>

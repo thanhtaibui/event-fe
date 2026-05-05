@@ -18,8 +18,11 @@ import { CreateEventPopup } from "../../../components/event/createEvent";
 import { useCancelled } from "../../../hooks/admin/event/useCancelled";
 import { toast } from "react-toastify";
 import { UpdateEventPopup } from "../../../components/event/updateEvent";
+import { useNavigate } from "react-router-dom";
 
 export default function Event() {
+  const navigate = useNavigate();
+
   const { data, loading, search, filter, table, pagination, refetch } =
     useDataTable<EventDto>({
       fetchHook: UseEvent,
@@ -199,6 +202,23 @@ export default function Event() {
               alt="waste"
             />
             <span className="text-delete">Delete</span>
+          </button>
+          <button
+            className="btn-detail"
+            onClick={() => {
+              const shortId = btoa(event.id).slice(0, 10);
+              navigate(`/admin/events/${shortId}`);
+            }}
+          >
+            <img
+              width="64"
+              height="64"
+              className="icon-white"
+              src="https://img.icons8.com/nolan/64/fine-print.png"
+              alt="fine-print"
+            />
+
+            <span className="text-detail">Detail</span>
           </button>
         </div>
       ),

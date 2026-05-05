@@ -73,8 +73,12 @@
 }
 
 .org-detail__btn {
-  background: #3b82f6;
+  background: linear-gradient(135deg, #8b5cf6 0%, #b29bf6 100%);
   color: #fff;
+}
+.org-detail__btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px 0 rgba(139, 92, 246, 0.5);
 }
 
 .org-detail__btn--secondary,

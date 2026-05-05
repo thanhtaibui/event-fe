@@ -12,6 +12,7 @@ import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 import Report from "../pages/admin/Report";
 import Organization from "../pages/admin/org/Organization";
 import OrganizationDetail from "../pages/admin/org/OrganizationDetail";
+import EventDetail from "../pages/admin/event/EventDetail";
 
 export const router = createBrowserRouter([
   {
@@ -55,7 +56,16 @@ export const router = createBrowserRouter([
       },
       {
         path: "events",
-        element: <Event />,
+        children: [
+          {
+            index: true,
+            element: <Event />,
+          },
+          {
+            path: ":id",
+            element: <EventDetail />,
+          },
+        ],
       },
       {
         path: "organizations",

@@ -22,6 +22,7 @@ export function useDataTable<T extends { id: string; isActive?: boolean }>({
   updateApi,
   initialFilter = {},
 }: UseDataTableProps<T>) {
+
   type LocalData<T> = {
     items: T[];
     total: number;
@@ -65,6 +66,10 @@ export function useDataTable<T extends { id: string; isActive?: boolean }>({
       ),
     }));
   };
+
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedSearchQuery, JSON.stringify(filter)]);
 
   const toggle = updateApi
     ? useToggleActive(updateApi, updateLocal, fetchData)
