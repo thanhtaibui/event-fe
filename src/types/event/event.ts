@@ -7,9 +7,13 @@ export interface EventDto {
 
   eventPoster: string;
 
+  place: string;
+
   startDateTime: Date;
 
   endDateTime: Date;
+
+  eventTime: Date;
 
   registrationEndDate: Date;
 

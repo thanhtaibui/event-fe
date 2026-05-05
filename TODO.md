@@ -1,15 +1,13 @@
-# Task Progress: Update createOrg.tsx with new fields
+# TODO: Implement Create Event Feature
 
-## Approved Plan Steps:
+## Steps:
 
-- [x] 1. Create this TODO.md for tracking progress
-- [x] 2. Update src/components/org/createOrg.tsx:
-  - Expand form state with new fields: legalName, industry, address, email, phone, website
-  - Import and type form as Partial<CreateOrganizationDto>
-  - Add new input fields in form (after bio): legalName, industry, address (full inputs); email, phone, website
-  - Update handleChange and handleSubmit to handle all fields
-- [x] 3. Verify TypeScript compilation: npm run build
-- [x] 4. Test UI: Open Organization.tsx popup, check new fields render/submit
-- [ ] 5. Complete task
+1. [ ] Create src/types/event/create.ts - CreateEventPayload type
+2. [ ] Edit src/services/admin/event.service.ts - Add createEvent method
+3. [ ] Create src/hooks/admin/event/useCreateEvent.ts - useMutation hook
+4. [ ] Create src/components/event/createEvent.tsx - Modal form component (focus create)
+5. [ ] Edit src/pages/admin/event/Event.tsx - Import and render CreateEventPopup when popupType==='create'
+6. [ ] Test: Run dev server, admin/event → Create → form submit → list refresh
+7. [ ] Later: updateEvent similarly
 
-All steps complete. createOrg.tsx enhanced with new fields, types fixed project-wide, build clean (ignoring unused vars), UI ready to test.
+All steps complete. CreateEvent component ready, integrated into Event page. Poster full-width preview, form matches schema. Test in browser.

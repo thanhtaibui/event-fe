@@ -19,16 +19,17 @@
 
 /* box chung cho chart */
 .chart-box {
-  border-radius: 16px;
+  border-radius: 10px;
   padding: 20px;
   min-height: 300px;
+  background-color: #ffffff;
   box-shadow: var(--shadow-dashboard);
 }
 /* CARD */
 .stat-card {
-  background: #faf8ff;
-  border-radius: 16px;
-  padding: 25px 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 35px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -41,7 +42,7 @@
 
 .stat-card:hover {
   transform: translateY(-10px);
-  box-shadow: -7px 7px 20px 0px rgba(112, 73, 253, 0.4);
+  box-shadow: -4px 4px 10px 0px rgba(112, 73, 253, 0.35);
 }
 
 /* header */
@@ -92,22 +93,30 @@
 }
 .chart-box-inset .pie-chart-card svg {
   filter: drop-shadow(0px 4px 8px rgba(48, 25, 130, 0.3))
-    drop-shadow(0px 12px 20px rgba(112, 73, 253, 0.4));
+    drop-shadow(0px 5px 7px rgba(112, 73, 253, 0.4));
 }
 /* ---------------------------------------------------responsive---------------------------------- */
 
+/* 3 cột */
+@media (max-width: 1224px) {
+  .dashboard-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 2 cột */
 @media (max-width: 1024px) {
-  /*  CARD */
   .dashboard-cards {
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
   }
+}
 
-  /*  CHART */
-  .dashboard-charts {
-    display: grid;
+/* 1 cột */
+@media (max-width: 600px) {
+  .dashboard-cards {
     grid-template-columns: 1fr;
-    gap: 20px;
   }
 }

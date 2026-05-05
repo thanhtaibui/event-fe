@@ -5,7 +5,7 @@ import LoadingPage from "../../LoadingPage";
 import DashboardCard from "../../../components/dashboard/DashboardCard";
 import { UpdateOrgPopup } from "../../../components/org/updateOrg";
 import "../../../styles/layout/org-detail.css";
-import { useUploadAvt } from "../../../hooks/admin/org/useUploadAvt";
+import { useUpload } from "../../../hooks/admin/useUpload";
 import { useUpdateBanner } from "../../../hooks/admin/org/useUpdateBanner";
 import { toast } from "react-toastify";
 import toastHot from "react-hot-toast";
@@ -18,7 +18,7 @@ export default function OrganizationDetail() {
   // const navigate = useNavigate();
   const { data, loading, refetch } = useOrgBySlug(slug || "");
   const [showEdit, setShowEdit] = useState(false);
-  const { uploadAvt } = useUploadAvt();
+  const { upload } = useUpload();
   const { updateBanner } = useUpdateBanner();
   const [tempImage, setTempImage] = useState<string | null>(null);
   const formatDate = (dateStr: string) => {
@@ -90,7 +90,7 @@ export default function OrganizationDetail() {
 
       await toastHot.promise(
         (async () => {
-          const res = await uploadAvt(formData);
+          const res = await upload(formData);
           // Lưu ý: check res.data.secure_url tùy theo cấu trúc ApiResponse của ông
           const success = await updateBanner(
             data.id,

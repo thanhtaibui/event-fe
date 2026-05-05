@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { orgService } from "../../../services/admin/organization.service";
+import { uploadService } from "../../services/admin/uploadCloud";
 
-export const useUploadAvt = () => {
+export const useUpload = () => {
   const [loading, setLoading] = useState(false);
 
-  const uploadAvt = async (formData: FormData) => {
+  const upload = async (formData: FormData) => {
     try {
       setLoading(true);
-      const res = await orgService.uploadAvatar(formData);
+      const res = await uploadService.upload(formData);
       // console.log(res.data)
       return res.data;
     } catch (error) {
@@ -19,7 +19,7 @@ export const useUploadAvt = () => {
   };
 
   return {
-    uploadAvt,
+    upload,
     loading,
   };
 };

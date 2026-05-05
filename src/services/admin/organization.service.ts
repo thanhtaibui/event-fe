@@ -40,20 +40,9 @@ export const orgService = {
     return res.data;
   },
   deleteSort: async (ids: string[]) => {
-    console.log(ids)
+    // console.log(ids)
     const res = await api.patch(`organizations/delete`, { ids: ids });
     return res.data;
   },
-  uploadAvatar: async (formData: FormData) => {
-    const res = await api.post(
-      `organizations/upload-avatar`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    return res.data;
-  },
+
 }

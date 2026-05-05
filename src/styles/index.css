@@ -14,12 +14,15 @@
   --accent: #6c63ff;
   --accent-2: #4facfe;
   --accent-header: white;
-  --bg-header: linear-gradient(150deg, #4f46e5, #c03aed);
+  --bg-header:
+    radial-gradient(ellipse at top right, #e879f9 0%, transparent 50%),
+    radial-gradient(ellipse at bottom left, #4f46e5 0%, transparent 60%),
+    #7c3aed;
   --accent-bg: rgba(108, 99, 255, 0.1);
   --accent-border: #6c63ff;
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow: 0 0px 50px rgba(107, 92, 255, 0.4);
-  --shadow-dashboard: -7px 7px 20px 0px rgba(112, 73, 253, 0.2);
+  --shadow-dashboard: -3px 3px 7px 0px rgba(112, 73, 253, 0.2);
   --shadow-dashboard-inset: 0px 0px 15px 3px rgba(112, 73, 253, 0.2);
   --bg-button: linear-gradient(135deg, #8c01badf, #9f63ff, #3945f7);
   --button-shadow: 6px 7px 10px rgba(107, 92, 255, 0.4);

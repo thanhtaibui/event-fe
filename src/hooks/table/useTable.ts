@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export function useTable<T extends { id: string | number }>() {
 
   const [selected, setSelected] = useState<(string | number)[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortBy, setSortBy] = useState<keyof T | "">("");
+
   // Logic chọn tất cả
   const handleSelectAll = (checked: boolean, rows: T[]) => {
     if (checked) {
@@ -25,13 +26,17 @@ export function useTable<T extends { id: string | number }>() {
     setSortOrder(isAsc ? "desc" : "asc");
     setSortBy(key);
   };
-
+  const sortQuery = useMemo(() => {
+    if (!sortBy) return undefined;
+    return `${String(sortBy)}:${sortOrder.toUpperCase()}`;
+  }, [sortBy, sortOrder]);
   return {
     selected,
     handleSelectAll,
     handleSelectOne,
     sortOrder,
     sortBy,
+    sortQuery,
     handleSort,
   };
 }

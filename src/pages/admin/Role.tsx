@@ -179,6 +179,7 @@ export default function Role() {
           setPopupType("create");
         }}
         title="role"
+        placeholder={["Name", " Code", " Org Name"]}
       />
       {loading ? (
         <LoadingPage />

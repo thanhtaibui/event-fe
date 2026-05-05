@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Organization() {
   const navigate = useNavigate();
-  const { data, loading, search, table, pagination, actions, refetch } =
+  const { data, loading, search, filter, table, pagination, actions, refetch } =
     useDataTable<Organization>({
       fetchHook: useOrg,
       updateApi: orgService.updateActive,
@@ -59,7 +59,7 @@ export default function Organization() {
     { id: "name", label: "Organization Name", sortable: true },
     {
       id: "owner",
-      label: "owner",
+      label: "Owner",
       render: (org: Organization) => {
         return org.owner?.fullName;
       },
@@ -222,10 +222,33 @@ export default function Organization() {
       )}
       <SearchBar
         onSearchChange={onSearchChange}
+        placeholder={["Name", " Email", " Owner"]}
         onCreate={() => {
           setPopupType("create");
         }}
         title="organization"
+        filters={[
+          {
+            key: "isActive",
+            placeholder: "Active",
+            options: [
+              { label: "Active", value: "true" },
+              { label: "InActive", value: "false" },
+            ],
+          },
+          {
+            key: "status",
+            placeholder: "Status",
+            options: [
+              { label: "PENDING", value: "PENDING" },
+              { label: "ACTIVE", value: "ACTIVE" },
+              { label: "SUSPENDED", value: "SUSPENDED" },
+              { label: "ARCHIVED", value: "ARCHIVED" },
+              { label: "REJECTED", value: "REJECTED" },
+            ],
+          },
+        ]}
+        onFilterChange={filter.handleFilterChange}
       />
       {loading ? (
         <LoadingPage />

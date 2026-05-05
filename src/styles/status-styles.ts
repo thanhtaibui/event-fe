@@ -37,29 +37,28 @@ export const STATUS_STYLES: Record<string, { bg: string; text: string; border: s
   // Từ chối phê duyệt lúc mới tạo
   REJECTED: { bg: '#FEF2F2', text: '#B91C1C', border: '#FECACA' },
 }
-export const EVENT_STATUS_STYLES: Record<string, { bg: string; text: string; border: string }> = {
-  // Sắp diễn ra: Dùng tone xanh dương (Blue) tạo cảm giác hy vọng, tin tức mới
+export const EVENT_STATUS_STYLES: Record<string, { bg: string; text: string; border: string, statusDot: boolean }> = {
+  // Bản nháp: Đang chuẩn bị, chưa công khai
+  draft: { bg: '#FFFBEB', text: '#92400E', border: '#FEF3C7', statusDot: false },
+  // Đã xuất bản: 
+  published: { bg: '#F5F3FF', text: '#5B21B6', border: '#EDE9FE', statusDot: true },
+  // Sắp diễn ra:Tin tức mới
   upcoming: {
-    bg: '#EBF8FF',
-    text: '#2B6CB0',
-    border: '#BEE3F8'
+    bg: '#EBF8FF', text: '#2B6CB0', border: '#BEE3F8'
+    , statusDot: true
   },
-  // Đang diễn ra: Dùng tone xanh lá (Green) đậm hơn để nhấn mạnh tính "Live"
+  // Đang diễn ra:  Tính "Live"
   ongoing: {
-    bg: '#F0FFF4',
-    text: '#22543D',
-    border: '#C6F6D5'
+    bg: '#F0FFF4', text: '#22543D', border: '#C6F6D5'
+    , statusDot: true
   },
-  // Đã kết thúc: Dùng tone xám (Gray) vì sự kiện đã lùi về quá khứ, không cần quá nổi bật
+  // Đã kết thúc: Quá khứ
   ended: {
-    bg: '#EDF2F7',
-    text: '#4A5568',
-    border: '#E2E8F0'
+    bg: '#EDF2F7', text: '#4A5568', border: '#E2E8F0', statusDot: false
   },
-  // Bị hủy: Dùng tone đỏ/cam (Red/Rose) để cảnh báo nhưng vẫn dịu mắt
+  // Bị hủy: Cảnh báo
   cancelled: {
-    bg: '#FFF5F5',
-    text: '#C53030',
-    border: '#FED7D7'
+    bg: '#FFF5F5', text: '#C53030', border: '#FED7D7'
+    , statusDot: false
   },
 };

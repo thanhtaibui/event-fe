@@ -116,7 +116,7 @@ export const UpdateOrgPopup = ({
                 alt="add-user-male"
               />
             </div>
-            <h2>Create Organization</h2>
+            <h2>Update Organization</h2>
           </div>
           <button className="close-btn" onClick={onClose}>
             ✕
@@ -297,7 +297,7 @@ export const UpdateOrgPopup = ({
           </button>
 
           <button type="submit" form="popup-form" disabled={uiLoading}>
-            {uiLoading ? "Creating..." : "Create"}
+            {uiLoading ? "Save Changes..." : "Save Changes"}
           </button>
         </div>
       </div>

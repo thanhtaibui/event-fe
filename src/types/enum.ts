@@ -11,6 +11,8 @@ export const OrgRequestStatus = {
 export type OrgRequestStatus = typeof OrgRequestStatus[keyof typeof OrgRequestStatus];
 
 export const EventStatus = {
+  DRAFT: 'draft',
+  PUBLISHED: 'published',
   UPCOMING: 'upcoming',
   ONGOING: 'ongoing',
   ENDED: 'ended',

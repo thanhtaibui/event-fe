@@ -9,6 +9,7 @@ export const UseEvent = (query: Query) => {
     try {
       setLoading(true);
       const res = await eventService.getEvents(query);
+      // console.log(res.data)
       setData(res.data);
     } finally {
       setLoading(false);

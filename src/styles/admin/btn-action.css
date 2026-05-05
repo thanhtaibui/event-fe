@@ -66,7 +66,7 @@
 }
 
 .btn-edit:hover {
-  background-color: #064dbe;
+  background-color: #723eea;
 }
 
 .btn-edit:hover .text-edit {
@@ -80,7 +80,7 @@
 }
 
 .btn-delete:hover {
-  background-color: #a80000;
+  background-color: #d42121;
 }
 
 .btn-delete:hover .text-delete {
@@ -94,7 +94,7 @@
 }
 
 .btn-detail:hover {
-  background-color: #065f46;
+  background-color: #0e6f54;
 }
 
 .btn-detail:hover .text-detail {

@@ -25,7 +25,7 @@ import { useDelete } from "../../hooks/admin/user/useDelete";
 export default function User() {
   // useatate ẩn hiện
 
-  const { data, loading, search, table, pagination, actions, refetch } =
+  const { data, loading, search, filter, table, pagination, actions, refetch } =
     useDataTable<User>({
       fetchHook: useUser,
       updateApi: userService.updateActive,
@@ -204,6 +204,18 @@ export default function User() {
           setPopupType("create");
         }}
         title="user"
+        placeholder={["Name", " Email"]}
+        filters={[
+          {
+            key: "isActive",
+            placeholder: "Active",
+            options: [
+              { label: "Active", value: "true" },
+              { label: "InActive", value: "false" },
+            ],
+          },
+        ]}
+        onFilterChange={filter.handleFilterChange}
       />
       {loading ? (
         <LoadingPage />
