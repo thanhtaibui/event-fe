@@ -58,7 +58,7 @@ export const EVENT_STATUS_STYLES: Record<string, { bg: string; text: string; bor
   },
   // Bị hủy: Cảnh báo
   cancelled: {
-    bg: '#FFF5F5', text: '#C53030', border: '#FED7D7'
+    bg: '#ffeaea', text: '#C53030', border: '#FED7D7'
     , statusDot: false
   },
 };

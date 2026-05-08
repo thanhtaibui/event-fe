@@ -12,6 +12,10 @@ export const eventService = {
     const res = await api.get(`events/${id}`);
     return res.data;
   },
+  getTicketTypeById: async (id: string) => {
+    const res = await api.get(`events/${id}/ticket-types`);
+    return res.data;
+  },
   createEvent: async (data: EventPayload) => {
     const res = await api.post('events', data);
     return res.data;

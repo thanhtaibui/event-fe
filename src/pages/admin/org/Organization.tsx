@@ -1,4 +1,4 @@
-import "../../../styles/layout/table.css";
+// import "../../../styles/layout/table.css";
 
 import LoadingPage from "../../LoadingPage";
 import FormControlLabel from "@mui/material/FormControlLabel";

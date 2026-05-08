@@ -134,7 +134,10 @@ export default function OrganizationDetail() {
         <UpdateOrgPopup
           id={data.id || ""}
           onClose={() => setShowEdit(false)}
-          onSuccess={() => window.location.reload()}
+          onSuccess={() => {
+            setShowEdit(false);
+            refetch();
+          }}
         />
       )}
       {/* COVER */}

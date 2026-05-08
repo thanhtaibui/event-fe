@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { eventService } from "../../../services/admin/event.service";
 
-export const useEventById = (id: string) => {
+export const useTicketTypeByIdEvent = (id: string) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const fetchEventById = async () => {
+  const fetchTicketTypeById = async () => {
     try {
       setLoading(true);
-      const res = await eventService.getEventById(id);
-      // console.log("Event data:", res.data);
+      const res = await eventService.getTicketTypeById(id);
+      // console.log("Ticket type data:", res.data);
       setData(res.data);
     } finally {
       setLoading(false);
@@ -16,7 +16,7 @@ export const useEventById = (id: string) => {
   }
 
   useEffect(() => {
-    fetchEventById();
+    fetchTicketTypeById();
   }, [id]);
-  return { data, loading, refetch: fetchEventById };
+  return { data, loading, refetch: fetchTicketTypeById };
 }

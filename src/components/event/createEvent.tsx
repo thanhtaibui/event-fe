@@ -287,6 +287,7 @@ export const CreateEventPopup = ({
               placeholder="Event description..."
               rows={4}
               value={form.description || ""}
+              style={{ whiteSpace: "pre-wrap" }}
               onChange={handleChange}
             />
           </div>

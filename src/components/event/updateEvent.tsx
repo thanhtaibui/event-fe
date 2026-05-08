@@ -12,6 +12,7 @@ import { useUpload } from "../../hooks/admin/useUpload";
 import Flatpickr from "react-flatpickr";
 import { Vietnamese } from "flatpickr/dist/l10n/vn.js";
 import { useUpdateEvent } from "../../hooks/admin/event/useUpdateEvent";
+import { PlaceInput } from "../layout/Place";
 
 export const UpdateEventPopup = ({
   id,
@@ -78,7 +79,7 @@ export const UpdateEventPopup = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setUiLoading(true);
+
     if (!posterUrl && !poster) {
       toast.warning("Event poster is required");
       return;
@@ -97,33 +98,41 @@ export const UpdateEventPopup = ({
       return;
     }
 
+    setUiLoading(true);
     try {
-      await toast.promise(
-        (async () => {
-          let posterFinal = posterUrl;
+      let posterFinal = posterUrl;
 
-          if (poster) {
-            const formData = new FormData();
-            formData.append("file", poster);
-            formData.append("folder", "poster");
-            const res = await upload(formData);
+      // upload ảnh mới nếu có
+      if (poster) {
+        const formData = new FormData();
+        formData.append("file", poster);
+        formData.append("folder", "poster");
+
+        await toast.promise(
+          upload(formData).then((res) => {
             posterFinal = res.secure_url;
-          }
+          }),
+          {
+            pending: "Uploading poster...",
+            success: "Poster uploaded!",
+            error: "Failed to upload poster",
+          },
+        );
+      }
 
-          const submitForm = { ...form, eventPoster: posterFinal };
-          await updateEvent(id, submitForm as EventPayload);
-          onClose();
-          onSuccess();
-        })(),
-        {
-          pending: "Uploading & updating event...",
-          success: "Event updated successfully",
-          error: "Failed to update event",
-        },
-      );
-      setUiLoading(false);
+      // update event
+      await updateEvent(id, {
+        ...form,
+        eventPoster: posterFinal,
+      } as EventPayload);
+      toast.success("Event updated successfully");
+
+      onClose();
+      onSuccess();
     } catch (error) {
-      // error đã handled bởi toast.promise
+      // handled by toast.promise
+    } finally {
+      setUiLoading(false);
     }
   };
 
@@ -325,6 +334,7 @@ export const UpdateEventPopup = ({
           <div className="form-group-textarea">
             <label>Description</label>
             <textarea
+              style={{ whiteSpace: "pre-wrap" }}
               name="description"
               placeholder="Event description..."
               rows={4}
@@ -334,11 +344,9 @@ export const UpdateEventPopup = ({
           </div>
           <div className="form-group full-width">
             <label className="required">Place</label>
-            <input
-              name="place"
-              placeholder="Event place"
+            <PlaceInput
               value={form.place || ""}
-              onChange={handleChange}
+              onChange={(val) => setForm((prev) => ({ ...prev, place: val }))}
             />
           </div>
         </form>

@@ -19,6 +19,7 @@ import { useCancelled } from "../../../hooks/admin/event/useCancelled";
 import { toast } from "react-toastify";
 import { UpdateEventPopup } from "../../../components/event/updateEvent";
 import { useNavigate } from "react-router-dom";
+import { encodeId } from "../../../utils/hash";
 
 export default function Event() {
   const navigate = useNavigate();
@@ -206,8 +207,8 @@ export default function Event() {
           <button
             className="btn-detail"
             onClick={() => {
-              const shortId = btoa(event.id).slice(0, 10);
-              navigate(`/admin/events/${shortId}`);
+              // const shortId = btoa(event.id).slice(0, 10);
+              navigate(`/admin/events/${encodeId(event.id)}`);
             }}
           >
             <img
@@ -226,7 +227,7 @@ export default function Event() {
     },
   ];
   return (
-    <div className="event-page">
+    <div>
       <ConfirmDialog
         open={popupType === "confirm"}
         onConfirm={onFinalCancelled}

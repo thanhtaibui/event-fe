@@ -43,13 +43,15 @@
   position: relative;
   grid-column: 1 / -1;
 }
-#popup-form {
+#popup-form,
+#popup-form-mini {
   user-select: none;
   padding: 0 30px;
   height: 60vh;
   overflow-y: auto;
 }
-#popup-form .required::after {
+#popup-form .required::after,
+#popup-form-mini .required::after {
   content: " •";
   color: rgb(140, 0, 255);
   vertical-align: 5px;
@@ -62,7 +64,8 @@
   cursor: pointer;
   color: #333;
 }
-.popup-box {
+.popup-box,
+.popup-box-mini {
   width: 650px;
   max-width: 90%;
   max-height: 80vh;
@@ -73,11 +76,26 @@
   display: block;
   overflow: hidden;
 }
+.popup-box-mini {
+  padding: 15px 0;
+
+  width: 450px;
+  /* max-width: 60%; */
+  height: auto;
+}
+#popup-form-mini {
+  height: auto;
+}
 .popup-form {
+  gap: 15px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
   margin-top: 10px;
+}
+.popup-form-mini {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
 }
 .header-label {
   display: flex;
@@ -128,10 +146,9 @@
 }
 
 .form-group {
-  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   height: auto;
 }
 
@@ -140,26 +157,39 @@
   font-weight: 600;
   color: #4a4a4a;
   margin-left: 4px;
+  text-align: left;
 }
 
 #popup-form .form-group input,
+#popup-form-mini .form-group input,
 #popup-form .form-group-textarea textarea,
-#popup-form .form-group-select-full select {
+#popup-form-mini .form-group-textarea textarea,
+#popup-form .form-group-select-full select,
+#popup-form-mini .form-group-select-full select {
   width: 100%;
-  padding: 20px 16px;
-  font-size: 15px;
   border: 2px solid #e2e8f0;
-  border-radius: 25px;
   background-color: #f8fafc;
   color: #333;
-  box-shadow: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
   outline: none;
   box-sizing: border-box;
   caret-color: #7b2cbf !important;
   font-family: inherit;
 }
-
+#popup-form .form-group input,
+#popup-form .form-group-textarea textarea,
+#popup-form .form-group-select-full select {
+  padding: 20px 16px;
+  font-size: 15px;
+  border-radius: 25px;
+}
+#popup-form-mini .form-group input,
+#popup-form-mini .form-group-textarea textarea,
+#popup-form-mini .form-group-select-full select {
+  padding: 12px 14px;
+  font-size: 14px;
+  border-radius: 20px;
+}
 #popup-form .form-group-textarea textarea {
   resize: vertical;
   min-height: 100px;
@@ -172,6 +202,7 @@
 }
 
 #popup-form .form-group input:focus:not([readOnly]),
+#popup-form-mini .form-group input:focus:not([readOnly]),
 #popup-form .form-group textarea:focus,
 #popup-form .form-group select:focus {
   border-color: #7b2cbf;
@@ -180,6 +211,7 @@
 
 /* Placeholder cơ bản */
 #popup-form .form-group input::placeholder,
+#popup-form-mini .form-group input::placeholder,
 #popup-form .form-group textarea::placeholder {
   color: #bfbfbf;
 }
@@ -198,7 +230,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 24px;
+  margin-top: 15px;
   padding: 16px;
   padding-bottom: 0;
   box-sizing: border-box;

@@ -47,7 +47,12 @@ export default function CustomTable<T extends { id: string | number }>({
     <TableContainer
       ref={containerRef}
       component={Paper}
-      sx={{ borderRadius: "16px", marginBottom: "20px" }}
+      sx={{
+        borderRadius: "16px",
+        marginBottom: "20px",
+        userSelect: "none",
+        cursor: "grab",
+      }}
       className="custom-table-container"
     >
       <Table>

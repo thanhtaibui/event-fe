@@ -178,10 +178,6 @@
   color: #444;
   max-width: 800px; /* Giới hạn độ rộng để dễ đọc */
 }
-.full-width {
-  grid-column: span 2;
-  margin: 10px 0;
-}
 .org-detail__empty {
   color: #9ca3af;
 }
