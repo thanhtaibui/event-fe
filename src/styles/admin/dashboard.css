@@ -29,7 +29,7 @@
 .stat-card {
   background: #ffffff;
   border-radius: 10px;
-  padding: 35px 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -54,14 +54,14 @@
 
 /* title */
 .stat-title {
-  font-size: 24px;
+  font-size: var(--fs-24);
   color: var(--accent);
-  font-weight: 500;
+  font-weight: var(--fw-500);
 }
 
 /* icon */
 .stat-icon {
-  font-size: 22px;
+  font-size: var(--fs-22);
   background: rgba(255, 255, 255, 0.08);
   /* padding: px; */
   margin-right: 10px;
@@ -71,7 +71,7 @@
 
 /* value */
 .stat-value {
-  font-size: 40px;
+  font-size: var(--fs-40);
   font-family: "Inter", sans-serif;
   font-weight: 700;
   margin: 25px 0;

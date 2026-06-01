@@ -9,8 +9,11 @@ interface PlaceInputProps {
 
 export function PlaceInput({ value, onChange }: PlaceInputProps) {
   const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [isTyping, setIsTyping] = useState(false); //load không dùng API map
 
   useEffect(() => {
+    if (!isTyping) return;
+
     if (!value || value.length < 4) {
       setSuggestions([]);
       return;
@@ -36,7 +39,10 @@ export function PlaceInput({ value, onChange }: PlaceInputProps) {
         name="place"
         placeholder="Enter event location..."
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          setIsTyping(true);
+          onChange(e.target.value);
+        }}
         onBlur={() => setTimeout(() => setSuggestions([]), 200)}
         autoComplete="off"
         style={{ width: "100%" }}

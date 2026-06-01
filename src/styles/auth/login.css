@@ -64,12 +64,15 @@
 }
 
 .login-right h1 {
-  font-size: 36px;
+  font-family: var(--font-heading);
+  font-size: var(--fs-24);
+
   margin-bottom: 10px;
 }
 
 .login-right p {
-  font-size: 16px;
+  font-size: var(--fs-14);
+
   opacity: 0.8;
 }
 
@@ -145,7 +148,7 @@ input:-webkit-autofill {
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
-  font-size: 20px;
+  font-size: var(--fs-15);
 }
 
 /* hover effect */

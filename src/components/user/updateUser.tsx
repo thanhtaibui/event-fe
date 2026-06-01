@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useUpdateUser } from "../../hooks/admin/user/useUpdate";
 import { useUserById } from "../../hooks/admin/user/useUserId";
 import { useOrgsByUser } from "../../hooks/admin/org/useOrgsByUser";
-import "../../styles/layout/popup.css";
+import "../../styles/popup/popup.css";
 import { toast } from "react-toastify";
 import { useSwitchOrg } from "../../hooks/admin/org/useSwitchOrg";
 import { useRolesOrg } from "../../hooks/admin/role/useRolesOrg";
@@ -154,8 +154,8 @@ export const UpdateUserPopup = ({
               <img
                 width="24"
                 height="24"
-                src="https://img.icons8.com/external-thin-kawalan-studio/24/external-user-edit-users-thin-kawalan-studio.png"
-                alt="user-edit"
+                src="https://img.icons8.com/fluency-systems-filled/48/edit-user.png"
+                alt="edit-user"
               />
             </div>
             <h2>Edit User</h2>
@@ -168,6 +168,7 @@ export const UpdateUserPopup = ({
         {/* FORM */}
         <form
           id="popup-form"
+          className="popup-form"
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
@@ -175,7 +176,7 @@ export const UpdateUserPopup = ({
         >
           {/* FULL NAME */}
           <div className="form-group">
-            <label>FULL NAME</label>
+            <label>Full Name</label>
             <input
               name="fullName"
               value={form.fullName}
@@ -186,7 +187,7 @@ export const UpdateUserPopup = ({
 
           {/* PHONE */}
           <div className="form-group">
-            <label>PHONE NUMBER</label>
+            <label>Phone Number</label>
             <input
               name="phoneNumber"
               value={form.phoneNumber}

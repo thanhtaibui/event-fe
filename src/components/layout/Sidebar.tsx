@@ -25,7 +25,7 @@ export const Sidebar = ({ isCollapsed, onToggleSidebar }: SidebarProps) => {
         )}
       </button>
       <div className="logo">
-        <img src="../../public/logo.jpg" alt="event logo" />
+        <img src="../../public/logo-new.jpg" alt="event logo" />
       </div>
       <nav className="sidebar-nav">
         <ul>

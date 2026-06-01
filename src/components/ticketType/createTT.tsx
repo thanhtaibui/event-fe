@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/layout/popup.css";
+import "../../styles/popup/popup.css";
 import type { TicketType } from "../../types/ticket-type/ticket-type";
 import { useCreateTicketType } from "../../hooks/admin/ticketType/useCreateTicketType";
 import { toast } from "react-toastify";

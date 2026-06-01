@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useUser } from "../../hooks/admin/user/useUser";
-import "../../styles/layout/popup.css";
+import "../../styles/popup/popup.css";
 import { toast } from "react-toastify";
 import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";
 import Select from "react-select";

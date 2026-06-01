@@ -1,51 +1,167 @@
 :root {
-  --del-red: #ef4444;
-  --del-red-dark: #b91c1c;
+  /* ============== Fonts ============== */
+  --font-heading: "Playfair Display", serif;
+  --font-body:
+    "Inter", "Be Vietnam Pro", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, Consolas, monospace;
+
+  /* ============== Typography Scale ============== */
+  --fs-10: 0.625rem; /* 10px */
+  --fs-11: 0.6875rem; /* 11px */
+  --fs-12: 0.75rem; /* 12px */
+  --fs-13: 0.8125rem; /* 13px */
+  --fs-14: 0.875rem; /* 14px */
+  --fs-15: 0.9375rem; /* 15px */
+  --fs-16: 1rem; /* 16px */
+  --fs-18: 1.125rem; /* 18px */
+  --fs-20: 1.25rem; /* 20px */
+  --fs-24: 1.5rem; /* 24px */
+  --fs-32: 2rem; /* 32px */
+  --fs-40: 2.5rem; /* 40px */
+  --fs-48: 3rem; /* 48px */
+  --fs-56: 3.5rem; /* 56px */
+
+  --fw-400: 400;
+  --fw-500: 500;
+  --fw-600: 600;
+  --fw-700: 700;
+  --fw-800: 800;
+  --fw-900: 900;
+  --fw-1000: 1000;
+
+  /* ============== Radius ============== */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 25px;
+
+  /* ============== Spacing ============== */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+
+  /* ============== Colors (Luxury: Purple + Gold) ============== */
+  --color-bg: #0b0712;
+  --color-surface: #0f0b18;
+  --color-surface-2: #141021;
+
+  --color-white: #ffffff;
+  --color-text: #6b6375;
+  --color-text-strong: #08060d;
+  --color-text-muted: #6b7280;
+
+  --color-primary: #5b21b6; /* deep purple */
+  --color-primary-2: #7c3aed;
+  --color-gold: #d4af37;
+
+  --color-accent: #6c63ff;
+  --color-accent-2: #4facfe;
+  --color-accent-bg: rgba(108, 99, 255, 0.12);
+  --color-accent-border: rgba(108, 99, 255, 0.6);
+
+  --color-danger: #ef4444;
+  --color-danger-2: #b91c1c;
+
+  --border-color: rgba(226, 232, 240, 0.9);
+  --code-bg: #f4f3ec;
+
+  --gradient-primary: linear-gradient(
+    135deg,
+    #4f46e5 0%,
+    #7c3aed 45%,
+    #d4af37 120%
+  );
+  --gradient-accent: linear-gradient(
+    90deg,
+    #8c01ba 0%,
+    #9f63ff 40%,
+    #3945f7 100%
+  );
+  --bg-header-popup:
+    radial-gradient(
+      ellipse at top right,
+      rgba(124, 92, 252, 0.18) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at bottom left,
+      rgba(147, 51, 234, 0.14) 0%,
+      transparent 60%
+    ),
+    #fff;
+  --bg-header:
+    radial-gradient(
+      ellipse at top left,
+      rgba(35, 58, 208, 1) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(124, 58, 237, 1) 0%,
+      transparent 60%
+    ),
+    #2d1b59;
+
+  /* Backward-compat variables used in existing CSS */
+  --del-red: var(--color-danger);
+  --del-red-dark: var(--color-danger-2);
   --del-text-main: #1f2937;
   --del-text-sub: #6b7280;
   --del-bg: #ffffff;
-  --text: #6b6375;
-  --text-h: #08060d;
+  --text: var(--color-text);
+  --text-h: var(--color-text-strong);
   --bg: #fff;
-  /* --border: #e5e4e7; */
-  --code-bg: #f4f3ec;
-  --gradient: linear-gradient(90deg, #8c01badf, #9f63ff, #3945f7);
-  /* màu chủ đạo */
-  --accent: #6c63ff;
-  --accent-2: #4facfe;
-  --accent-header: white;
-  --bg-header:
-    radial-gradient(ellipse at top right, #e879f9 0%, transparent 50%),
-    radial-gradient(ellipse at bottom left, #4f46e5 0%, transparent 60%),
-    #7c3aed;
-  --accent-bg: rgba(108, 99, 255, 0.1);
-  --accent-border: #6c63ff;
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow: 0 0px 50px rgba(107, 92, 255, 0.4);
-  --shadow-dashboard: -3px 3px 7px 0px rgba(112, 73, 253, 0.2);
-  --shadow-dashboard-inset: 0px 0px 15px 3px rgba(112, 73, 253, 0.2);
-  --bg-button: linear-gradient(135deg, #8c01badf, #9f63ff, #3945f7);
-  --button-shadow: 6px 7px 10px rgba(107, 92, 255, 0.4);
-  --icon-shadow: 0 5px 5px rgba(107, 92, 255, 0.5);
-  --icon-glow: 0 0 6px rgba(107, 92, 255, 0.8);
-  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
-  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
+  --accent: var(--color-accent);
+  --accent-2: var(--color-accent-2);
+  --accent-header: #ffffff;
+  --accent-bg: var(--color-accent-bg);
+  --accent-border: var(--color-accent-border);
+  --social-bg: rgba(244, 243, 236, 0.5);
+
+  --gradient: var(--gradient-accent);
+  --bg-button: linear-gradient(135deg, #8c01badf, #9f63ff, #3945f7);
+
+  /* ============== Shadows & Transitions ============== */
+  --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow: 0 0px 50px rgba(107, 92, 255, 0.22);
+  --shadow-dashboard: -3px 3px 7px 0px rgba(112, 73, 253, 0.16);
+  --shadow-dashboard-inset: 0px 0px 15px 3px rgba(112, 73, 253, 0.16);
+
+  --button-shadow: 0 10px 25px rgba(107, 92, 255, 0.25);
+  --icon-shadow: 0 8px 18px rgba(112, 73, 253, 0.22);
+  --icon-glow: 0 0 10px rgba(107, 92, 255, 0.5);
+
+  --transition-fast: 150ms ease;
+  --transition: 250ms ease;
+
+  /* ============== Font rendering ============== */
+  --letter-tight: -0.02em;
+  --letter-wide: 0.5px;
+
+  font-family: var(--font-body);
+
+  font-weight: var(--fw-400);
+  letter-spacing: 0.01em;
+
+  /* Keep background/text defaults light; enterprise look in admin */
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
+
 .Toastify__toast-container {
   z-index: 1301 !important;
 }
@@ -69,9 +185,19 @@
   }
 } */
 
+html {
+  font-size: 90%;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 #root {
   width: 100%;
   max-width: 100%;
+
   margin: 0 auto;
   text-align: center;
   border-inline: 1px solid var(--border);
@@ -95,21 +221,26 @@ h2 {
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
+  font-family: var(--font-heading);
+  font-size: var(--fs-56);
+
+  letter-spacing: var(--letter-tight);
+
   margin: 32px 0;
   @media (max-width: 1024px) {
-    font-size: 36px;
+    font-size: var(--fs-40);
+
     margin: 20px 0;
   }
 }
 h2 {
-  font-size: 24px;
+  font-size: var(--fs-24);
   line-height: 118%;
-  letter-spacing: -0.24px;
+  letter-spacing: var(--letter-tight);
+
   margin: 0 0 8px;
   @media (max-width: 1024px) {
-    font-size: 20px;
+    font-size: var(--fs-20);
   }
 }
 p {
@@ -125,7 +256,7 @@ code,
 }
 
 code {
-  font-size: 15px;
+  font-size: var(--fs-13);
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);

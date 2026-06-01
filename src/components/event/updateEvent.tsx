@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import "../../styles/layout/popup.css";
+import "../../styles/popup/popup.css";
 import { toast } from "react-toastify";
 import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";
 import Select from "react-select";
@@ -31,7 +31,6 @@ export const UpdateEventPopup = ({
   // const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
   const eventById = useEventById(id);
   const { upload } = useUpload();
-
   const [form, setForm] = useState<Partial<EventPayload>>({
     title: "",
     eventPoster: "",

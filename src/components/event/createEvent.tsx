@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useCreateEvent } from "../../hooks/admin/event/useCreateEvent";
 import type { EventPayload } from "../../types/event/create";
-import "../../styles/layout/popup.css";
+import "../../styles/popup/popup.css";
 import { toast } from "react-toastify";
 import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";
 import Select from "react-select";

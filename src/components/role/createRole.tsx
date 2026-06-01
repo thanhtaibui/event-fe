@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import "../../styles/layout/popup.css";
+import "../../styles/popup/popup.css";
 import { ROLE_COLOR_PALETTE } from "../../styles/status-styles";
 import Select from "react-select";
 import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";
@@ -145,9 +145,11 @@ export const CreateRolePopup = ({
                   <div key={group.id} className="permission-group">
                     <div
                       className={`group-header ${isGroupActive ? "active" : ""}`}
-                      onClick={() => toggleGroup(group.id, childIds)}
                     >
-                      <div className="header-left">
+                      <div
+                        className="header-left-popup"
+                        onClick={() => toggleGroup(group.id, childIds)}
+                      >
                         <div
                           className={`custom-checkbox ${isGroupAllSelected ? "checked" : isGroupActive ? "indeterminate" : ""}`}
                         >

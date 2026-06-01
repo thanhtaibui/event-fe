@@ -13,6 +13,7 @@ import Report from "../pages/admin/Report";
 import Organization from "../pages/admin/org/Organization";
 import OrganizationDetail from "../pages/admin/org/OrganizationDetail";
 import EventDetail from "../pages/admin/event/EventDetail";
+import AcceptInvitePage from "../pages/invite/AcceptInvitePage";
 
 export const router = createBrowserRouter([
   {
@@ -81,6 +82,14 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "/events/accept",
+    element: <AcceptInvitePage />,
+  },
+  {
+    path: "/events/reject",
+    element: <AcceptInvitePage />,
   },
   {
     path: "*",

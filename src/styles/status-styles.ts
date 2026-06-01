@@ -62,3 +62,47 @@ export const EVENT_STATUS_STYLES: Record<string, { bg: string; text: string; bor
     , statusDot: false
   },
 };
+export const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: string; border: string }> = {
+  idle: {
+    label: "—",
+    color: "#9ca3af",
+    bg: "#f9fafb",
+    icon: "⋯",
+    border: "#e5e7ebcd",
+  },
+  checking: {
+    label: "Checking...",
+    color: "#6b7280",
+    bg: "#f3f4f6",
+    icon: "⟳",
+    border: "#d1d5dbda",
+  },
+  valid: {
+    label: "Validated",
+    color: "#16a34a",
+    bg: "#f0fdf4",
+    icon: "✓",
+    border: "#86efadd2",
+  },
+  already_invited: {
+    label: "Already invited",
+    color: "#d97706",
+    bg: "#fffbeb",
+    icon: "!",
+    border: "#fcd34ddc",
+  },
+  not_exists: {
+    label: "Not found",
+    color: "#dc2626",
+    bg: "#fff1f2",
+    icon: "⊗",
+    border: "#fca5a5d1",
+  },
+  invalid_format: {
+    label: "Invalid format",
+    color: "#ea580c",
+    bg: "#fff7ed",
+    icon: "⚠",
+    border: "#fdbb74e0",
+  },
+};

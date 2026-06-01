@@ -1,6 +1,6 @@
 // PosterUpload.tsx
 import { useCallback, useEffect, useState } from "react";
-import "../../styles/layout/popup.css";
+import "../../styles/popup/popup.css";
 
 interface PosterUploadProps {
   value?: File | null;
@@ -24,6 +24,12 @@ export function PosterUpload({
   useEffect(() => {
     if (defaultUrl) setPreview(defaultUrl);
   }, [defaultUrl]);
+  useEffect(() => {
+    if (!value) {
+      setPreview(null);
+      setFileInfo(null);
+    }
+  }, [value]);
   const handleFile = useCallback(
     (file: File) => {
       if (!file.type.startsWith("image/")) return;
@@ -168,7 +174,7 @@ export function PosterUpload({
         )}
       </div>
 
-      <p className="poster-hint">Recommended ratio 16:9, minimum 800×450px</p>
+      {/* <p className="poster-hint">Recommended ratio 16:9, minimum 800×450px</p> */}
 
       <input
         id="poster-input"

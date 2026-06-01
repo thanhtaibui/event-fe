@@ -174,9 +174,9 @@
   line-height: 1.4;
 }
 .bio-text {
-  font-weight: 400;
+  font-weight: 500;
   color: #444;
-  max-width: 800px; /* Giới hạn độ rộng để dễ đọc */
+  max-width: 800px;
 }
 .org-detail__empty {
   color: #9ca3af;

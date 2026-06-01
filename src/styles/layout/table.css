@@ -4,8 +4,12 @@
   margin-bottom: 20px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05) !important;
   overflow: auto;
+  background: white !important;
 }
-
+.custom-table-container .MuiTableCell-root {
+  font-size: var(--fs-15) !important;
+  font-weight: var(--fw-500) !important;
+}
 /* Chrome, Safari, Edge */
 /* .custom-table-container::-webkit-scrollbar {
   height: 10px;
@@ -57,7 +61,80 @@
   font-size: 11px;
   font-weight: 600;
 }
+.permission-matrix-container {
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 16px;
+  max-height: 400px;
+  overflow-y: auto;
+}
 
+.permission-group {
+  margin-bottom: 12px;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #374151;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  background: #e5e7eb;
+  margin-bottom: 4px;
+}
+
+.group-children {
+  padding-left: 28px; /* Đẩy con vào trong tạo cấp bậc */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.perm-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4b5563;
+  transition: all 0.2s;
+}
+
+.perm-item:hover {
+  background: rgba(159, 99, 255, 0.1);
+}
+
+/* Custom Checkbox giống màu tím của bạn */
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+  background: white;
+  transition: all 0.2s;
+}
+
+.custom-checkbox.checked {
+  background: var(--gradient);
+}
+
+.custom-checkbox.indeterminate {
+  background: var(--gradient);
+  border-color: transparent;
+}
+
+.perm-item.checked span {
+  color: #111827;
+}
 .permission-tag {
   background: #e0e7ff;
   color: #7a73dc;
@@ -87,6 +164,7 @@
   border: 1px solid transparent;
   white-space: nowrap;
   user-select: none;
+  min-width: 60px;
 }
 .table-textarea textarea {
   padding: 12px 16px;

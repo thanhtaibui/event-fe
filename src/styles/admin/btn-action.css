@@ -2,15 +2,18 @@
 .btn-edit,
 .btn-delete,
 .btn-detail {
-  border-radius: 7px;
-  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+
+  padding: var(--space-8) var(--space-12);
+
   border: none;
   cursor: pointer;
   font-weight: 500;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all var(--transition);
   min-width: 80px;
+
   height: 35px;
   display: flex;
   align-items: center;
@@ -43,8 +46,9 @@
 .text-edit,
 .text-delete,
 .text-detail {
-  transition: all 0.3s ease;
+  transition: all var(--transition);
   opacity: 1;
+
   transform: translateY(0);
 }
 

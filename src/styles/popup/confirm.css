@@ -1,0 +1,158 @@
+.confirm-dialog .MuiDialog-paper {
+  user-select: none;
+  border-radius: 16px;
+  min-width: 360px;
+  max-width: 400px;
+  padding: 24px 20px 16px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Icon vòng tròn warning */
+.confirm-dialog-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #f0eeff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: #7c3aed;
+  font-size: 24px;
+}
+
+.confirm-dialog .MuiDialogTitle-root {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111;
+  padding: 0 0 10px;
+  text-align: center;
+}
+
+.confirm-dialog .MuiDialogContent-root {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  text-align: center;
+  padding: 0 8px 20px;
+}
+
+.confirm-dialog .MuiDialogContent-root strong {
+  color: #111;
+  font-weight: 600;
+}
+
+.confirm-dialog .MuiDialogActions-root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+}
+
+/* Nút Yes, delete - gradient tím */
+.confirm-dialog .btn-confirm {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #7c3aed, #a855f7);
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.confirm-dialog .btn-confirm::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.25);
+  transform: skewX(-20deg);
+  transition: 0.7s;
+}
+
+.confirm-dialog .btn-confirm:hover::before {
+  left: 130%;
+}
+.confirm-dialog .btn-confirm {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #7c3aed, #a855f7);
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow:
+    0 8px 20px rgba(124, 58, 237, 0.25),
+    0 0 0 rgba(124, 58, 237, 0);
+}
+
+.confirm-dialog .btn-confirm:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 16px 30px rgba(124, 58, 237, 0.35),
+    0 0 20px rgba(168, 85, 247, 0.2);
+
+  filter: brightness(1.05);
+}
+
+.confirm-dialog .btn-confirm:active {
+  transform: translateY(0);
+}
+
+/* Nút Cancel */
+
+.confirm-dialog .btn-cancel {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: #f5f5f5;
+  color: #333;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  /* transition: all 0.1s ease; */
+}
+
+.confirm-dialog .btn-cancel:hover {
+  background: white;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  color: #111;
+}
+
+.confirm-dialog .btn-cancel:active {
+  transform: translateY(0);
+}
+
+/* Safety check footer */
+.confirm-dialog-safety {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: #888;
+}
+
+.confirm-dialog-safety::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a855f7;
+  display: inline-block;
+}
