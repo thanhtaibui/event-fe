@@ -1,18 +1,18 @@
 // hooks/useChat.ts
 import { useState, useCallback } from 'react';
-import type { Message } from '../../types/chat/chat.types';
+import type { ChatMessage } from '../../types/chat/chat';
 import { sendMessage } from '../../services/admin/chat.service';
 
 
 export function useChat() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const send = useCallback(async (content: string) => {
     if (!content.trim()) return;
 
-    const userMsg: Message = {
+    const userMsg: ChatMessage = {
       id: uuid(),
       role: 'user',
       content,
@@ -31,7 +31,7 @@ export function useChat() {
 
       const reply = await sendMessage(history);
 
-      const assistantMsg: Message = {
+      const assistantMsg: ChatMessage = {
         id: uuid(),
         role: 'assistant',
         content: reply,

@@ -1,7 +1,7 @@
 
-import type { Message } from "../../types/chat/chat.types";
+import type { ChatMessage } from "../../types/chat/chat";
 
-export async function sendMessage(messages: Pick<Message, 'role' | 'content'>[]) {
+export async function sendMessage(messages: Pick<ChatMessage, 'role' | 'content'>[]) {
   const res = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
