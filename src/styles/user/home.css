@@ -1,0 +1,27 @@
+.user-home {
+  width: 100%;
+  color: #e9e8ff;
+  background:
+    radial-gradient(
+      1200px 600px at 10% -10%,
+      rgba(124, 58, 237, 0.35),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 85% 5%,
+      rgba(79, 70, 229, 0.25),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 700px at 50% 110%,
+      rgba(168, 85, 247, 0.18),
+      transparent 55%
+    ),
+    #070713;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+.user-home > section {
+  position: relative;
+}

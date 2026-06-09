@@ -5,13 +5,13 @@ import { useEventById } from "../../../hooks/admin/event/useEventById";
 import { decodeId } from "../../../utils/hash";
 // import DashboardCard from "../../../components/dashboard/DashboardCard";
 import { EVENT_STATUS_STYLES } from "../../../styles/status-styles";
-import { UpdateEventPopup } from "../../../components/event/updateEvent";
+import { UpdateEventPopup } from "../../../components/admin/event/updateEvent";
 
-import { TicketCard } from "../../../components/ticketType/ticketCard";
-import { InviteCard } from "../../../components/invite/inviteCard";
-import { InfoCard } from "../../../components/event/infoCard";
-import { StatsCard } from "../../../components/event/statsCard";
-import ItemModal from "../../../components/item/itemModal";
+import { TicketCard } from "../../../components/admin/ticketType/ticketCard";
+import { InviteCard } from "../../../components/admin/invite/inviteCard";
+import { InfoCard } from "../../../components/admin/event/infoCard";
+import { StatsCard } from "../../../components/admin/event/statsCard";
+import ItemModal from "../../../components/admin/item/itemModal";
 
 const EventDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();

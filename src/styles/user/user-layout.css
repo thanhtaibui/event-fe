@@ -1,0 +1,17 @@
+.user-layout {
+  min-height: 100vh;
+  background: #050511;
+}
+
+.user-layout__main {
+  position: relative;
+  z-index: 1;
+  padding-top: 96px;
+}
+
+/* Keep old layout spacing without breaking existing pages */
+@media (max-width: 720px) {
+  .user-layout__main {
+    padding-top: 92px;
+  }
+}

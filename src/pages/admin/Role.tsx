@@ -1,7 +1,7 @@
-import Pagination from "../../components/table/Pagination";
-import { PopupHideItems } from "../../components/layout/PopupHideItems";
-import { SearchBar } from "../../components/table/SearchBar";
-import CustomTable, { type Column } from "../../components/table/Table";
+import Pagination from "../../components/admin/table/Pagination";
+import { PopupHideItems } from "../../components/admin/layout/PopupHideItems";
+import { SearchBar } from "../../components/admin/table/SearchBar";
+import CustomTable, { type Column } from "../../components/admin/table/Table";
 import LoadingPage from "../LoadingPage";
 import { UseRole } from "../../hooks/admin/role/useRole";
 import { useDataTable } from "../../hooks/admin/useDataTable";
@@ -9,10 +9,10 @@ import type { Role } from "../../types/role/role";
 import "../../styles/layout/table.css";
 // import { useState } from "react";
 import { ROLE_COLOR_PALETTE } from "../../styles/status-styles";
-import { CreateRolePopup } from "../../components/role/createRole";
-import ConfirmDialog from "../../components/layout/DialogConfirm";
+import { CreateRolePopup } from "../../components/admin/role/createRole";
+import ConfirmDialog from "../../components/admin/layout/DialogConfirm";
 import { usePageActions } from "../../hooks/admin/usePageActions";
-import { UpdateRolePopup } from "../../components/role/updateRole";
+import { UpdateRolePopup } from "../../components/admin/role/updateRole";
 import { useDelete } from "../../hooks/admin/role/useDelete";
 export default function Role() {
   const onSearchChange = (val: string) => {

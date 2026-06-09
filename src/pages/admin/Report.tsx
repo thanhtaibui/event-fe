@@ -1,7 +1,7 @@
-import Pagination from "../../components/table/Pagination";
-import { PopupHideItems } from "../../components/layout/PopupHideItems";
-import { SearchBar } from "../../components/table/SearchBar";
-import CustomTable, { type Column } from "../../components/table/Table";
+import Pagination from "../../components/admin/table/Pagination";
+import { PopupHideItems } from "../../components/admin/layout/PopupHideItems";
+import { SearchBar } from "../../components/admin/table/SearchBar";
+import CustomTable, { type Column } from "../../components/admin/table/Table";
 import LoadingPage from "../LoadingPage";
 import { UseReport } from "../../hooks/admin/report/useReport";
 import { useDataTable } from "../../hooks/admin/useDataTable";
@@ -9,11 +9,10 @@ import { useDataTable } from "../../hooks/admin/useDataTable";
 import type { Report } from "../../types/report/report";
 import { STATUS_STYLES } from "../../styles/status-styles";
 export default function Report() {
-  const { data, loading, search, table, pagination, refetch } =
-    useDataTable<Report>({
-      fetchHook: UseReport,
-      // updateApi: userService.updateActive,
-    });
+  const { data, loading, search, table, pagination } = useDataTable<Report>({
+    fetchHook: UseReport,
+    // updateApi: userService.updateActive,
+  });
   const handleDelete = async () => {};
 
   const handleCloseAndClear = () => {
@@ -91,7 +90,12 @@ export default function Report() {
         onClose={() => handleCloseAndClear()}
       />
 
-      <SearchBar onSearchChange={onSearchChange} title="user" />
+      <SearchBar
+        onSearchChange={onSearchChange}
+        title="user"
+        placeholder={["user"]}
+      />
+
       {loading ? (
         <LoadingPage />
       ) : (

@@ -51,10 +51,11 @@
 }
 
 .item-modal {
+  user-select: none;
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 64px;
+  gap: 70px;
   align-items: stretch;
   perspective: 1000px;
   height: 85vh;
@@ -63,36 +64,22 @@
 .item-modal::before {
   content: "";
   position: absolute;
-  top: 36px;
-  bottom: 50px;
+  top: 20px;
+  bottom: 25px;
   left: 50%;
   width: 130px;
   transform: translateX(-50%);
-  border-radius: 28px;
-  background: linear-gradient(90deg, #8b5cf6, #3b5bff);
-  box-shadow:
-    0 0 35px rgba(124, 58, 237, 0.45),
-    inset 0 0 22px rgba(255, 255, 255, 0.18);
+  border-radius: 0 0 65px 65px / 0 0 105px 105px;
+  background: linear-gradient(90deg, #2e1065, #8165fe, #2e1065);
   z-index: 0;
-}
+  box-shadow:
+    0 10px 35px rgba(124, 58, 237, 0.4),
+    inset 0 0 22px rgba(255, 255, 255, 0.15);
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='130' height='500' viewBox='0 0 130 500' preserveAspectRatio='none'><path d='M0,0 C20,0 25,25 65,25 C105,25 110,0 130,0 L130,500 L0,500 Z' fill='black'/></svg>");
 
-.item-modal::after {
-  content: "›";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 2;
-  transform: translate(-50%, -50%);
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 34px;
-  background: rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(10px);
+  /* Đảm bảo mask kéo dãn toàn bộ chiều cao/rộng của thẻ ::before */
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
 }
 
 .item-modal__left,
@@ -107,7 +94,39 @@
   width: 100%;
   box-shadow: 0 25px 55px rgba(15, 23, 42, 0.14);
 }
+.transfer-indicator {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
 
+.transfer-indicator__arrow {
+  color: white;
+  font-size: 34px;
+  line-height: 1;
+}
+.transfer-indicator__arrow img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.transfer-indicator__arrow--left {
+  transform: rotate(180deg);
+}
+.transfer-indicator__arrow--right {
+  transform: rotate(0deg);
+}
 /* .item-modal__left {
   transform: translateX(18px);
 } */
@@ -198,6 +217,12 @@
   display: flex;
   align-items: center;
 }
+.inventory-table__price-col span {
+  margin-right: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .inventory-panel {
   width: 100%;
   height: 100%;
@@ -218,6 +243,8 @@
   background-color: #fff;
 }
 .inventory-panel__footer {
+  padding: 10px;
+  box-sizing: border-box;
   height: 15%;
 }
 .inventory-export-btn {
@@ -323,34 +350,34 @@
 
   background: white;
 }
+
 .inventory-form__footer {
   width: 100%;
   height: 10%;
-}
-
-.inventory-form__footer {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  padding: 7px;
+  box-sizing: border-box;
   border-top: 1px solid #e5e7eb;
 }
 
 .inventory-form__cancel {
-  width: 132px;
-  height: 52px;
+  width: 100px;
+  height: 100%;
   border-radius: 13px;
   border: 1px solid #e5e7eb;
   background: #fff;
   color: #111827;
-  font-size: 14px;
-  font-weight: 700;
+  /* font-size: 14px;
+  font-weight: 700; */
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
 }
 
 .inventory-form__submit {
   width: 240px;
-  height: 52px;
+  height: 100%;
   border-radius: 13px;
   border: none;
   background: linear-gradient(90deg, #a000c8 0%, #3b4dff 100%);

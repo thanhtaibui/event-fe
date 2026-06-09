@@ -1,6 +1,6 @@
 import "../../styles/admin/dashboard.css";
-import PieChart from "../../components/dashboard/PieChart";
-import DashboardCard from "../../components/dashboard/DashboardCard";
+import PieChart from "../../components/admin/dashboard/PieChart";
+import DashboardCard from "../../components/admin/dashboard/DashboardCard";
 // import LineChart from "../../components/dashboard/LineChart";
 import { useDashboardInfo } from "../../hooks/admin/useDashboard";
 import Loadingpage from "../../pages/LoadingPage";

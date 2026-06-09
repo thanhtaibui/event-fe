@@ -6,21 +6,21 @@ import LoadingPage from "../../pages/LoadingPage";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { ROLE_COLOR_PALETTE } from "../../styles/status-styles";
 // import component
-import { IOSSwitch } from "../../components/table/Switch";
-import { SearchBar } from "../../components/table/SearchBar";
-import { CreateUserPopup } from "../../components/user/createUser";
-import Pagination from "../../components/table/Pagination";
-import CustomTable from "../../components/table/Table";
-import type { Column } from "../../components/table/Table";
-import { PopupHideItems } from "../../components/layout/PopupHideItems";
-import ConfirmDialog from "../../components/layout/DialogConfirm";
+import { IOSSwitch } from "../../components/admin/table/Switch";
+import { SearchBar } from "../../components/admin/table/SearchBar";
+import { CreateUserPopup } from "../../components/admin/user/createUser";
+import Pagination from "../../components/admin/table/Pagination";
+import CustomTable from "../../components/admin/table/Table";
+import type { Column } from "../../components/admin/table/Table";
+import { PopupHideItems } from "../../components/admin/layout/PopupHideItems";
+import ConfirmDialog from "../../components/admin/layout/DialogConfirm";
 //  hook
 import { useDataTable } from "../../hooks/admin/useDataTable";
 import { useUser } from "../../hooks/admin/user/useUser";
 import { userService } from "../../services/admin/user.service";
-import { UpdateUserPopup } from "../../components/user/updateUser";
 import { usePageActions } from "../../hooks/admin/usePageActions";
 import { useDelete } from "../../hooks/admin/user/useDelete";
+import { UpdateUserPopup } from "../../components/admin/user/updateUser";
 
 export default function User() {
   // useatate ẩn hiện

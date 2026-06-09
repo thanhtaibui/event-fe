@@ -4,20 +4,22 @@ import "../../../styles/layout/table.css";
 import LoadingPage from "../../LoadingPage";
 import { EVENT_STATUS_STYLES } from "../../../styles/status-styles";
 // import component
-import { SearchBar } from "../../../components/table/SearchBar";
-import Pagination from "../../../components/table/Pagination";
-import CustomTable, { type Column } from "../../../components/table/Table";
-import { PopupHideItems } from "../../../components/layout/PopupHideItems";
-import ConfirmDialog from "../../../components/layout/DialogConfirm";
+import { SearchBar } from "../../../components/admin/table/SearchBar";
+import Pagination from "../../../components/admin/table/Pagination";
+import CustomTable, {
+  type Column,
+} from "../../../components/admin/table/Table";
+import { PopupHideItems } from "../../../components/admin/layout/PopupHideItems";
+import ConfirmDialog from "../../../components/admin/layout/DialogConfirm";
 import type { EventDto } from "../../../types/event/event";
 import { UseEvent } from "../../../hooks/admin/event/useEvent";
 import { useDataTable } from "../../../hooks/admin/useDataTable";
 import { usePageActions } from "../../../hooks/admin/usePageActions";
-import DashboardCard from "../../../components/dashboard/DashboardCard";
-import { CreateEventPopup } from "../../../components/event/createEvent";
+import DashboardCard from "../../../components/admin/dashboard/DashboardCard";
+import { CreateEventPopup } from "../../../components/admin/event/createEvent";
 import { useCancelled } from "../../../hooks/admin/event/useCancelled";
 import { toast } from "react-toastify";
-import { UpdateEventPopup } from "../../../components/event/updateEvent";
+import { UpdateEventPopup } from "../../../components/admin/event/updateEvent";
 import { useNavigate } from "react-router-dom";
 import { encodeId } from "../../../utils/hash";
 

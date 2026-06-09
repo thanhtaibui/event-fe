@@ -29,6 +29,7 @@ export const eventService = {
     return res.data;
   },
   updateEvent: async (id: string, payload: EventPayload) => {
+    console.log("Updating event with ID:", payload);
     const res = await api.patch(`events/${id}`, payload);
     return res.data;
   }

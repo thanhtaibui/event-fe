@@ -1,12 +1,14 @@
 
 import { useState } from 'react';
-import type { CreateEventPayload } from '../../../types/event/create';
+import type { EventPayload } from "../../../types/event/create";
+
 import { eventService } from '../../../services/admin/event.service';
 
 export const useCreateEvent = () => {
   const [loading, setLoading] = useState(false);
-  const createEvent = async (payload: CreateEventPayload) => {
+  const createEvent = async (payload: EventPayload) => {
     try {
+
       setLoading(true)
       await eventService.createEvent(payload)
       return true

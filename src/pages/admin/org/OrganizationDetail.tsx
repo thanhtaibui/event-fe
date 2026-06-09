@@ -2,14 +2,14 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useOrgBySlug } from "../../../hooks/admin/org/useOrgBySlug";
 import LoadingPage from "../../LoadingPage";
-import DashboardCard from "../../../components/dashboard/DashboardCard";
-import { UpdateOrgPopup } from "../../../components/org/updateOrg";
+import DashboardCard from "../../../components/admin/dashboard/DashboardCard";
+import { UpdateOrgPopup } from "../../../components/admin/org/updateOrg";
 import "../../../styles/layout/org-detail.css";
 import { useUpload } from "../../../hooks/admin/useUpload";
 import { useUpdateBanner } from "../../../hooks/admin/org/useUpdateBanner";
 import { toast } from "react-toastify";
 import toastHot from "react-hot-toast";
-import { BannerCropper } from "../../../components/layout/BannerCropper";
+import { BannerCropper } from "../../../components/admin/layout/BannerCropper";
 import type { Area } from "react-easy-crop";
 import { getCroppedImg } from "../../../utils/imageUtils";
 
