@@ -93,6 +93,7 @@ export default function Role() {
     popupType,
     setPopupType,
     onFinalDelete,
+    isDeleting,
     selectedIds,
     handleCloseAndClear,
     handleOpenConfirm,
@@ -280,6 +281,7 @@ export default function Role() {
         open={popupType === "confirm"}
         onConfirm={() => onFinalDelete()}
         onClose={() => setPopupType(null)}
+        loading={isDeleting}
       />
       <PopupHideItems
         title="Delete"

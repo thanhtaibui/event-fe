@@ -144,10 +144,15 @@ export const InvitePopup: React.FC<InvitePopupProps> = ({
       <ConfirmDialog
         open={confirm !== null}
         onConfirm={() => {
-          if (confirm === "clearAll") handleClearAll();
-          if (confirm === "send") handleSubmit();
+          if (confirm === "clearAll") {
+            handleClearAll();
+            return;
+          }
+
+          if (confirm === "send") return handleSubmit();
         }}
         onClose={() => setConfirm(null)}
+        loading={loading}
       />
 
       <div

@@ -39,6 +39,7 @@ export default function Organization() {
     popupType,
     setPopupType,
     onFinalDelete,
+    isDeleting,
     selectedIds,
     handleCloseAndClear,
     handleOpenConfirm,
@@ -220,6 +221,7 @@ export default function Organization() {
         open={popupType === "confirm"}
         onConfirm={() => onFinalDelete()}
         onClose={() => setPopupType(null)}
+        loading={isDeleting}
       />
       <PopupHideItems
         title="Delete"

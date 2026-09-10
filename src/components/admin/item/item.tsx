@@ -16,8 +16,10 @@ export default function Item({
   onSelectItem,
   selectedItemId,
 }: ItemProps) {
-  const { deleteItem } = useDeleteItem();
+  const { deleteItem, loading: deleteLoading } = useDeleteItem();
   const handleDelete = async (id: string) => {
+    if (deleteLoading) return;
+
     const success = await deleteItem(id);
     if (success) {
       toast.success("Delete item successfully");
@@ -35,13 +37,12 @@ export default function Item({
     <section className="inventory-panel inventory-panel--list">
       <ConfirmDialog
         open={popupType === "delete"}
-        onConfirm={() => {
-          if (deleteId) handleDelete(deleteId);
-        }}
+        onConfirm={() => (deleteId ? handleDelete(deleteId) : undefined)}
         onClose={() => {
           setPopupType(null);
           setDeleteId(null);
         }}
+        loading={deleteLoading}
       />
       <div className="inventory-panel__header">
         <h3 className="inventory-panel__title">Manage</h3>

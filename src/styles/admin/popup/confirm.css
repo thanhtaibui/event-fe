@@ -111,6 +111,20 @@
   transform: translateY(0);
 }
 
+.confirm-dialog .btn-confirm:disabled,
+.confirm-dialog .btn-cancel:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+  box-shadow: none;
+  filter: none;
+}
+
+.confirm-dialog .btn-confirm:disabled::before,
+.confirm-dialog .btn-confirm:disabled:hover::before {
+  display: none;
+}
+
 /* Nút Cancel */
 
 .confirm-dialog .btn-cancel {

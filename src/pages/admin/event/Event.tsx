@@ -85,7 +85,7 @@ export default function Event() {
         isOrgWorkspace ? UseOrgEvent(slug || "", query) : UseEvent(query),
       // updateApi: orgService.updateActive,
     });
-  const { cancelledEvent } = useCancelled();
+  const { cancelledEvent, loading: cancellingEvent } = useCancelled();
 
   const {
     popupType,
@@ -101,6 +101,8 @@ export default function Event() {
     search.handleSearchChange(val);
   };
   const onFinalCancelled = async () => {
+    if (cancellingEvent || selectedIds.length === 0) return;
+
     try {
       const res = await cancelledEvent(selectedIds);
       await refetch?.();
@@ -290,6 +292,7 @@ export default function Event() {
         open={popupType === "confirm"}
         onConfirm={onFinalCancelled}
         onClose={() => setPopupType(null)}
+        loading={cancellingEvent}
       />
       <PopupHideItems
         title="Cancelled"
