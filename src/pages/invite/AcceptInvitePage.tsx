@@ -299,7 +299,7 @@ const AcceptInvitePage: React.FC = () => {
                 <button
                   type="button"
                   className={`btn btnPrimaryPurple`}
-                  onClick={() => navigate("/events")}
+                  onClick={() => navigate("/app/events")}
                 >
                   View Event Details
                 </button>
@@ -308,7 +308,7 @@ const AcceptInvitePage: React.FC = () => {
                   className={`btn btnGhost`}
                   onClick={() => {
                     // Placeholder behavior: if backend provides calendar link later, swap to it.
-                    navigate("/events");
+                    navigate("/app/events");
                   }}
                 >
                   Add to Calendar
@@ -329,7 +329,7 @@ const AcceptInvitePage: React.FC = () => {
                 <button
                   type="button"
                   className={`btn btnGhost`}
-                  onClick={() => navigate("/events")}
+                  onClick={() => navigate("/app/events")}
                 >
                   View Event Details
                 </button>
@@ -349,7 +349,7 @@ const AcceptInvitePage: React.FC = () => {
                 <button
                   type="button"
                   className={`btn btnGhost`}
-                  onClick={() => navigate("/")}
+                  onClick={() => navigate("/app")}
                 >
                   Go to Homepage
                 </button>

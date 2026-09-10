@@ -1,3 +1,5 @@
+import type { OrgRequestStatus, ReportStatus } from "../enum";
+
 export interface Report {
   id: string;
 
@@ -5,7 +7,7 @@ export interface Report {
 
   organization: Organization;
 
-  status: string;
+  status: ReportStatus;
 
   reason: string;
 
@@ -21,4 +23,5 @@ interface User {
 interface Organization {
   id: string,
   name: string;
+  status?: OrgRequestStatus;
 }

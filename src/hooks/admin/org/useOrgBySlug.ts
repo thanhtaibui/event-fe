@@ -16,7 +16,11 @@ export const useOrgBySlug = (slug: string) => {
   }
 
   useEffect(() => {
-    // if (!slug) return;
+    if (!slug) {
+      setData(null);
+      setLoading(false);
+      return;
+    }
     fetchOrgBySlug();
   }, [slug]);
   return { data, loading, refetch: fetchOrgBySlug };

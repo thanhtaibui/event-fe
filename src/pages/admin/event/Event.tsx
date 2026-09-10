@@ -1,7 +1,8 @@
 import "../../../styles/admin/event.css";
-import "../../../styles/layout/table.css";
+import "../../../styles/admin/table/table.css";
+import "../../../styles/admin/table/btn-action.css";
 
-import LoadingPage from "../../LoadingPage";
+import AdminSkeleton from "../../../components/admin/skeleton/AdminSkeleton";
 import { EVENT_STATUS_STYLES } from "../../../styles/status-styles";
 // import component
 import { SearchBar } from "../../../components/admin/table/SearchBar";
@@ -13,6 +14,7 @@ import { PopupHideItems } from "../../../components/admin/layout/PopupHideItems"
 import ConfirmDialog from "../../../components/admin/layout/DialogConfirm";
 import type { EventDto } from "../../../types/event/event";
 import { UseEvent } from "../../../hooks/admin/event/useEvent";
+import { UseOrgEvent } from "../../../hooks/org/event/useEvent";
 import { useDataTable } from "../../../hooks/admin/useDataTable";
 import { usePageActions } from "../../../hooks/admin/usePageActions";
 import DashboardCard from "../../../components/admin/dashboard/DashboardCard";
@@ -20,15 +22,67 @@ import { CreateEventPopup } from "../../../components/admin/event/createEvent";
 import { useCancelled } from "../../../hooks/admin/event/useCancelled";
 import { toast } from "react-toastify";
 import { UpdateEventPopup } from "../../../components/admin/event/updateEvent";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { encodeId } from "../../../utils/hash";
+import { useMemo } from "react";
+import { jwtDecode } from "jwt-decode";
+import {
+  ADMIN_PERMISSION_CODES,
+  canAccessAdminAction,
+  getEffectiveOrgPermissionCodes,
+  getJwtPermissionCodes,
+  getMembershipSlug,
+  hasPermission,
+  normalizeUserMemberships,
+} from "../../../config/adminPermissionConfig";
+import { getAccessToken } from "../../../constants/authStorage";
+import { useOrgsByUser } from "../../../hooks/admin/org/useOrgsByUser";
+import type { JwtPayloadCustom } from "../../../types/JwtPayloadCustom";
 
 export default function Event() {
   const navigate = useNavigate();
+  const { slug } = useParams();
+  const isOrgWorkspace = Boolean(slug);
+  const currentUserId = useMemo(() => {
+    const token = getAccessToken();
+    if (!token) return "";
+
+    try {
+      return jwtDecode<JwtPayloadCustom>(token).sub || "";
+    } catch {
+      return "";
+    }
+  }, []);
+  const { data: membershipData } = useOrgsByUser(
+    isOrgWorkspace ? currentUserId : "",
+  );
+  const permissionCodes = useMemo(() => {
+    if (!isOrgWorkspace || !slug) return getJwtPermissionCodes();
+
+    const membership = normalizeUserMemberships(membershipData).find(
+      (item) => getMembershipSlug(item) === slug,
+    );
+
+    return membership
+      ? getEffectiveOrgPermissionCodes(membership)
+      : new Set<string>();
+  }, [isOrgWorkspace, membershipData, slug]);
+  const canCreateEvent = canAccessAdminAction(
+    permissionCodes,
+    ADMIN_PERMISSION_CODES.EVENT,
+    "create",
+  );
+  const canEditEvent = hasPermission(permissionCodes, ADMIN_PERMISSION_CODES.EVENT);
+  const canDeleteEvent = canAccessAdminAction(
+    permissionCodes,
+    ADMIN_PERMISSION_CODES.EVENT,
+    "delete",
+  );
 
   const { data, loading, search, filter, table, pagination, refetch } =
     useDataTable<EventDto>({
-      fetchHook: UseEvent,
+      fetchHook: (query) =>
+        isOrgWorkspace ? UseOrgEvent(slug || "", query) : UseEvent(query),
       // updateApi: orgService.updateActive,
     });
   const { cancelledEvent } = useCancelled();
@@ -55,10 +109,8 @@ export default function Event() {
       toast.success(res.message);
       setPopupType(null);
       handleCloseAndClear();
-    } catch (error) {
+    } catch {
       setPopupType(null);
-
-      // console.error("Cancelled Failed", error);
     }
   };
   // setup column
@@ -70,7 +122,7 @@ export default function Event() {
         return (
           <div className="event-content" style={{ whiteSpace: "normal" }}>
             <div className="img-event">
-              <img src={event.eventPoster} alt="poster" />
+              <img src={event.eventBanner || "/default-banner.png"} alt="event banner" />
             </div>
             <div className="event-right">
               <span>{event.title}</span>
@@ -173,44 +225,48 @@ export default function Event() {
       label: "Actions",
       render: (event: EventDto) => (
         <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            className="btn-edit"
-            onClick={() => {
-              // Logic mở popup update cho event.id
-              setPopupType("update");
-              setSelectedIds([event.id]);
-            }}
-          >
-            <img
-              width="20"
-              height="20"
-              className="icon-white"
-              src="https://img.icons8.com/nolan/64/pencil.png"
-              alt="pencil"
-            />
-            <span className="text-edit">Edit</span>
-          </button>
-          <button
-            className="btn-delete"
-            onClick={() => {
-              setPopupType("confirm");
-              setSelectedIds([event.id]);
-            }}
-          >
-            <img
-              width="20"
-              height="20"
-              className="icon-white"
-              src="https://img.icons8.com/nolan/64/waste.png"
-              alt="waste"
-            />
-            <span className="text-delete">Delete</span>
-          </button>
+          {canEditEvent && (
+            <button
+              className="btn-edit"
+              onClick={() => {
+                setPopupType("update");
+                setSelectedIds([event.id]);
+              }}
+            >
+              <img
+                width="20"
+                height="20"
+                className="icon-white"
+                src="https://img.icons8.com/nolan/64/pencil.png"
+                alt="pencil"
+              />
+              <span className="text-edit">Edit</span>
+            </button>
+          )}
+          {canDeleteEvent && (
+            <button
+              className="btn-delete"
+              onClick={() => {
+                setPopupType("confirm");
+                setSelectedIds([event.id]);
+              }}
+            >
+              <img
+                width="20"
+                height="20"
+                className="icon-white"
+                src="https://img.icons8.com/nolan/64/waste.png"
+                alt="waste"
+              />
+              <span className="text-delete">Delete</span>
+            </button>
+          )}
           <button
             className="btn-detail"
             onClick={() => {
               // const shortId = btoa(event.id).slice(0, 10);
-              navigate(`/admin/events/${encodeId(event.id)}`);
+              const basePath = isOrgWorkspace ? `/org/${slug}` : "/admin";
+              navigate(`${basePath}/events/${encodeId(event.id)}`);
             }}
           >
             <img
@@ -229,7 +285,7 @@ export default function Event() {
     },
   ];
   return (
-    <div>
+    <div className="admin-page admin-page--events">
       <ConfirmDialog
         open={popupType === "confirm"}
         onConfirm={onFinalCancelled}
@@ -282,9 +338,9 @@ export default function Event() {
       </div>
       <SearchBar
         onSearchChange={onSearchChange}
-        onCreate={() => {
+        onCreate={canCreateEvent ? () => {
           setPopupType("create");
-        }}
+        } : undefined}
         placeholder={["Title", " Org Name"]}
         title="event"
         filters={[
@@ -293,7 +349,7 @@ export default function Event() {
             placeholder: "Capacity",
             options: [
               { label: "< 100", value: "$lte:100" },
-              { label: "100 - 500", value: "$gte:100" },
+              { label: ">= 100", value: "$gte:100" },
               { label: "> 500", value: "$gte:500" },
               { label: "> 1000", value: "$gte:1000" },
             ],
@@ -328,7 +384,7 @@ export default function Event() {
       )}
 
       {loading ? (
-        <LoadingPage />
+        <AdminSkeleton variant="table" rows={6} />
       ) : (
         <>
           <CustomTable

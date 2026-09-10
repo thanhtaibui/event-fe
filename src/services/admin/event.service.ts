@@ -8,6 +8,17 @@ export const eventService = {
     const res = await api.get('events', { params: query });
     return res.data;
   },
+  getCategories: async (query?: Query) => {
+    const res = await api.get('categories', {
+      params: query,
+      skipGlobalToast: true,
+    } as any);
+    return res.data;
+  },
+  getEventsByOrgSlug: async (slug: string, query?: Query) => {
+    const res = await api.get(`/events/org/${slug}`, { params: query });
+    return res.data;
+  },
   getEventById: async (id: string) => {
     const res = await api.get(`events/${id}`);
     return res.data;
@@ -29,7 +40,6 @@ export const eventService = {
     return res.data;
   },
   updateEvent: async (id: string, payload: EventPayload) => {
-    console.log("Updating event with ID:", payload);
     const res = await api.patch(`events/${id}`, payload);
     return res.data;
   }

@@ -1,5 +1,5 @@
 import { Dialog, DialogTitle, DialogActions } from "@mui/material";
-import "../../../styles/popup/confirm.css";
+import "../../../styles/admin/popup/confirm.css";
 type Props = {
   open: boolean;
   onConfirm: () => void;

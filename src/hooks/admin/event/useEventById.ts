@@ -16,6 +16,11 @@ export const useEventById = (id: string) => {
   }
 
   useEffect(() => {
+    if (!id || id === "----") {
+      setData(null);
+      setLoading(false);
+      return;
+    }
     fetchEventById();
   }, [id]);
   return { data, loading, refetch: fetchEventById };

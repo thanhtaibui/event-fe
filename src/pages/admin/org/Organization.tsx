@@ -1,7 +1,10 @@
-// import "../../../styles/layout/table.css";
+import "../../../styles/admin/table/table.css";
+import "../../../styles/admin/table/btn-action.css";
 
-import LoadingPage from "../../LoadingPage";
+import AdminSkeleton from "../../../components/admin/skeleton/AdminSkeleton";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { Mail, UsersRound, X } from "lucide-react";
+import { useState } from "react";
 import { STATUS_STYLES } from "../../../styles/status-styles";
 // import component
 import { IOSSwitch } from "../../../components/admin/table/Switch";
@@ -24,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Organization() {
   const navigate = useNavigate();
+  const [membershipOrg, setMembershipOrg] = useState<Organization | null>(null);
   const { data, loading, search, filter, table, pagination, actions, refetch } =
     useDataTable<Organization>({
       fetchHook: useOrg,
@@ -54,6 +58,16 @@ export default function Organization() {
       minute: "2-digit",
     });
   };
+
+  const formatShortDate = (dateStr: string | Date) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
   // setup column
   const orgColumns: Column<Organization>[] = [
     { id: "name", label: "Organization Name", sortable: true },
@@ -188,13 +202,20 @@ export default function Organization() {
 
             <span className="text-detail">Detail</span>
           </button>
+          <button
+            className="btn-detail org-membership-btn"
+            onClick={() => setMembershipOrg(org)}
+          >
+            <UsersRound size={18} aria-hidden="true" />
+            <span className="text-detail">Members</span>
+          </button>
         </div>
       ),
       sortable: false,
     },
   ];
   return (
-    <div>
+    <div className="admin-page admin-page--organizations">
       <ConfirmDialog
         open={popupType === "confirm"}
         onConfirm={() => onFinalDelete()}
@@ -207,6 +228,73 @@ export default function Organization() {
         onConfirm={() => handleOpenConfirm(table.selected.map(String))}
         onClose={() => handleCloseAndClear()}
       />
+      {membershipOrg && (
+        <div
+          className="org-membership-overlay"
+          role="presentation"
+          onClick={() => setMembershipOrg(null)}
+        >
+          <section
+            className="org-membership-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${membershipOrg.name} membership summary`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="org-membership-modal__header">
+              <div>
+                <span>Organization Membership</span>
+                <h3>{membershipOrg.name}</h3>
+              </div>
+              <button
+                type="button"
+                aria-label="Close membership popup"
+                onClick={() => setMembershipOrg(null)}
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            </header>
+
+            <div className="org-membership-modal__metric">
+              <UsersRound size={20} aria-hidden="true" />
+              <div>
+                <span>Total members</span>
+                <strong>{membershipOrg.totalMembers ?? 0}</strong>
+              </div>
+            </div>
+
+            <div className="org-membership-modal__list">
+              <div className="org-membership-modal__row">
+                <div className="membership-avatar">
+                  {membershipOrg.owner?.fullName
+                    ? membershipOrg.owner.fullName
+                        .split(" ")
+                        .slice(0, 2)
+                        .map((part) => part[0])
+                        .join("")
+                        .toUpperCase()
+                    : "OW"}
+                </div>
+                <div className="membership-member">
+                  <span className="membership-member__name">
+                    {membershipOrg.owner?.fullName || "Unknown owner"}
+                  </span>
+                  <span>
+                    <Mail size={14} aria-hidden="true" />
+                    {membershipOrg.owner?.email || "No owner email"}
+                  </span>
+                </div>
+                <span className="membership-role">Owner</span>
+              </div>
+            </div>
+
+            <footer className="org-membership-modal__footer">
+              <span>Status: {membershipOrg.status}</span>
+              <span>Created: {formatShortDate(membershipOrg.createdAt)}</span>
+            </footer>
+          </section>
+        </div>
+      )}
       {popupType === "create" && (
         <CreateOrgPopup
           onSuccess={() => refetch?.()}
@@ -251,7 +339,7 @@ export default function Organization() {
         onFilterChange={filter.handleFilterChange}
       />
       {loading ? (
-        <LoadingPage />
+        <AdminSkeleton variant="table" rows={6} />
       ) : (
         <>
           <CustomTable

@@ -1,39 +1,11 @@
-# TODO - User/Public site refactor skeleton
+# TODO
 
-## Completed
+## Task: Nâng cấp viền nút header (Login / Get Started / Light-Dark mode)
 
-- [x] Create `src/routes/adminRoutes.tsx` (admin routes wrapper)
-- [x] Create `src/routes/userRoutes.tsx` (user routes wrapper)
-- [x] Update `src/routes/index.tsx` to compose `adminRoutes` + `userRoutes`
-- [x] Create `src/layouts/user/UserLayout.tsx`
-- [x] Create user skeleton pages:
-  - [x] `src/pages/user/HomePage.tsx`
-  - [x] `src/pages/user/EventListPage.tsx`
-  - [x] `src/pages/user/EventDetailPage.tsx`
-  - [x] `src/pages/user/MyJoinedEventsPage.tsx`
-  - [x] `src/pages/user/UserProfilePage.tsx`
-- [x] Create user skeleton components:
-  - [x] `src/components/user/UserHeader.tsx`
-  - [x] `src/components/user/UserFooter.tsx`
-  - [x] `src/components/user/HeroSection.tsx`
-  - [x] `src/components/user/EventCard.tsx`
-  - [x] `src/components/user/EventGrid.tsx`
-  - [x] `src/components/user/CategorySection.tsx`
-  - [x] `src/components/user/SearchBar.tsx`
-  - [x] `src/components/user/EventDetailHero.tsx`
-  - [x] `src/components/user/EventInfoPanel.tsx`
-  - [x] `src/components/user/EventSchedule.tsx`
-  - [x] `src/components/user/OrganizerInfo.tsx`
-- [x] Create user skeleton styles:
-  - [x] `src/styles/user/user-layout.css`
-  - [x] `src/styles/user/user-home.css`
-  - [x] `src/styles/user/user-event-card.css`
-  - [x] `src/styles/user/user-event-detail.css`
-
-## Next (not started)
-
-- [ ] Create remaining folder scaffolds (components/shared, hooks/user, services/user, styles/shared) if needed
-- [ ] Create `src/components/user/` exports barrel (index.ts) nếu bạn muốn
-- [ ] Implement `UserHeader` / `UserFooter` skeleton content placeholders according to layout (no final UI yet)
-- [ ] Update `UserLayout` to resolve component import errors (ts) once TS resolves folders
-- [ ] Create admin layout alias review (AdminLayout) and later move admin routes/pages gradually if desired
+- [ ] Phân tích style hiện tại của `EventixHeader` (đã xem `EventixHeader.tsx` + `eventixHeader.css`).
+- [ ] Lập plan chỉnh CSS để viền nút đẹp hơn ở cả dark và light, xử lý hover/focus.
+- [ ] Sửa `src/styles/user/eventixHeader.css`:
+  - Tăng độ “glass” và độ mảnh viền cho `.user-eventixHeader__btn--ghost`, `.user-eventixHeader__btn--primary`, `.user-eventixHeader__themeToggle`.
+  - Bổ sung pseudo-element/ring gradient cho hiệu ứng viền.
+  - Đồng bộ trạng thái `:hover` và `:focus-visible`.
+- [ ] Test nhanh bằng chạy dev server / reload để kiểm tra hiển thị.

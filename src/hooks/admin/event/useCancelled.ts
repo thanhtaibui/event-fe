@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { eventService } from "../../../services/admin/event.service";
+import { triggerNotification } from "../../notification/useNotificationTrigger";
 
 export const useCancelled = () => {
   const [loading, setLoading] = useState(false);
@@ -7,6 +8,7 @@ export const useCancelled = () => {
     try {
       setLoading(true)
       const res = await eventService.cancelledEvent(ids)
+      await triggerNotification("EVENT_CANCELLED", { count: ids.length });
       // console.log(res)
       return res
     } catch (error) {

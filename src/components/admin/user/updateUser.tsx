@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useUpdateUser } from "../../../hooks/admin/user/useUpdate";
 import { useUserById } from "../../../hooks/admin/user/useUserId";
 import { useOrgsByUser } from "../../../hooks/admin/org/useOrgsByUser";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 import { toast } from "react-toastify";
 import { useSwitchOrg } from "../../../hooks/admin/org/useSwitchOrg";
 import { useRolesOrg } from "../../../hooks/admin/role/useRolesOrg";

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import ConfirmDialog from "../layout/DialogConfirm";
 import { useSend } from "../../../hooks/admin/invite/useSend";
 import { useCheckEmail } from "../../../hooks/admin/invite/useCheckEmail";
-import "../../../styles/event/invite-popup.css";
+import "../../../styles/admin/invite/invite-popup.css";
 import { STATUS_CONFIG } from "../../../styles/status-styles";
 export type EmailStatus =
   | "idle"

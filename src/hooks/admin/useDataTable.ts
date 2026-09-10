@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useTable } from "../table/useTable";
 import { usePage } from "../table/usePage";
 import { useSearchFilter } from "../table/useSearchBar";
@@ -33,7 +33,9 @@ export function useDataTable<T extends { id: string; isActive?: boolean }>({
     total: 0,
   });
   const filterParams = Object.entries(filter).reduce((acc, [key, value]) => {
-    if (value) acc[`filter.${key}`] = `$eq:${value}`;
+    if (!value) return acc;
+
+    acc[`filter.${key}`] = value.startsWith("$") ? value : `$eq:${value}`;
     return acc;
   }, {} as Record<string, string>);
   const { debouncedSearchQuery, handleSearchChange } = useSearchFilter();
@@ -71,9 +73,8 @@ export function useDataTable<T extends { id: string; isActive?: boolean }>({
     setPage(0);
   }, [debouncedSearchQuery, JSON.stringify(filter)]);
 
-  const toggle = updateApi
-    ? useToggleActive(updateApi, updateLocal, fetchData)
-    : null;
+  const noopUpdateApi = useCallback(async () => undefined, []);
+  const toggle = useToggleActive(updateApi || noopUpdateApi, updateLocal, fetchData);
 
   return {
     data: localData,
@@ -92,8 +93,8 @@ export function useDataTable<T extends { id: string; isActive?: boolean }>({
       setRowsPerPage,
     },
     actions: {
-      toggleActive: toggle?.handleToggleActive,
-      isUpdating: toggle?.isUpdating,
+      toggleActive: updateApi ? toggle.handleToggleActive : undefined,
+      isUpdating: updateApi ? toggle.isUpdating : false,
     },
   };
 }

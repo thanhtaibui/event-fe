@@ -9,7 +9,6 @@ export const useTicketTypeById = (id: string) => {
     try {
       setLoading(true);
       const res = await ticketTypeService.getTicketTypeById(id);
-      console.log("Ticket type data:", res.data);
       setData(res.data);
     } catch (error) {
       console.error("Error fetching ticket type by ID:", error);

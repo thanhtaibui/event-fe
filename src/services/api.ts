@@ -1,10 +1,19 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import {
+  clearAccessToken,
+  getAccessToken,
+  setAccessToken,
+} from "../constants/authStorage";
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "https://event-be-js4i.onrender.com";
 
 // 1. Khởi tạo Axios Instance với cấu hình chuẩn dự án
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: API_BASE_URL,
   withCredentials: true,
+  timeout: 45000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -13,6 +22,9 @@ const api = axios.create({
 // Quản lý trạng thái làm mới Token ngầm (Race Condition)
 let isRefreshing = false;
 let failedQueue: any[] = [];
+
+const isAuthPage = () => ["/login", "/register"].includes(window.location.pathname);
+const shouldSkipGlobalToast = (config?: any) => Boolean(config?.skipGlobalToast);
 
 // Hàm xử lý và giải phóng hàng đợi request đang chờ token mới
 const processQueue = (token: string | null) => {
@@ -31,8 +43,19 @@ const processQueue = (token: string | null) => {
 // =================================================================
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token && config.headers) {
+    const token = getAccessToken();
+    const authFreeEndpoints = [
+      "/auth/login",
+      "/auth/register",
+      "/auth/google",
+      "/auth/refresh",
+    ];
+    const requestUrl = config.url || "";
+    const shouldSkipAuthorization = authFreeEndpoints.some((endpoint) =>
+      requestUrl.includes(endpoint),
+    );
+
+    if (token && config.headers && !shouldSkipAuthorization) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -56,7 +79,9 @@ api.interceptors.response.use(
       } else if (error.message === 'Network Error') {
         networkMessage = "Server is unreachable. It might be down or restarting.";
       }
-      toast.error(networkMessage, { toastId: "network-error" });
+      if (!shouldSkipGlobalToast(originalRequest)) {
+        toast.error(networkMessage, { toastId: "network-error" });
+      }
       return Promise.reject(error);
     }
 
@@ -64,10 +89,9 @@ api.interceptors.response.use(
     // Phải trả lỗi trực tiếp về Form Component để hiển thị, tuyệt đối không cho Auto-Refresh
     if (
       originalRequest.url.includes("/auth/login") ||
-      originalRequest.url.includes("/auth/register")
+      originalRequest.url.includes("/auth/register") ||
+      originalRequest.url.includes("/auth/google")
     ) {
-      const message = error.response?.data?.message || "Authentication failed";
-      toast.error(Array.isArray(message) ? message[0] : message);
       return Promise.reject(error);
     }
 
@@ -75,10 +99,10 @@ api.interceptors.response.use(
     // Nghĩa là cả Access Token và Refresh Token đều đã chết -> Đăng xuất ngay lập tức
     if (originalRequest.url.includes("/auth/refresh")) {
       processQueue(null); // Từ chối toàn bộ các request đang xếp nốt trong hàng đợi
-      localStorage.removeItem("accessToken");
+      clearAccessToken();
 
       // CHẶN LOOP: Chỉ ép trình duyệt chuyển hướng nếu hiện tại không ở sẵn trang /login
-      if (window.location.pathname !== "/login") {
+      if (!isAuthPage()) {
         const errorMessage = error.response?.data?.message || "Session expired, please login again.";
         // Xử lý nếu Backend trả về mảng lỗi (ví dụ của class-validator trả về array)
         const finalMessage = Array.isArray(errorMessage) ? errorMessage[0] : errorMessage;
@@ -96,7 +120,9 @@ api.interceptors.response.use(
       if (Array.isArray(message)) {
         message = message[0];
       }
-      toast.error(message);
+      if (!shouldSkipGlobalToast(originalRequest)) {
+        toast.error(message);
+      }
       return Promise.reject(error);
     }
 
@@ -114,6 +140,7 @@ api.interceptors.response.use(
       })
         .then((token) => {
           originalRequest.headers.Authorization = `Bearer ${token}`;
+          originalRequest.withCredentials = true;
           return api(originalRequest); // Thực thi lại chính request gốc với token mới tinh
         })
         .catch((err) => Promise.reject(err));
@@ -126,9 +153,9 @@ api.interceptors.response.use(
       try {
         // LƯU Ý: Phải gọi qua thư viện `axios` gốc, không gọi qua instance `api` để tránh đè trùng lặp cấu hình
         const res = await axios.post(
-          "http://localhost:3000/auth/refresh",
+          `${API_BASE_URL}/auth/refresh`,
           {},
-          { withCredentials: true }
+          { withCredentials: true, timeout: 45000 }
         );
 
         // Phòng vệ cấu hình dữ liệu trả về từ NestJS (Hỗ trợ cả bọc data lẫn không bọc data)
@@ -139,9 +166,10 @@ api.interceptors.response.use(
         }
 
         // Cập nhật token mới vào Storage và cấu hình mặc định cho các request tiếp theo
-        localStorage.setItem("accessToken", newToken);
+        setAccessToken(newToken);
         api.defaults.headers.Authorization = `Bearer ${newToken}`;
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        originalRequest.withCredentials = true;
 
         // Kích hoạt giải phóng, phân phối token mới cho toàn bộ các request đang nằm chờ trong hàng đợi
         processQueue(newToken);
@@ -150,10 +178,10 @@ api.interceptors.response.use(
         resolve(api(originalRequest));
       } catch (err) {
         processQueue(null);
-        localStorage.removeItem("accessToken");
+        clearAccessToken();
 
         // CHẶN LOOP: Kiểm tra xem có phải các API ẩn chạy ngầm làm lỗi khi đang đứng ở trang login hay không
-        if (window.location.pathname !== "/login") {
+        if (!isAuthPage()) {
           toast.error("Login expired, please login again");
           window.location.href = "/login";
         } else {

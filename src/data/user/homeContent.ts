@@ -1,10 +1,10 @@
 export const HOME_CONTENT = {
   hero: {
-    title: "Bring people together.",
+    title: "Discover events that move your community.",
     subtitle:
-      "Explore Events, build communities and grow organizations — all in one place.",
+      "Find curated experiences, join trusted communities, and manage every moment from discovery to attendance in one polished workspace.",
     primaryCta: "Explore Events",
-    secondaryCta: "View Organizations",
+    secondaryCta: "Create Organization",
     orbitCards: ["Launch Night", "Community Circle", "Team Meetup", "Insight Session"],
   },
   platform: {
@@ -56,15 +56,16 @@ export const HOME_CONTENT = {
     ],
   },
   org: {
-    title: "How Communities Grow.",
+    title: "Trusted by organizations building real communities.",
     subtitle:
-      "Every successful community starts with a shared experience. Host engaging events, connect members, encourage participation, and grow a thriving network that continues long after the event ends..",
+      "Verified organizers use Eventix to publish events, welcome attendees, and keep members connected after every experience.",
   },
   cta: {
-    title: "Start building your community today.",
+    title: "Ready to join your next experience?",
     subtitle:
-      "Create your organization, host memorable events, and bring people together around a shared purpose.Turn ideas into experiences and attendees into a thriving community.",
-    primaryCta: "Become an Organizer",
+      "Browse curated events or start a community workspace for your team. Eventix keeps the journey simple from invite to ticket.",
+    primaryCta: "Browse Events",
+    secondaryCta: "Create Community",
     // secondaryCta: "Book Demo",
   },
 } as const;

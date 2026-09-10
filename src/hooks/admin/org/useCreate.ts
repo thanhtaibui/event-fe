@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { orgService } from "../../../services/admin/organization.service"
 import type { PayloadOrganizationDto } from "../../../types/organization/create"
+import { triggerNotification } from "../../notification/useNotificationTrigger";
 
 export const useCreateOrg = () => {
   const [loading, setLoading] = useState(false);
@@ -9,6 +10,7 @@ export const useCreateOrg = () => {
     try {
       setLoading(true);
       await orgService.createOrg(createOrg);
+      await triggerNotification("ORG_CREATED", { orgName: createOrg.name });
       return true;
     } catch (error) {
       return false;

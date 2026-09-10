@@ -1,6 +1,6 @@
 import React from "react";
 
-import "../../styles/event/invite-popup.css";
+import "../../../styles/admin/invite/invite-popup.css";
 
 export type EmailChipProps = {
   email: string;

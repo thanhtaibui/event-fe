@@ -1,5 +1,6 @@
 import type { Query } from "../../types/query";
 import type { PayloadOrganizationDto } from "../../types/organization/create";
+import type { OrgRequestStatus } from "../../types/enum";
 import api from "../api";
 
 export const orgService = {
@@ -33,6 +34,10 @@ export const orgService = {
   },
   updateActive: async (id: string, active: boolean) => {
     const res = await api.patch(`organizations/${id}/active`, { active });
+    return res.data;
+  },
+  updateStatus: async (id: string, status: OrgRequestStatus) => {
+    const res = await api.patch(`organizations/${id}/status`, { status });
     return res.data;
   },
   updateBanner: async (id: string, bannerUrl: string) => {

@@ -15,10 +15,11 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
   return (
     <div className="stat-card">
       <div className="stat-header">
-        <span className="stat-title">{title}</span>
         {icon && <div className="stat-icon">{icon}</div>}
+        <span className="stat-trend">Live</span>
       </div>
 
+      <span className="stat-title">{title}</span>
       <div className="stat-value">
         {typeof value === "number" ? value.toLocaleString() : value}
       </div>

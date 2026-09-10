@@ -1,10 +1,12 @@
 import { Outlet } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { Header } from "../../components/admin/layout/Header";
 import { Sidebar } from "../../components/admin/layout/Sidebar";
 import "../../styles/index.css";
-import "../../styles/layout/layout.css";
+import "../../styles/admin/layout/layout.css";
 import { useSidebar } from "../../hooks/layout/useSlideBar";
-import AICreativeChat from "../../components/chat/AIChatBox";
+
+const AICreativeChat = lazy(() => import("../../components/chat/AIChatBox"));
 
 export const MainAdminLayout = () => {
   const { isCollapsed, toggleSidebar } = useSidebar();
@@ -19,7 +21,9 @@ export const MainAdminLayout = () => {
         <main className="content-body">
           <Outlet />
         </main>
-        <AICreativeChat />
+        <Suspense fallback={null}>
+          <AICreativeChat />
+        </Suspense>
       </div>
     </div>
   );

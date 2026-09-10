@@ -1,0 +1,156 @@
+.btn-edit,
+.btn-delete,
+.btn-detail {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 76px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1;
+  user-select: none;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.btn-edit {
+  color: #6d28d9;
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+
+.btn-delete {
+  color: #dc2626;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.btn-detail {
+  color: #0f766e;
+  background: #f0fdfa;
+  border-color: #99f6e4;
+}
+
+.btn-edit:hover,
+.btn-delete:hover,
+.btn-detail:hover {
+  transform: translateY(-1px);
+}
+
+.btn-edit:hover {
+  background: #ede9fe;
+}
+
+.btn-delete:hover {
+  background: #fee2e2;
+}
+
+.btn-detail:hover {
+  background: #ccfbf1;
+}
+
+.text-edit,
+.text-delete,
+.text-detail {
+  opacity: 1;
+  transform: none;
+}
+
+.icon-white {
+  position: static;
+  display: inline-flex;
+  width: 16px !important;
+  height: 16px !important;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  opacity: 0.86;
+  filter: none;
+  transform: none;
+}
+
+.btn-edit:hover .text-edit,
+.btn-delete:hover .text-delete,
+.btn-detail:hover .text-detail,
+.btn-edit:hover .icon-white,
+.btn-delete:hover .icon-white,
+.btn-detail:hover .icon-white {
+  opacity: 1;
+  transform: none;
+}
+
+.btn-create {
+  width: 150px !important;
+  height: 50px !important;
+  padding: 12px 10px !important;
+  overflow: hidden;
+  position: relative;
+  border-radius: 10px !important;
+  background: linear-gradient(135deg, #080b16, #5b21b6 48%, #2563eb) !important;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.18) !important;
+  font-weight: 650 !important;
+  text-transform: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-create:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+.icon-create {
+  position: absolute;
+  left: 5%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 37px;
+  height: 75%;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.72) inset;
+  transition:
+    width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s ease;
+}
+
+.icon-create img {
+  width: 25px;
+  height: 25px;
+  filter: brightness(0) invert(1);
+  transition:
+    width 0.3s ease-in-out,
+    height 0.3s ease-in-out;
+}
+
+.text-create {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.8s ease;
+}
+
+.btn-create:hover .icon-create {
+  width: 90%;
+}
+
+.btn-create:hover .icon-create img {
+  width: 30px;
+  height: 30px;
+}
+
+.btn-create:hover .text-create {
+  left: 100%;
+  transform: translateX(100%);
+}

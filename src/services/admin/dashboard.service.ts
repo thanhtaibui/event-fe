@@ -5,4 +5,8 @@ export const dashboardService = {
     const res = await api.get("/dashboard");
     return res.data;
   },
+  getOrgDashboard: async (slug: string) => {
+    const res = await api.get(`/dashboard/org/${slug}`);
+    return res.data;
+  },
 };

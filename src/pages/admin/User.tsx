@@ -1,8 +1,9 @@
-import "../../styles/admin/btn-action.css";
-import "../../styles/layout/table.css";
+import { useMemo } from "react";
+import "../../styles/admin/table/btn-action.css";
+import "../../styles/admin/table/table.css";
 
 import type { User } from "../../types/user/user";
-import LoadingPage from "../../pages/LoadingPage";
+import AdminSkeleton from "../../components/admin/skeleton/AdminSkeleton";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { ROLE_COLOR_PALETTE } from "../../styles/status-styles";
 // import component
@@ -21,9 +22,35 @@ import { userService } from "../../services/admin/user.service";
 import { usePageActions } from "../../hooks/admin/usePageActions";
 import { useDelete } from "../../hooks/admin/user/useDelete";
 import { UpdateUserPopup } from "../../components/admin/user/updateUser";
+import { useInfo } from "../../hooks/layout/useInfo";
+import {
+  ADMIN_PERMISSION_CODES,
+  canAccessAdminAction,
+  getUserPermissionCodes,
+} from "../../config/adminPermissionConfig";
 
 export default function User() {
   // useatate ẩn hiện
+  const currentUser = useInfo();
+  const permissionCodes = useMemo(
+    () => getUserPermissionCodes(currentUser),
+    [currentUser],
+  );
+  const canCreateUser = canAccessAdminAction(
+    permissionCodes,
+    ADMIN_PERMISSION_CODES.USER,
+    "create",
+  );
+  const canUpdateUser = canAccessAdminAction(
+    permissionCodes,
+    ADMIN_PERMISSION_CODES.USER,
+    "update",
+  );
+  const canDeleteUser = canAccessAdminAction(
+    permissionCodes,
+    ADMIN_PERMISSION_CODES.USER,
+    "delete",
+  );
 
   const { data, loading, search, filter, table, pagination, actions, refetch } =
     useDataTable<User>({
@@ -85,9 +112,17 @@ export default function User() {
             }}
           >
             {roles.map((role, index) => {
+              const roleName =
+                typeof role === "string" ? role : role.role_name || role.role_code || "ROLE";
+              const orgName =
+                typeof role === "string"
+                  ? ""
+                  : role.orgName || role.organizationName || "Organization";
               const style =
                 ROLE_COLOR_PALETTE[
-                  role.colorKey as keyof typeof ROLE_COLOR_PALETTE
+                  typeof role === "string"
+                    ? "gray"
+                    : (role.colorKey as keyof typeof ROLE_COLOR_PALETTE)
                 ] || ROLE_COLOR_PALETTE.gray;
               return (
                 <span
@@ -99,7 +134,7 @@ export default function User() {
                     border: style.border,
                   }}
                 >
-                  {role.role_name} of {role.orgName}
+                  {orgName ? `${roleName} of ${orgName}` : roleName}
                 </span>
               );
             })}
@@ -117,7 +152,7 @@ export default function User() {
             <IOSSwitch
               sx={{ m: 1 }}
               checked={user.isActive}
-              disabled={actions.isUpdating}
+              disabled={actions.isUpdating || !canUpdateUser}
               onChange={(e) =>
                 actions.toggleActive?.(user.id, e.target.checked)
               }
@@ -133,38 +168,45 @@ export default function User() {
       label: "Actions",
       render: (user) => (
         <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            className="btn-edit"
-            onClick={() => {
-              setPopupType("update");
-              setSelectedIds([user.id]);
-            }}
-          >
-            <img
-              width="20"
-              height="20"
-              className="icon-white"
-              src="https://img.icons8.com/nolan/64/pencil.png"
-              alt="pencil"
-            />
-            <span className="text-edit">Edit</span>
-          </button>
-          <button
-            className="btn-delete"
-            onClick={() => {
-              setPopupType("confirm");
-              setSelectedIds([user.id]);
-            }}
-          >
-            <img
-              width="20"
-              height="20"
-              className="icon-white"
-              src="https://img.icons8.com/nolan/64/waste.png"
-              alt="waste"
-            />
-            <span className="text-delete">Delete</span>
-          </button>
+          {canUpdateUser && (
+            <button
+              className="btn-edit"
+              onClick={() => {
+                setPopupType("update");
+                setSelectedIds([user.id]);
+              }}
+            >
+              <img
+                width="20"
+                height="20"
+                className="icon-white"
+                src="https://img.icons8.com/nolan/64/pencil.png"
+                alt="pencil"
+              />
+              <span className="text-edit">Edit</span>
+            </button>
+          )}
+          {canDeleteUser && (
+            <button
+              className="btn-delete"
+              onClick={() => {
+                setPopupType("confirm");
+                setSelectedIds([user.id]);
+              }}
+            >
+              <img
+                width="20"
+                height="20"
+                className="icon-white"
+                src="https://img.icons8.com/nolan/64/waste.png"
+                alt="waste"
+              />
+              <span className="text-delete">Delete</span>
+            </button>
+          )}
+          {!canUpdateUser && !canDeleteUser && (
+            <span className="table-action-empty">No actions</span>
+          )}
         </div>
       ),
       sortable: false,
@@ -172,26 +214,30 @@ export default function User() {
   ];
 
   return (
-    <div>
-      <ConfirmDialog
-        open={popupType === "confirm"}
-        onConfirm={() => onFinalDelete()}
-        onClose={() => setPopupType(null)}
-      />
-      <PopupHideItems
-        title="Delete"
-        count={table.selected.length}
-        show={table.selected.length > 0}
-        onConfirm={() => handleOpenConfirm(table.selected.map(String))}
-        onClose={() => handleCloseAndClear()}
-      />
-      {popupType === "create" && (
+    <div className="admin-page admin-page--users">
+      {canDeleteUser && (
+        <>
+          <ConfirmDialog
+            open={popupType === "confirm"}
+            onConfirm={() => onFinalDelete()}
+            onClose={() => setPopupType(null)}
+          />
+          <PopupHideItems
+            title="Delete"
+            count={table.selected.length}
+            show={table.selected.length > 0}
+            onConfirm={() => handleOpenConfirm(table.selected.map(String))}
+            onClose={() => handleCloseAndClear()}
+          />
+        </>
+      )}
+      {canCreateUser && popupType === "create" && (
         <CreateUserPopup
           onSuccess={() => refetch?.()}
           onClose={() => setPopupType(null)}
         />
       )}
-      {popupType === "update" && (
+      {canUpdateUser && popupType === "update" && (
         <UpdateUserPopup
           id={selectedIds.length === 1 ? selectedIds[0] : ""}
           onSuccess={() => refetch?.()}
@@ -200,9 +246,7 @@ export default function User() {
       )}
       <SearchBar
         onSearchChange={onSearchChange}
-        onCreate={() => {
-          setPopupType("create");
-        }}
+        onCreate={canCreateUser ? () => setPopupType("create") : undefined}
         title="user"
         placeholder={["Name", " Email"]}
         filters={[
@@ -218,7 +262,7 @@ export default function User() {
         onFilterChange={filter.handleFilterChange}
       />
       {loading ? (
-        <LoadingPage />
+        <AdminSkeleton variant="table" rows={7} />
       ) : (
         <>
           <CustomTable

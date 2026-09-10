@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 import type { TicketType } from "../../../types/ticket-type/ticket-type";
 import { useCreateTicketType } from "../../../hooks/admin/ticketType/useCreateTicketType";
 import { toast } from "react-toastify";
@@ -43,18 +43,22 @@ export const CreateTT: React.FC<CreateTTProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      form.price = parseNumber(form.price?.toString() || "0");
-      form.quantity = Number(form.quantity);
-      // console.log("Submitting form:", form);
-      const res = await createTicketType(form as TicketType);
+      setUiLoading(true);
+      const payload = {
+        ...form,
+        price: parseNumber(form.price?.toString() || "0"),
+        quantity: Number(form.quantity),
+      } as TicketType;
+      const res = await createTicketType(payload);
       if (res) {
         toast.success("Ticket Tier created successfully!");
         await onSuccess();
-        setUiLoading(false);
         onClose();
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setUiLoading(false);
     }
   };
   return (

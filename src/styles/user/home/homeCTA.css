@@ -1,0 +1,217 @@
+.user-home-cta {
+  overflow: hidden;
+  padding: clamp(64px, 8vw, 112px) clamp(18px, 5vw, 72px);
+  background:
+    radial-gradient(circle at 32% 18%, rgba(124, 58, 237, 0.18), transparent 34%),
+    linear-gradient(180deg, #fbfaff 0%, #f1ecff 100%);
+}
+
+.dark-mode .user-home-cta {
+  background:
+    radial-gradient(circle at 32% 18%, rgba(124, 58, 237, 0.28), transparent 34%),
+    linear-gradient(180deg, #100c25 0%, #080715 100%);
+}
+
+.user-home-cta__layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.66fr) minmax(0, 1.34fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 72px);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.user-home-cta__eyebrow {
+  display: block;
+  margin-bottom: 14px;
+  color: #7c3aed;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.user-home-cta__title {
+  max-width: 440px;
+  margin: 0;
+  color: #111827;
+  font-size: clamp(2.35rem, 4.6vw, 4.6rem);
+  font-weight: 650;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.dark-mode .user-home-cta__title {
+  color: #f8fafc;
+}
+
+.user-home-cta__title span {
+  color: #7c3aed;
+}
+
+.user-home-cta__subtitle {
+  max-width: 420px;
+  margin: 22px 0 0;
+  color: #526078;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.dark-mode .user-home-cta__subtitle {
+  color: #b8c0d4;
+}
+
+.user-home-cta__miniStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 360px;
+  margin-top: 30px;
+}
+
+.user-home-cta__miniStats article {
+  padding: 18px;
+  border: 1px solid rgba(124, 58, 237, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: none;
+}
+
+.dark-mode .user-home-cta__miniStats article {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-home-cta__miniStats span {
+  display: block;
+  color: #64748b;
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+
+.user-home-cta__miniStats strong {
+  display: block;
+  margin: 8px 0 5px;
+  color: #111827;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.dark-mode .user-home-cta__miniStats strong {
+  color: #ffffff;
+}
+
+.user-home-cta__miniStats small {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #16a34a;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.user-home-cta__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  margin-top: 26px;
+  padding: 0 18px;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 14px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed 56%, #2563eb);
+  box-shadow: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.user-home-cta__link:hover {
+  transform: translateY(-2px);
+  box-shadow: none;
+}
+
+.user-home-cta__visual {
+  position: relative;
+}
+
+.user-home-cta__visual img {
+  display: block;
+  width: min(840px, 100%);
+  margin-left: auto;
+  border-radius: 22px;
+  object-fit: cover;
+  filter: none;
+}
+
+.user-home-cta__floatingCard {
+  position: absolute;
+  left: 6%;
+  bottom: 9%;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 280px;
+  padding: 14px 16px;
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  border-radius: 16px;
+  color: #111827;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: none;
+  backdrop-filter: blur(18px);
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+@media (max-width: 980px) {
+  .user-home-cta__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .user-home-cta__visual img {
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .user-home-cta {
+    padding: 50px 14px;
+  }
+
+  .user-home-cta__miniStats {
+    grid-template-columns: 1fr;
+  }
+
+  .user-home-cta__floatingCard {
+    position: static;
+    margin-top: 14px;
+  }
+}
+
+/* UI skills calibration */
+.user-home-cta {
+  background: #ffffff !important;
+}
+
+.user-home-cta__miniStats article,
+.user-home-cta__floatingCard {
+  border-radius: var(--ux-radius-card, 16px) !important;
+  box-shadow: none !important;
+}
+
+.user-home-cta__link {
+  border-radius: var(--ux-radius-control, 14px) !important;
+  box-shadow: none !important;
+}
+
+.user-home-cta__visual img {
+  border-radius: var(--ux-radius-shell, 22px) !important;
+}
+
+.user-layout.dark-mode .user-home-cta {
+  background: #070817 !important;
+}

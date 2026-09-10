@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import "../../styles/event/invite-popup.css";
+import "../../../styles/admin/invite/invite-popup.css";
 
 import { parseEmailsFromText } from "../../../utils/invite/emailUtils";
 

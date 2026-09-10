@@ -3,4 +3,5 @@ export interface Query {
   limit?: number;
   sortBy?: string;
   search?: string;
+  [key: string]: string | number | undefined;
 }

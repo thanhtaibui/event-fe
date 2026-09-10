@@ -36,6 +36,7 @@ export function FilterDropdown({
   return (
     <>
       <Button
+        className="admin-filter-button"
         onClick={(e) => setAnchor(e.currentTarget)}
         variant="outlined"
         size="large"

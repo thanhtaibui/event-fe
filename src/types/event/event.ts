@@ -1,21 +1,32 @@
 import type { EventStatus } from "../enum";
 
+export interface CategoryDto {
+  id: string;
+  name: string;
+  slug?: string;
+  code?: string;
+}
+
 export interface EventDto {
   id: string;
 
   title: string;
 
+  eventBanner?: string;
+
   eventPoster: string;
+
+  description: string;
 
   place: string;
 
-  startDateTime: Date;
+  startDateTime: string | Date;
 
-  endDateTime: Date;
+  endDateTime: string | Date;
 
-  eventTime: Date;
+  eventTime?: string | Date;
 
-  registrationEndDate: Date;
+  registrationEndDate: string | Date;
 
   capacity: number;
 
@@ -25,9 +36,15 @@ export interface EventDto {
 
   organization: OrgDto;
 
+  categories?: CategoryDto[];
+
 }
 interface OrgDto {
   id: string,
 
   name: string
+
+  isVerified?: boolean;
+
+  isve?: boolean;
 }

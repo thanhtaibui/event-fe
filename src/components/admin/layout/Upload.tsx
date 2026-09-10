@@ -1,12 +1,17 @@
 // PosterUpload.tsx
 import { useCallback, useEffect, useState } from "react";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 
 interface PosterUploadProps {
   value?: File | null;
   onChange: (file: File | null) => void;
   defaultUrl?: string;
   onRemove?: () => void;
+  inputId?: string;
+  title?: string;
+  subtitle?: string;
+  previewAlt?: string;
+  variant?: "poster" | "banner";
 }
 
 export function PosterUpload({
@@ -14,6 +19,11 @@ export function PosterUpload({
   onChange,
   defaultUrl,
   onRemove,
+  inputId = "poster-input",
+  title = "Drag & drop your poster here",
+  subtitle = "PNG, JPG, WEBP — max 5MB",
+  previewAlt = "Poster preview",
+  variant = "poster",
 }: PosterUploadProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -72,11 +82,11 @@ export function PosterUpload({
 
   const openPicker = (e: React.MouseEvent) => {
     e.stopPropagation();
-    document.getElementById("poster-input")?.click();
+    document.getElementById(inputId)?.click();
   };
 
   return (
-    <div className="poster-upload-wrapper">
+    <div className={`poster-upload-wrapper poster-upload-wrapper--${variant}`}>
       <div
         className={`dropzone ${isDragging ? "dropzone--dragging" : ""} ${preview ? "dropzone--has-preview" : ""}`}
         onDragOver={(e) => {
@@ -86,7 +96,7 @@ export function PosterUpload({
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         onClick={() =>
-          !preview && document.getElementById("poster-input")?.click()
+          !preview && document.getElementById(inputId)?.click()
         }
       >
         {!preview ? (
@@ -107,15 +117,15 @@ export function PosterUpload({
                 <line x1="12" y1="4" x2="12" y2="16" />
               </svg>
             </div>
-            <p className="dropzone__title">Drag &amp; drop your poster here</p>
-            <p className="dropzone__sub">PNG, JPG, WEBP — max 5MB</p>
+            <p className="dropzone__title">{title}</p>
+            <p className="dropzone__sub">{subtitle}</p>
             <button type="button" className="btn-browse" onClick={openPicker}>
               Browse file
             </button>
           </div>
         ) : (
           <div className="dropzone__preview">
-            <img src={preview} alt="Poster preview" className="dropzone__img" />
+            <img src={preview} alt={previewAlt} className="dropzone__img" />
             <div className="dropzone__overlay">
               <button
                 type="button"
@@ -182,7 +192,7 @@ export function PosterUpload({
       {/* <p className="poster-hint">Recommended ratio 16:9, minimum 800×450px</p> */}
 
       <input
-        id="poster-input"
+        id={inputId}
         type="file"
         accept="image/*"
         style={{ display: "none" }}

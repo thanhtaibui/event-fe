@@ -1,0 +1,189 @@
+:root {
+  --theme-transition-duration: 160ms;
+  --theme-transition-ease: ease;
+  --clean-shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.055);
+  --clean-shadow-modal: 0 18px 48px rgba(15, 23, 42, 0.18);
+}
+
+:where(
+  .user-layout,
+  .auth-layout,
+  .login-page,
+  .org-register-page,
+  .admin-layout,
+  .main-content,
+  .content
+) :where(*, *::before, *::after) {
+  transition-property: background-color, border-color, color, box-shadow, fill, stroke !important;
+  transition-duration: var(--theme-transition-duration) !important;
+  transition-timing-function: var(--theme-transition-ease) !important;
+  transition-delay: 0ms !important;
+}
+
+:where(
+  .user-layout,
+  .auth-layout,
+  .login-page,
+  .org-register-page,
+  .admin-layout,
+  .main-content,
+  .content
+) :where(
+  .card,
+  [class$="Card"],
+  [class*="__card"],
+  [class*="-card"],
+  [class*="__panel"],
+  [class*="-panel"],
+  input,
+  select,
+  textarea,
+  button,
+  [role="button"]
+) {
+  transition-duration: var(--theme-transition-duration) !important;
+  transition-timing-function: var(--theme-transition-ease) !important;
+}
+
+:where(.user-layout, .auth-layout, .admin-layout) :where(
+  .card,
+  [class$="Card"],
+  [class*="__card"],
+  [class*="-card"],
+  [class*="__panel"],
+  [class*="-panel"],
+  .popup-content,
+  .modal-content,
+  .table-container,
+  .table-wrapper
+) {
+  box-shadow: var(--clean-shadow-soft) !important;
+}
+
+:where(.user-layout, .auth-layout, .admin-layout) :where(
+  [class*="__card"] [class*="__card"],
+  [class*="-card"] [class*="-card"],
+  [class*="__panel"] [class*="__card"],
+  [class*="-panel"] [class*="-card"],
+  .popup-content [class*="__card"],
+  .modal-content [class*="__card"],
+  button,
+  input,
+  select,
+  textarea
+) {
+  box-shadow: none !important;
+}
+
+:where(button, .btn, [role="button"], select) {
+  font-weight: 400 !important;
+}
+
+:where(select, button, input, textarea):focus,
+:where(select, button, input, textarea):focus-visible {
+  transition-duration: var(--theme-transition-duration) !important;
+}
+
+.dark-mode :where(
+  .card,
+  [class$="Card"],
+  [class*="__card"],
+  [class*="-card"],
+  [class*="__panel"],
+  [class*="-panel"],
+  .table-container,
+  .table-wrapper,
+  .popup-content,
+  .modal-content
+) {
+  background-color: #0f172a !important;
+  border-color: rgba(148, 163, 184, 0.22) !important;
+  color: #e5e7eb !important;
+}
+
+.dark-mode :where(
+  input,
+  select,
+  textarea,
+  .industry-multiselect__button,
+  .industry-multiselect__menu,
+  .industry-multiselect__search,
+  .industry-multiselect__option
+) {
+  background-color: #111827 !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: #f8fafc !important;
+}
+
+.dark-mode :where(
+  input::placeholder,
+  textarea::placeholder
+) {
+  color: #94a3b8 !important;
+}
+
+.dark-mode :where(
+  .industry-multiselect__option:hover,
+  option:hover,
+  [role="option"]:hover,
+  .dropdown-item:hover,
+  .menu-item:hover
+) {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+.dark-mode :where(
+  h1,
+  h2,
+  h3,
+  h4,
+  strong,
+  th,
+  label
+) {
+  color: #f8fafc !important;
+}
+
+.dark-mode :where(
+  p,
+  span,
+  small,
+  td,
+  dd,
+  dt,
+  li
+) {
+  color: inherit;
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+.dark-mode :where(
+  [class*="subtitle"],
+  [class*="description"],
+  [class*="meta"],
+  [class*="muted"],
+  [class*="hint"],
+  [class*="caption"],
+  [class*="date"],
+  [class*="location"]
+) {
+  color: #cbd5e1 !important;
+}
+
+.dark-mode :where(
+  .badge,
+  [class*="badge"],
+  [class*="tag"],
+  [class*="pill"],
+  [class*="status"]
+) {
+  border-color: rgba(148, 163, 184, 0.26) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.user-layout, .auth-layout, .admin-layout) :where(*, *::before, *::after) {
+    transition: none !important;
+    animation: none !important;
+  }
+}

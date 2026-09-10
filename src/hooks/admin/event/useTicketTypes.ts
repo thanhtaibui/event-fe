@@ -3,8 +3,14 @@ import { eventService } from "../../../services/admin/event.service";
 
 export const useTicketTypeByIdEvent = (id: string) => {
   const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(id));
   const fetchTicketTypeById = async () => {
+    if (!id) {
+      setData(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await eventService.getTicketTypeById(id);

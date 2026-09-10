@@ -10,6 +10,10 @@ export interface Organization {
 
   isActive: boolean;
 
+  isVerified?: boolean;
+
+  isve?: boolean;
+
   status: OrgRequestStatus;
 
   createdAt: Date;

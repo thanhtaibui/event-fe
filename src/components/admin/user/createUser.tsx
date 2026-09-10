@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useCreateUser } from "../../../hooks/admin/user/useCreate";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 import { toast } from "react-toastify";
 export const CreateUserPopup = ({
   onClose,

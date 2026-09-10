@@ -1,13 +1,13 @@
 import { Navigate } from "react-router-dom";
 
+import AdminSkeleton from "../admin/skeleton/AdminSkeleton";
 import { useAuth } from "../../hooks/auth/AuthProvider";
-import LoadingPage from "../../pages/LoadingPage";
 
 const ProtectedRoute = ({ children }: any) => {
   const { isAuthReady, isLoggedIn } = useAuth();
 
   if (!isAuthReady) {
-    return <LoadingPage />;
+    return <AdminSkeleton variant="dashboard" cards={3} />;
   }
 
   if (!isLoggedIn) {

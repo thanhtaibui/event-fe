@@ -1,6 +1,6 @@
 export interface ItemPayload {
   name: string,
-  imageUrl: String,
-  price: Number
+  imageUrl: string,
+  price: number
   eventId: string
 }

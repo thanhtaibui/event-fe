@@ -1,10 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useState } from "react";
+import { BadgeCheck, FileCheck2, ShieldCheck, UploadCloud, X } from "lucide-react";
 import { useOrgBySlug } from "../../../hooks/admin/org/useOrgBySlug";
-import LoadingPage from "../../LoadingPage";
+import AdminSkeleton from "../../../components/admin/skeleton/AdminSkeleton";
 import DashboardCard from "../../../components/admin/dashboard/DashboardCard";
 import { UpdateOrgPopup } from "../../../components/admin/org/updateOrg";
-import "../../../styles/layout/org-detail.css";
+import "../../../styles/admin/layout/org-detail.css";
 import { useUpload } from "../../../hooks/admin/useUpload";
 import { useUpdateBanner } from "../../../hooks/admin/org/useUpdateBanner";
 import { toast } from "react-toastify";
@@ -12,15 +13,25 @@ import toastHot from "react-hot-toast";
 import { BannerCropper } from "../../../components/admin/layout/BannerCropper";
 import type { Area } from "react-easy-crop";
 import { getCroppedImg } from "../../../utils/imageUtils";
+import { useSubmitOrgVerification } from "../../../hooks/admin/orgVerification/useOrgVerification";
 
 export default function OrganizationDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
   // const navigate = useNavigate();
   const { data, loading, refetch } = useOrgBySlug(slug || "");
   const [showEdit, setShowEdit] = useState(false);
   const { upload } = useUpload();
   const { updateBanner } = useUpdateBanner();
   const [tempImage, setTempImage] = useState<string | null>(null);
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationTax, setVerificationTax] = useState("");
+  const [verificationDocumentUrl, setVerificationDocumentUrl] = useState("");
+  const [verificationFileName, setVerificationFileName] = useState("");
+  const [uploadingDocument, setUploadingDocument] = useState(false);
+  const { submitVerification, loading: submittingVerification } =
+    useSubmitOrgVerification();
+  const isOrgWorkspace = location.pathname.startsWith("/org/");
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleString("vi-VN", {
@@ -112,7 +123,79 @@ export default function OrganizationDetail() {
     }
   };
 
-  if (loading) return <LoadingPage />;
+  const handleVerificationDocument = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const isAllowed =
+      file.type === "application/pdf" || file.type.startsWith("image/");
+    if (!isAllowed) {
+      toast.warn("Verification document must be a PDF or image file");
+      e.target.value = "";
+      return;
+    }
+
+    try {
+      setUploadingDocument(true);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "org-verification");
+      const res = await upload(formData);
+      const url = res.secure_url || res.data?.secure_url || res.url || res.data?.url;
+
+      if (!url) throw new Error("Upload response missing document URL");
+
+      setVerificationDocumentUrl(url);
+      setVerificationFileName(file.name);
+      toast.success("Verification document uploaded");
+    } catch (error: any) {
+      toast.error(error?.message || "Upload document failed");
+    } finally {
+      setUploadingDocument(false);
+      e.target.value = "";
+    }
+  };
+
+  const closeVerificationModal = () => {
+    setShowVerification(false);
+    setVerificationTax("");
+    setVerificationDocumentUrl("");
+    setVerificationFileName("");
+  };
+
+  const handleSubmitVerification = async () => {
+    if (!data?.id) {
+      toast.error("Organization ID is missing");
+      return;
+    }
+
+    if (!verificationTax.trim()) {
+      toast.warn("Please enter the business tax number");
+      return;
+    }
+
+    if (!verificationDocumentUrl) {
+      toast.warn("Please upload a verification document");
+      return;
+    }
+
+    const success = await submitVerification(
+      data.id,
+      verificationTax.trim(),
+      verificationDocumentUrl,
+    );
+
+    if (success) {
+      toast.success("Verification request submitted");
+      closeVerificationModal();
+    } else {
+      toast.error("Submit verification request failed");
+    }
+  };
+
+  if (loading) return <AdminSkeleton variant="detail" />;
 
   if (!data) {
     return (
@@ -186,13 +269,28 @@ export default function OrganizationDetail() {
               }
               alt="avatar"
             />
-            {data.isVerified && <div className="org-detail__badge">✓</div>}
+            {(data.isVerified || data.isve) && <div className="org-detail__badge">✓</div>}
           </div>
           <span className="org-detail__subtitle">ORGANIZATION PROFILE</span>
           <h1 className="org-detail__title">{data.name}</h1>
         </div>
 
         <div className="org-detail__actions">
+          {isOrgWorkspace &&
+            (data.isVerified || data.isve ? (
+              <span className="org-detail__verified-pill">
+                <BadgeCheck size={17} aria-hidden="true" />
+                Verified business
+              </span>
+            ) : (
+              <button
+                className="org-detail__btn org-detail__btn--verify"
+                onClick={() => setShowVerification(true)}
+              >
+                <ShieldCheck size={17} aria-hidden="true" />
+                Request Verification
+              </button>
+            ))}
           <button
             className="org-detail__btn btn-edit"
             onClick={() => setShowEdit(true)}
@@ -325,6 +423,110 @@ export default function OrganizationDetail() {
           </div>
         </div>
       </div>
+
+      {showVerification && (
+        <div className="org-verification-request" onClick={closeVerificationModal}>
+          <section
+            className="org-verification-request__modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="org-verification-request-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="org-verification-request__header">
+              <div>
+                <span>Business verification</span>
+                <h2 id="org-verification-request-title">
+                  Verify {data.name}
+                </h2>
+              </div>
+              <button
+                type="button"
+                className="org-verification-request__close"
+                aria-label="Close verification form"
+                onClick={closeVerificationModal}
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            </header>
+
+            <div className="org-verification-request__body">
+              <label className="org-verification-request__field">
+                Business tax number
+                <input
+                  value={verificationTax}
+                  onChange={(event) => setVerificationTax(event.target.value)}
+                  placeholder="Example: 0312345678"
+                />
+              </label>
+
+              <div className="org-verification-request__documents">
+                <span>Required document</span>
+                <p>
+                  Upload one official business document that clearly contains
+                  the company name, tax number, and legal representative.
+                </p>
+                <ul>
+                  <li>Business registration certificate</li>
+                  <li>Tax registration certificate or tax authority notice</li>
+                  <li>Legal representative information page</li>
+                </ul>
+              </div>
+
+              <input
+                id="orgVerificationDocument"
+                type="file"
+                hidden
+                accept="application/pdf,image/*"
+                onChange={handleVerificationDocument}
+              />
+              <button
+                type="button"
+                className="org-verification-request__upload"
+                onClick={() =>
+                  document.getElementById("orgVerificationDocument")?.click()
+                }
+                disabled={uploadingDocument}
+              >
+                <UploadCloud size={20} aria-hidden="true" />
+                {uploadingDocument
+                  ? "Uploading document..."
+                  : verificationFileName || "Upload PDF or image document"}
+              </button>
+
+              {verificationDocumentUrl && (
+                <a
+                  className="org-verification-request__preview"
+                  href={verificationDocumentUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FileCheck2 size={18} aria-hidden="true" />
+                  View uploaded document
+                </a>
+              )}
+            </div>
+
+            <footer className="org-verification-request__footer">
+              <button
+                type="button"
+                className="org-verification-request__btn org-verification-request__btn--ghost"
+                onClick={closeVerificationModal}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="org-verification-request__btn org-verification-request__btn--primary"
+                onClick={handleSubmitVerification}
+                disabled={submittingVerification || uploadingDocument}
+              >
+                {submittingVerification ? "Submitting..." : "Submit request"}
+              </button>
+            </footer>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

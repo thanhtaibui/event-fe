@@ -1,0 +1,939 @@
+.user-layout {
+  --bg-main: #050312;
+  --bg-surface: #0f0b24;
+  --bg-surface-blur: rgba(15, 11, 36, 0.78);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --accent-purple: #7c3aed;
+  --accent-purple-light: #a78bfa;
+  --accent-purple-gradient: linear-gradient(135deg, #7c3aed, #a855f7);
+  --accent-cyan: #22d3ee;
+  --accent-green: #34d399;
+  --accent-pink: #ec4899;
+  --shadow-glow: 0 18px 54px rgba(124, 58, 237, 0.28);
+  --user-bg: var(--bg-main);
+  --user-surface: var(--bg-surface);
+  --user-surface-soft: rgba(255, 255, 255, 0.055);
+  --user-surface-glass: var(--bg-surface-blur);
+  --user-border: var(--border-color);
+  --user-text: var(--text-primary);
+  --user-text-soft: var(--text-secondary);
+  --user-text-muted: var(--text-muted);
+  --user-primary: var(--accent-purple);
+  --user-primary-soft: var(--accent-purple-light);
+  --user-primary-gradient: var(--accent-purple-gradient);
+  --user-accent: var(--accent-cyan);
+  --user-card-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  min-height: 100vh;
+  background: var(--user-bg);
+  color: var(--user-text);
+}
+
+.user-layout.light-mode {
+  --bg-main: #f7f8ff;
+  --bg-surface: #ffffff;
+  --bg-surface-blur: rgba(255, 255, 255, 0.86);
+  --border-color: rgba(124, 58, 237, 0.14);
+  --text-primary: #111827;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent-purple: #6d28d9;
+  --accent-purple-light: #7c3aed;
+  --accent-purple-gradient: linear-gradient(135deg, #6d28d9, #a855f7);
+  --accent-cyan: #0891b2;
+  --accent-green: #059669;
+  --accent-pink: #db2777;
+  --shadow-glow: 0 18px 48px rgba(109, 40, 217, 0.16);
+  --user-surface-soft: rgba(124, 58, 237, 0.055);
+  --user-card-shadow: 0 24px 60px rgba(79, 70, 229, 0.1);
+}
+
+.user-layout__main {
+  position: relative;
+  z-index: 1;
+  padding-top: 96px;
+  background: var(--user-bg);
+}
+
+.user-footer {
+  position: relative;
+  overflow: hidden;
+  padding: 58px clamp(18px, 4vw, 64px) 28px;
+  border-top: 1px solid var(--user-border);
+  background:
+    radial-gradient(
+      620px 260px at 18% 8%,
+      rgba(124, 58, 237, 0.2),
+      transparent 62%
+    ),
+    linear-gradient(180deg, var(--user-bg), rgba(124, 58, 237, 0.08));
+  color: var(--user-text);
+}
+
+.light-mode .user-footer {
+  background:
+    radial-gradient(
+      620px 260px at 18% 8%,
+      rgba(124, 58, 237, 0.12),
+      transparent 62%
+    ),
+    linear-gradient(180deg, #ffffff, #f1f5ff);
+}
+
+.user-footer__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(180px, 0.6fr) minmax(240px, 0.8fr);
+  gap: 34px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.user-footer__logoLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--user-text);
+  font-size: 1.25rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.user-footer__logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: var(--shadow-glow);
+}
+
+.user-footer__logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-footer__brand p,
+.user-footer__contact p {
+  color: var(--user-text-muted);
+  line-height: 1.7;
+}
+
+.user-footer__brand p {
+  max-width: 460px;
+  margin: 18px 0 0;
+}
+
+.user-footer h2 {
+  margin: 0 0 16px;
+  color: var(--user-text);
+  font-size: 1rem;
+}
+
+.user-footer__links {
+  display: grid;
+  gap: 10px;
+}
+
+.user-footer__links a,
+.user-footer__contact p {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 10px;
+  color: var(--user-text-muted);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.user-footer__links a {
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.user-footer__links a:hover {
+  color: var(--user-primary-soft);
+  transform: translateX(2px);
+}
+
+.user-footer__contact svg {
+  color: var(--user-accent);
+}
+
+.user-footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1240px;
+  margin: 34px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--user-border);
+  color: var(--user-text-muted);
+  font-size: 0.9rem;
+}
+
+.user-footer__bottom span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--user-primary-soft);
+  font-weight: 700;
+}
+
+@media (max-width: 860px) {
+  .user-layout__main {
+    padding-top: 92px;
+  }
+
+  .user-footer__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .user-footer__bottom {
+    flex-direction: column;
+  }
+}
+
+/* User app canvas: light is white, dark is actually dark */
+.user-layout.light-mode,
+.user-layout.light-mode .user-layout__main {
+  --bg-main: #ffffff;
+  --user-bg: #ffffff;
+  background: #ffffff !important;
+}
+
+.user-layout.dark-mode,
+.user-layout.dark-mode .user-layout__main {
+  --bg-main: #070817;
+  --user-bg: #070817;
+  background: #070817 !important;
+}
+
+.user-layout.light-mode :is(
+  .home-page,
+  .user-home,
+  .event-page,
+  .event-page__main,
+  .myTicketsPage,
+  .org-page,
+  .org-profile-page,
+  .user-event-detail
+) {
+  background-color: #ffffff !important;
+}
+
+.user-layout.dark-mode :is(
+  .home-page,
+  .user-home,
+  .event-page,
+  .event-page__main,
+  .myTicketsPage,
+  .org-page,
+  .org-profile-page,
+  .user-event-detail
+) {
+  background-color: #070817 !important;
+}
+
+.user-layout.dark-mode :where(
+  .user-home-hero,
+  .user-home-platform,
+  .user-home-org,
+  .user-home-cta,
+  .event-hero,
+  .event-page__main,
+  .org-page,
+  .myTicketsPage,
+  .user-event-detail
+) {
+  background: #070817 !important;
+  color: #f8fafc;
+}
+
+.user-layout.dark-mode :where(
+  .user-home-platform__layout,
+  .user-home-org__layout,
+  .user-home-hero__mediaFrame,
+  .user-home-hero__glassPanel,
+  .user-home-platform__card,
+  .user-home-org__flowCard,
+  .user-home-cta__miniStats article,
+  .event-card,
+  .org-list__card,
+  .myTicketCard,
+  .myTicketsSidebar__card
+) {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  background: #0f1224 !important;
+  color: #f8fafc !important;
+}
+
+.user-layout.dark-mode :where(
+  .user-home-platform__title,
+  .user-home-org__title,
+  .user-home-cta__title,
+  .event-card h2,
+  .event-card h3,
+  .org-list__card h2,
+  .myTicketCard h2,
+  .myTicketCard h3
+) {
+  color: #f8fafc !important;
+}
+
+.user-layout.dark-mode :where(
+  .user-home-platform__subtitle,
+  .user-home-platform__card p,
+  .user-home-org__subtitle,
+  .user-home-org__flowCard p,
+  .user-home-cta__subtitle,
+  .event-card p,
+  .org-list__card p,
+  .myTicketCard p
+) {
+  color: #a8b3c7 !important;
+}
+
+.user-footer {
+  border-top-color: rgba(109, 40, 217, 0.1);
+}
+
+/* UI skills system pass: intentional shape, lighter depth, cleaner rhythm */
+.user-layout {
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 22px;
+  --ux-radius-shell: 22px;
+  --ux-radius-panel: 18px;
+  --ux-radius-card: 16px;
+  --ux-radius-control: 14px;
+  --ux-radius-chip: 999px;
+  --ux-shadow-soft: 0 12px 28px rgba(15, 23, 42, 0.055);
+  --ux-shadow-lift: 0 18px 44px rgba(15, 23, 42, 0.075);
+  --shadow-glow: 0 18px 40px rgba(109, 40, 217, 0.1);
+  --shadow-soft: var(--ux-shadow-soft);
+  --user-card-shadow: var(--ux-shadow-soft);
+}
+
+.user-layout :where(
+  .home-section,
+  .home-cta,
+  .home-communityPlatform,
+  .home-organization,
+  .event-hero,
+  .event-card,
+  .org-hero,
+  .org-list__card,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help,
+  .myTicketsSidebar__ctaBox,
+  .user-event-detail__card
+) {
+  box-shadow: var(--ux-shadow-soft) !important;
+}
+
+.user-layout :where(
+  .event-card,
+  .org-list__card,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help,
+  .myTicketsSidebar__ctaBox,
+  .user-event-detail__card,
+  .home-communityPlatform__panel,
+  .home-organization__panel
+) {
+  border-radius: var(--ux-radius-card) !important;
+}
+
+.user-layout :where(
+  button,
+  .button,
+  a[class*="btn"],
+  a[class*="Btn"],
+  .event-filter,
+  .event-filter__submit,
+  .org-hero__search-btn,
+  .myTicketsTab,
+  .myTicketCard__primaryBtn
+) {
+  border-radius: var(--ux-radius-control) !important;
+  box-shadow: none !important;
+}
+
+.user-layout :where(
+  .user-eventixHeader,
+  .user-eventixHeader__brand,
+  .user-eventixHeader__nav,
+  .user-eventixHeader__actions,
+  .user-eventixHeader__profileButton,
+  .user-eventixHeader__dropdown,
+  .user-home-platform__layout,
+  .user-home-org__layout,
+  .user-home-cta__visual img,
+  .user-home-hero__mediaFrame,
+  .user-home-hero__glassPanel,
+  .user-home-hero__eventCard,
+  .event-card,
+  .event-featured,
+  .event-discovery__panel,
+  .org-hero,
+  .org-list__card,
+  .org-profile-card,
+  .myTicketsHero,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help,
+  .myTicketsSidebar__ctaBox,
+  .user-event-detail__card
+) {
+  border-radius: var(--ux-radius-panel) !important;
+  box-shadow: var(--ux-shadow-soft) !important;
+}
+
+.user-layout :where(
+  .user-home-platform__card,
+  .user-home-org__flowCard,
+  .user-home-cta__miniStats article,
+  .user-home-cta__floatingCard,
+  .user-home-hero__badge,
+  .user-home-hero__metricCard,
+  .event-card__image,
+  .event-card__media,
+  .org-list__avatar,
+  .myTicketCard__image,
+  .myTicketCard__qr,
+  .myTicketsSidebar__row
+) {
+  border-radius: var(--ux-radius-card) !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.user-layout :where(
+  .user-home-platform__image,
+  .user-home-cta__visual img,
+  .user-home-hero__globeImage,
+  .home-communityPlatform__image,
+  .home-organization__image
+) {
+  filter: none !important;
+}
+
+.user-layout :where(
+  button,
+  .button,
+  a[class*="btn"],
+  a[class*="Btn"],
+  input,
+  select,
+  textarea,
+  .user-home-hero__btn,
+  .user-home-cta__link,
+  .org-hero__search-btn,
+  .myTicketsTab,
+  .myTicketCard__primaryBtn,
+  .user-eventixHeader__login,
+  .user-eventixHeader__getStarted
+) {
+  border-radius: var(--ux-radius-control) !important;
+  box-shadow: none !important;
+}
+
+.user-layout :where(
+  .user-eventixHeader__themeSwitch,
+  .user-eventixHeader__themeSwitchKnob,
+  .user-eventixHeader__profileButton,
+  .user-eventixHeader__userPill,
+  .user-eventixHeader__notification,
+  .user-eventixHeader__avatarButton,
+  .user-eventixHeader__mobileToggle,
+  .user-home-hero__badge,
+  .user-home-hero__avatars span,
+  .user-home-hero__liveBadge,
+  .user-home-hero__panelMeta span,
+  .event-card__favorite,
+  .event-card__badge,
+  .org-list__status,
+  .myTicketsTab,
+  .myTicketCard__status,
+  .myTicketsSidebar__chart,
+  .myTicketsSidebar__dot,
+  .user-home-platform__icon,
+  .user-home-org__flowIcon,
+  .myTicketsSidebar__icon,
+  .user-eventixHeader__avatar,
+  .user-eventixHeader__userAvatar,
+  [class*="Avatar"],
+  [class*="avatar"]
+) {
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+
+.user-layout :where(
+  .user-eventixHeader__themeSwitchKnob,
+  .user-eventixHeader__avatar,
+  .user-eventixHeader__userAvatar,
+  .user-home-hero__avatars span,
+  [class*="Avatar"],
+  [class*="avatar"]
+) {
+  border-radius: 50% !important;
+}
+
+.user-layout :where(
+  .user-home-hero__btn,
+  .user-home-cta__link,
+  .event-filter__submit,
+  .org-hero__search-btn,
+  .myTicketCard__primaryBtn,
+  .user-eventixHeader__login,
+  .user-eventixHeader__getStarted
+) {
+  border-radius: var(--ux-radius-control) !important;
+}
+
+.user-layout :where(a, button, input, select, textarea, [role="button"]) {
+  transition-property: background, border-color, color, opacity, transform, box-shadow !important;
+  transition-duration: 160ms !important;
+  transition-timing-function: ease !important;
+}
+
+/* Dark mode cleanup for small chips, filters and secondary panels */
+.user-layout.dark-mode :where(
+  .user-home-hero__badge,
+  .user-home-hero__liveBadge,
+  .event-card__badge,
+  .event-date,
+  .event-card__date,
+  .event-status,
+  .event-tag,
+  .org-list__status,
+  .org-profile-badge,
+  .org-profile-hero__meta span,
+  .myTicketsHero__kicker,
+  .myTicketCard__statusTag,
+  .myTicketCard__ticketQty,
+  .myTicketsSidebar__summaryRow,
+  .user-event-detail__badge,
+  .user-event-detail__status,
+  .user-event-detail__statusPill
+) {
+  border-color: rgba(148, 163, 184, 0.2) !important;
+  background: rgba(148, 163, 184, 0.1) !important;
+  color: #e5e7eb !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode :where(
+  .myTicketsSearch,
+  .myTicketsSort__select,
+  .event-filter,
+  .event-filter__field,
+  .event-filter__select,
+  .org-hero__search-grid,
+  .org-hero__search-item,
+  .org-list__sort select
+) {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  background: rgba(15, 23, 42, 0.82) !important;
+  color: #f8fafc !important;
+}
+
+.user-layout.dark-mode :where(
+  .myTicketsSearch input,
+  .event-filter input,
+  .event-filter select,
+  .org-hero__search-item input,
+  .org-hero__search-item select,
+  .org-list__sort select
+) {
+  color: #f8fafc !important;
+}
+
+.user-layout.dark-mode :where(
+  .myTicketsSearch input::placeholder,
+  .event-filter input::placeholder,
+  .org-hero__search-item input::placeholder
+) {
+  color: #94a3b8 !important;
+}
+
+.user-layout.dark-mode :where(
+  .myTicketsLayoutIcon,
+  .myTicketCard__metaIcon,
+  .myTicketsSidebar__icon,
+  .org-hero__search-icon,
+  .user-event-detail__overviewIcon,
+  .user-event-detail__infoRow svg
+) {
+  background: rgba(124, 58, 237, 0.16) !important;
+  color: #c4b5fd !important;
+}
+
+.user-layout.dark-mode :where(
+  .myTicketsTab:not(.myTicketsTab--active),
+  .category-tabs__pill:not(.category-tabs__pill--active)
+) {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  background: rgba(15, 23, 42, 0.64) !important;
+  color: #cbd5e1 !important;
+}
+
+.user-layout :where(button, .button, a[class*="btn"], a[class*="Btn"]) {
+  min-height: 42px;
+}
+
+.user-layout :where(button, a, input, select, textarea):focus-visible {
+  outline: none;
+  outline-offset: 0;
+}
+
+.user-layout :where(img, svg, button, a, input, select, textarea, [tabindex]):focus,
+.user-layout :where(img, svg, button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: none !important;
+}
+
+.user-layout :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  box-shadow: none !important;
+}
+
+.user-layout select:focus,
+.user-layout select:focus-visible {
+  border-color: #dbe3ef !important;
+  box-shadow: none !important;
+}
+
+.user-layout img {
+  outline: none !important;
+}
+
+.user-layout.dark-mode {
+  --ux-shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.24);
+  --ux-shadow-lift: 0 18px 44px rgba(0, 0, 0, 0.32);
+}
+
+/* User pages simple UX pass: quieter cards, lighter text, fewer generated-looking effects. */
+.user-layout {
+  --ux-radius-panel: 14px;
+  --ux-radius-card: 12px;
+  --ux-radius-control: 10px;
+  --ux-shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --ux-shadow-lift: 0 8px 20px rgba(15, 23, 42, 0.08);
+  --ux-surface: #ffffff;
+  --ux-surface-soft: #f8fafc;
+  --ux-border: rgba(148, 163, 184, 0.22);
+  --ux-text: #111827;
+  --ux-muted: #64748b;
+}
+
+.user-layout.dark-mode {
+  --ux-surface: #0f1224;
+  --ux-surface-soft: #111827;
+  --ux-border: rgba(148, 163, 184, 0.18);
+  --ux-text: #f8fafc;
+  --ux-muted: #cbd5e1;
+  --ux-shadow-soft: none;
+  --ux-shadow-lift: 0 6px 18px rgba(0, 0, 0, 0.24);
+}
+
+.user-layout :where(
+  .user-home,
+  .event-page,
+  .user-event-detail,
+  .org-page,
+  .org-profile-page,
+  .myTicketsPage
+) {
+  color: var(--ux-text) !important;
+}
+
+.user-layout :where(
+  .user-home-hero,
+  .user-home-platform,
+  .user-home-org,
+  .user-home-cta,
+  .event-hero,
+  .event-card,
+  .trending-panel,
+  .event-filter,
+  .category-tabs,
+  .user-event-detail__hero,
+  .user-event-detail__card,
+  .user-event-detail__tickets,
+  .user-event-detail__related,
+  .user-event-detail__ticket,
+  .user-event-detail__organizer,
+  .user-event-detail__infoCard,
+  .org-hero,
+  .org-list__card,
+  .org-profile-hero,
+  .org-profile-about,
+  .org-profile-info,
+  .org-profile-section,
+  .org-profile-community,
+  .org-profile-event-card,
+  .myTicketsHero,
+  .myTicketsControls,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help,
+  .myTicketsSidebar__ctaBox
+) {
+  border-color: var(--ux-border) !important;
+  border-radius: var(--ux-radius-panel) !important;
+  background: var(--ux-surface) !important;
+  box-shadow: var(--ux-shadow-soft) !important;
+}
+
+.user-layout :where(
+  .user-home-hero::before,
+  .user-home-hero::after,
+  .user-home-hero__ambient,
+  .event-hero::before,
+  .event-hero::after,
+  .event-hero__visual::before,
+  .event-hero__visual::after,
+  .org-hero::before,
+  .org-hero::after,
+  .myTicketsHero::before,
+  .myTicketsHero::after
+) {
+  display: none !important;
+}
+
+.user-layout :where(
+  .user-home-hero,
+  .event-hero,
+  .org-hero,
+  .myTicketsHero
+) {
+  overflow: hidden !important;
+}
+
+.user-layout :where(
+  h1,
+  h2,
+  h3,
+  h4,
+  .user-home-hero__title,
+  .event-hero h1,
+  .user-event-detail__hero h1,
+  .org-profile-hero h1,
+  .myTicketsHero__title
+) {
+  font-weight: 620 !important;
+  letter-spacing: -0.025em !important;
+}
+
+.user-layout :where(
+  p,
+  small,
+  span,
+  button,
+  select,
+  input,
+  textarea,
+  .event-card__details,
+  .org-list__description,
+  .myTicketCard__desc,
+  .user-event-detail__about p,
+  .user-event-detail__timelineCopy p
+) {
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+
+.user-layout :where(
+  .user-home-hero,
+  .user-home-platform,
+  .user-home-org,
+  .event-section-heading,
+  .event-card__body,
+  .event-card__organizer,
+  .user-event-detail__card,
+  .user-event-detail__sectionHead,
+  .user-event-detail__relatedBody,
+  .org-list__card,
+  .org-profile-about,
+  .org-profile-info,
+  .org-profile-section,
+  .myTicketsHero,
+  .myTicketCard,
+  .myTicketsSidebar__card
+) {
+  text-align: left !important;
+}
+
+.user-layout :where(
+  .user-home-hero__btn,
+  .user-home-cta__link,
+  .event-filter__submit,
+  .event-card__detailLink,
+  .event-page__load-more,
+  .user-event-detail__primaryBtn,
+  .user-event-detail__saveBtn,
+  .user-event-detail__shareBtn,
+  .user-event-detail__ticket button,
+  .user-event-detail__cartButton,
+  .org-hero__search-btn,
+  .org-hero__register-btn,
+  .org-profile-btn,
+  .myTicketCard__primaryBtn,
+  .myTicketsSidebar__ctaBtn
+) {
+  min-height: 42px !important;
+  border-radius: var(--ux-radius-control) !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  letter-spacing: 0 !important;
+}
+
+.user-layout :where(
+  .user-home-hero__badge,
+  .user-home-hero__liveBadge,
+  .event-card__badge,
+  .event-date,
+  .event-card__date,
+  .event-status,
+  .event-tag,
+  .user-event-detail__badge,
+  .user-event-detail__statusPill,
+  .org-list__status,
+  .org-profile-badge,
+  .myTicketsHero__kicker,
+  .myTicketCard__statusTag,
+  .myTicketCard__ticketQty
+) {
+  border-color: var(--ux-border) !important;
+  background: var(--ux-surface-soft) !important;
+  color: var(--ux-muted) !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.user-layout :where(
+  .event-filter,
+  .org-hero__search-grid,
+  .myTicketsControls
+) {
+  gap: 8px !important;
+}
+
+.user-layout :where(
+  .event-filter__field,
+  .event-filter__select,
+  .org-hero__search-item,
+  .myTicketsSearch,
+  .myTicketsSort__select
+) {
+  border-color: var(--ux-border) !important;
+  background: var(--ux-surface) !important;
+  box-shadow: none !important;
+}
+
+.user-layout :where(
+  .event-hero__visual,
+  .org-hero__visual,
+  .user-home-hero__visual,
+  .myTicketsHero__right
+) {
+  box-shadow: none !important;
+}
+
+.user-layout .event-page .event-filter {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: min(100%, 860px) !important;
+}
+
+.user-layout .event-page .event-filter__submit {
+  width: auto !important;
+  min-width: 126px !important;
+}
+
+.user-layout .event-page .event-hero__visual {
+  min-height: 360px !important;
+}
+
+.user-layout .event-page .event-hero__image {
+  transform: none !important;
+  width: min(100%, 620px) !important;
+  max-height: 420px !important;
+}
+
+.user-layout .org-profile-page .org-profile-hero,
+.user-layout .user-event-detail__hero {
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode :where(
+  .user-home-hero,
+  .user-home-platform,
+  .user-home-org,
+  .user-home-cta,
+  .event-hero,
+  .event-card,
+  .trending-panel,
+  .event-filter,
+  .category-tabs,
+  .user-event-detail__hero,
+  .user-event-detail__card,
+  .user-event-detail__tickets,
+  .user-event-detail__related,
+  .user-event-detail__ticket,
+  .org-hero,
+  .org-list__card,
+  .org-profile-hero,
+  .org-profile-about,
+  .org-profile-info,
+  .org-profile-section,
+  .org-profile-community,
+  .myTicketsHero,
+  .myTicketsControls,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help
+) {
+  background: var(--ux-surface) !important;
+  color: var(--ux-text) !important;
+}
+
+@media (max-width: 760px) {
+  .user-layout :where(
+    .user-home-hero,
+    .event-hero,
+    .org-hero,
+    .myTicketsHero,
+    .user-event-detail__hero
+  ) {
+    border-radius: 12px !important;
+  }
+
+  .user-layout .event-page .event-filter {
+    max-width: 100% !important;
+  }
+
+  .user-layout :where(
+    .event-card,
+    .org-list__card,
+    .myTicketCard,
+    .user-event-detail__card,
+    .user-event-detail__ticket
+  ) {
+    border-radius: 12px !important;
+  }
+}

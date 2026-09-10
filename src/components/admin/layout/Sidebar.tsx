@@ -1,10 +1,127 @@
-import "../../../styles/layout/layout.css";
+import "../../../styles/admin/layout/layout.css";
 import { SidebarItem } from "./SlideBarItem";
+import { useLocation, useParams } from "react-router-dom";
+import {
+  addPermissionTreeCodes,
+  getAllowedOrgWorkspaceSidebarItems,
+  getEffectiveOrgPermissionCodes,
+  getJwtPermissionCodes,
+  getMembershipRoleId,
+  getMembershipRoleName,
+  getMembershipSlug,
+  hasOrgWorkspacePermissionCodes,
+  getSystemAdminSidebarItems,
+  normalizeUserMemberships,
+} from "../../../config/adminPermissionConfig";
+import { getAccessToken } from "../../../constants/authStorage";
+import { jwtDecode } from "jwt-decode";
+import { useEffect, useMemo, useState } from "react";
+import { useOrgsByUser } from "../../../hooks/admin/org/useOrgsByUser";
+import type { JwtPayloadCustom } from "../../../types/JwtPayloadCustom";
+import { roleService } from "../../../services/admin/role.service";
 type SidebarProps = {
   isCollapsed: boolean;
   onToggleSidebar: () => void;
 };
+
 export const Sidebar = ({ isCollapsed, onToggleSidebar }: SidebarProps) => {
+  const location = useLocation();
+  const { slug } = useParams();
+  const isOrgWorkspace = location.pathname.startsWith("/org/") && Boolean(slug);
+  const currentUserId = useMemo(() => {
+    const token = getAccessToken();
+    if (!token) return "";
+
+    try {
+      return jwtDecode<JwtPayloadCustom>(token).sub || "";
+    } catch {
+      return "";
+    }
+  }, []);
+  const { data } = useOrgsByUser(isOrgWorkspace ? currentUserId : "");
+  const orgMembership = useMemo(() => {
+    if (!isOrgWorkspace || !slug) return null;
+    return normalizeUserMemberships(data).find(
+      (membership) => getMembershipSlug(membership) === slug,
+    ) || null;
+  }, [data, isOrgWorkspace, slug]);
+  const [rolePermissionCodes, setRolePermissionCodes] = useState<Set<string> | null>(null);
+  const membershipRoleId = getMembershipRoleId(orgMembership);
+  const membershipRoleName = getMembershipRoleName(orgMembership);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function fetchRolePermissions() {
+      await Promise.resolve();
+
+      if (!isOrgWorkspace || !slug || !orgMembership) {
+        if (!ignore) setRolePermissionCodes(null);
+        return;
+      }
+
+      const baseCodes = getEffectiveOrgPermissionCodes(
+        orgMembership,
+        currentUserId,
+      );
+      if (hasOrgWorkspacePermissionCodes(baseCodes)) {
+        if (!ignore) setRolePermissionCodes(null);
+        return;
+      }
+
+      try {
+        let roleId = membershipRoleId;
+
+        if (!roleId && membershipRoleName) {
+          const rolesRes = await roleService.getRolesByOrgSlug(slug || "", {
+            page: 1,
+            limit: 100,
+          });
+          const roles = rolesRes?.data?.items || rolesRes?.items || [];
+          roleId =
+            roles.find(
+              (role: { id?: string; role_name?: string; roleName?: string }) =>
+                (role.role_name || role.roleName || "").toLowerCase() ===
+                membershipRoleName.toLowerCase(),
+            )?.id || "";
+        }
+
+        if (!roleId) {
+          if (!ignore) setRolePermissionCodes(null);
+          return;
+        }
+
+        const res = await roleService.getRolePermissions(roleId);
+        const permissions = res?.data?.permissions || [];
+        const nextCodes = addPermissionTreeCodes(new Set<string>(), permissions);
+
+        if (!ignore) setRolePermissionCodes(nextCodes);
+      } catch {
+        if (!ignore) setRolePermissionCodes(null);
+      }
+    }
+
+    fetchRolePermissions();
+
+    return () => {
+      ignore = true;
+    };
+  }, [currentUserId, isOrgWorkspace, membershipRoleId, membershipRoleName, orgMembership, slug]);
+
+  const permissionCodes = useMemo(() => {
+    const baseCodes = isOrgWorkspace && orgMembership
+      ? getEffectiveOrgPermissionCodes(orgMembership, currentUserId)
+      : getJwtPermissionCodes();
+
+    rolePermissionCodes?.forEach((code) => baseCodes.add(code));
+    return baseCodes;
+  }, [currentUserId, isOrgWorkspace, orgMembership, rolePermissionCodes]);
+  const visibleItems = isOrgWorkspace
+    ? getAllowedOrgWorkspaceSidebarItems(permissionCodes)
+    : getSystemAdminSidebarItems();
+  const basePath =
+    isOrgWorkspace && slug ? `/org/${slug}` : "/admin";
+
   return (
     <aside className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <button className="toggle-btn" onClick={onToggleSidebar}>
@@ -25,54 +142,20 @@ export const Sidebar = ({ isCollapsed, onToggleSidebar }: SidebarProps) => {
         )}
       </button>
       <div className="logo">
-        <img src="../../public/logo-new.jpg" alt="event logo" />
+        <img src="/logo-event.png" alt="event logo" />
       </div>
       <nav className="sidebar-nav">
         <ul>
-          <SidebarItem
-            to="/admin/dashboard"
-            label="Dashboard"
-            icon="https://img.icons8.com/nolan/96/B0B0B0/2E2E2E/control-panel.png"
-            activeIcon="https://img.icons8.com/nolan/96/control-panel.png"
-            isCollapsed={isCollapsed}
-          />
-
-          <SidebarItem
-            to="/admin/users"
-            label="User"
-            icon="https://img.icons8.com/nolan/96/B0B0B0/2E2E2E/test-account.png"
-            activeIcon="https://img.icons8.com/nolan/64/test-account.png"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarItem
-            to="/admin/organizations"
-            label="Organizations"
-            icon="https://img.icons8.com/nolan/64/B0B0B0/2E2E2E/organization.png"
-            activeIcon="https://img.icons8.com/nolan/64/organization.png"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarItem
-            to="/admin/events"
-            label="Events"
-            icon="https://img.icons8.com/nolan/64/B0B0B0/2E2E2E/event-accepted.png"
-            activeIcon="https://img.icons8.com/nolan/64/event-accepted.png"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarItem
-            to="/admin/reports"
-            label="Reports"
-            icon="https://img.icons8.com/nolan/96/B0B0B0/2E2E2E/ratings.png"
-            activeIcon="https://img.icons8.com/nolan/64/ratings.png"
-            isCollapsed={isCollapsed}
-          />
-
-          <SidebarItem
-            to="/admin/roles"
-            label="Roles"
-            icon="https://img.icons8.com/nolan/96/B0B0B0/2E2E2E/user-shield.png"
-            activeIcon="https://img.icons8.com/nolan/64/user-shield.png"
-            isCollapsed={isCollapsed}
-          />
+          {visibleItems.map((item) => (
+            <SidebarItem
+              key={item.key}
+              to={item.path.replace("/admin", basePath)}
+              label={item.label}
+              icon={item.icon}
+              activeIcon={item.activeIcon}
+              isCollapsed={isCollapsed}
+            />
+          ))}
         </ul>
       </nav>
     </aside>

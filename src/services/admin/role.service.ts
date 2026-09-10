@@ -7,12 +7,19 @@ export const roleService = {
     const res = await api.get('roles', { params: query });
     return res.data;
   },
+  getRolesByOrgSlug: async (slug: string, query?: Query) => {
+    const res = await api.get(`/roles/org/${slug}`, { params: query });
+    return res.data;
+  },
   getRoleById: async (id: string) => {
     const res = await api.get(`/roles/${id}`);
     return res.data;
   },
+  getRolePermissions: async (id: string) => {
+    const res = await api.get(`/roles/${id}/permissions`);
+    return res.data;
+  },
   createRole: async (payload: RolePayload) => {
-    console.log(payload)
     const res = await api.post('roles', payload);
     return res.data;
   },

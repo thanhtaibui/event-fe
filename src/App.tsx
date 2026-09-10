@@ -5,12 +5,15 @@ import { router } from "./routes/index"; // Đảm bảo router được import
 import { RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./hooks/auth/AuthProvider";
 import { Toaster } from "react-hot-toast";
+import { Suspense } from "react";
 
 function App() {
   return (
     <>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <Suspense fallback={null}>
+          <RouterProvider router={router} />
+        </Suspense>
         <Toaster
           position="top-right"
           toastOptions={{
@@ -23,14 +26,14 @@ function App() {
         />
         <ToastContainer
           position="top-right"
-          autoClose={2000}
+          autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
-          closeOnClick
+          closeOnClick={false}
           rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
+          pauseOnFocusLoss={false}
+          draggable={false}
+          pauseOnHover={false}
           theme="light"
           transition={Slide}
         />

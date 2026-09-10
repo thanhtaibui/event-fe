@@ -1,11 +1,12 @@
 import Item from "./item";
 import ItemForm from "./itemForm";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 
 import "../../../styles/event/item.css";
 import { useItems } from "../../../hooks/admin/item/useItems";
 import { useState } from "react";
-import arrowGif from "../../../../public/icons8-arrow.gif";
+
+const arrowGif = "/icons8-arrow.gif";
 
 export type ItemModalType = "create" | "update";
 
@@ -22,14 +23,12 @@ export default function ItemModal({
   type: _type,
   id,
 }: ItemModalProps) {
-  if (!isOpen) return null;
-
   const { data: items, fetchItems } = useItems(id);
 
   const [formType, setFormType] = useState<"create" | "update">("create");
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [refetchKey] = useState(0);
+
+  if (!isOpen) return null;
 
   const handleSelectItem = (item: any) => {
     setSelectedItem({ ...item });
@@ -83,7 +82,7 @@ export default function ItemModal({
           </div>
           <div className="item-modal__right">
             <ItemForm
-              key={refetchKey}
+              key={`${formType}-${selectedItem?.id || "new"}`}
               type={formType}
               item={selectedItem}
               onSuccess={() => {

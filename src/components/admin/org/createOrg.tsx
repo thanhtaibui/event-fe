@@ -3,10 +3,15 @@ import { createPortal } from "react-dom";
 import { useCreateOrg } from "../../../hooks/admin/org/useCreate";
 import type { PayloadOrganizationDto } from "../../../types/organization/create";
 import { useUser } from "../../../hooks/admin/user/useUser";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 import { toast } from "react-toastify";
 import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";
 import Select from "react-select";
+import {
+  buildIndustryValue,
+  INDUSTRY_OTHER_VALUE,
+} from "../../../constants/industryOptions";
+import IndustryMultiSelect from "../../common/IndustryMultiSelect";
 
 export const CreateOrgPopup = ({
   onClose,
@@ -31,6 +36,8 @@ export const CreateOrgPopup = ({
     phone: "",
     website: "",
   });
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
+  const [otherIndustry, setOtherIndustry] = useState("");
 
   const { data: usersData } = useUser();
   const users = usersData?.items ?? [];
@@ -68,7 +75,9 @@ export const CreateOrgPopup = ({
   };
 
   const handleSubmit = async () => {
-    if (!form.name || !form.ownerId || !form.industry) {
+    const industry = buildIndustryValue(selectedIndustries, otherIndustry);
+
+    if (!form.name || !form.ownerId || !industry) {
       toast.warning("Please fill required fields");
       return;
     }
@@ -76,6 +85,7 @@ export const CreateOrgPopup = ({
     setUiLoading(true);
     const success = await createOrg({
       ...form,
+      industry,
       bio: form.bio || null,
     } as PayloadOrganizationDto);
     if (success) {
@@ -216,13 +226,22 @@ export const CreateOrgPopup = ({
 
           <div className="form-group">
             <label>Industry</label>
-            <input
-              name="industry"
-              placeholder="e.g. Technology, Finance"
-              value={form.industry || ""}
-              onChange={handleChange}
+            <IndustryMultiSelect
+              selected={selectedIndustries}
+              onChange={setSelectedIndustries}
             />
           </div>
+
+          {selectedIndustries.includes(INDUSTRY_OTHER_VALUE) && (
+            <div className="form-group">
+              <label>Other Industry</label>
+              <input
+                placeholder="Enter industry"
+                value={otherIndustry}
+                onChange={(event) => setOtherIndustry(event.target.value)}
+              />
+            </div>
+          )}
 
           <div className="form-group">
             <label>Address</label>

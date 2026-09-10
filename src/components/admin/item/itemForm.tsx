@@ -50,7 +50,6 @@ export default function ItemForm({
   }, [type, item]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("poster before submit:", posterUrl, poster);
 
     if (!posterUrl && !poster) {
       toast.warning("Image Item is required");

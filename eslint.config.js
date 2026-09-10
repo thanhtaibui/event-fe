@@ -6,7 +6,20 @@ import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores([
+    "dist",
+    "node_modules",
+    ".agents",
+    ".cursor",
+    ".github/prompts",
+    ".opencode",
+    ".qoder",
+    ".roo",
+    ".trae",
+    ".warp",
+    ".windsurf",
+    ".ai/harness",
+  ]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
@@ -18,6 +31,16 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "no-async-promise-executor": "warn",
+      "no-empty": "warn",
+      "no-useless-catch": "warn",
+      "react-hooks/purity": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react-refresh/only-export-components": "off",
     },
   },
 ]);

@@ -38,6 +38,7 @@ export const SearchBar = ({
   };
   return (
     <Box
+      className="admin-toolbar"
       sx={{
         display: "flex",
         alignItems: "center",
@@ -46,8 +47,12 @@ export const SearchBar = ({
         mb: 3,
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Box
+        className="admin-toolbar__controls"
+        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+      >
         <TextField
+          className="admin-search-field"
           sx={{
             width: {
               xs: "100%",

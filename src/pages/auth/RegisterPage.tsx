@@ -1,3 +1,5 @@
+import LoginForm from "../../components/auth/LoginForm";
+
 export default function RegisterPage() {
-  return null;
+  return <LoginForm mode="register" />;
 }

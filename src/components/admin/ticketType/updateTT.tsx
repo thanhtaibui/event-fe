@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 import type { TicketType } from "../../../types/ticket-type/ticket-type";
 import { toast } from "react-toastify";
 import { useTicketTypeById } from "../../../hooks/admin/ticketType/useTicketTypeById";
@@ -58,18 +58,22 @@ export const UpdateTT: React.FC<UpdateTTProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      form.price = parseNumber(form.price?.toString() || "0");
-      form.quantity = Number(form.quantity);
-      // console.log("Submitting form:", form);
-      const res = await updateTicketType(id, form as TicketType);
+      setUiLoading(true);
+      const payload = {
+        ...form,
+        price: parseNumber(form.price?.toString() || "0"),
+        quantity: Number(form.quantity),
+      } as TicketType;
+      const res = await updateTicketType(id, payload);
       if (res) {
         toast.success("Ticket Tier updated successfully!");
         await onSuccess();
-        setUiLoading(false);
         onClose();
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setUiLoading(false);
     }
   };
   return (

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import ReactDOM from "react-dom";
 import Cropper from "react-easy-crop";
 import type { Point, Area } from "react-easy-crop";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 
 interface BannerCropperProps {
   image: string;

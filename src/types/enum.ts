@@ -10,6 +10,16 @@ export const OrgRequestStatus = {
 // Tạo Type để dùng trong code
 export type OrgRequestStatus = typeof OrgRequestStatus[keyof typeof OrgRequestStatus];
 
+export const ReportStatus = {
+  PENDING: 'pending',
+  PROCESSING: 'processing',
+  RESOLVED: 'resolved',
+  REJECTED: 'rejected ',
+  SPAM: 'spam',
+} as const;
+
+export type ReportStatus = typeof ReportStatus[keyof typeof ReportStatus];
+
 export const EventStatus = {
   DRAFT: 'draft',
   PUBLISHED: 'published',

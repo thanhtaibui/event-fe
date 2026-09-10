@@ -101,7 +101,7 @@
   font-size: 22px;
   line-height: 1.25;
   margin: 0;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
@@ -126,7 +126,7 @@
 }
 
 .eventName {
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 6px;
   font-size: 16px;
 }
@@ -202,7 +202,7 @@
 }
 
 .loadingText {
-  font-weight: 800;
+  font-weight: 700;
   color: rgba(109, 40, 217, 0.95);
 }
 
@@ -226,19 +226,19 @@
 
 .successLine {
   font-size: 16px;
-  font-weight: 900;
+  font-weight: 650;
   color: #065f46;
 }
 
 .declinedLine {
   text-align: center;
-  font-weight: 800;
+  font-weight: 700;
   color: rgba(71, 85, 105, 0.95);
 }
 
 .errorLine {
   text-align: center;
-  font-weight: 800;
+  font-weight: 700;
   color: #9f1239;
 }
 
@@ -247,7 +247,7 @@
   cursor: pointer;
   border-radius: 14px;
   padding: 12px 16px;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 14px;
   transition:
     transform 160ms ease,

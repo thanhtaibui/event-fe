@@ -20,5 +20,5 @@ export const UseReport = (query: Query) => {
   useEffect(() => {
     fetReports();
   }, [JSON.stringify(query)])
-  return { data, loading };
+  return { data, loading, fetchData: fetReports };
 }

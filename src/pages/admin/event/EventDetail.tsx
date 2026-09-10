@@ -1,22 +1,44 @@
-import React, { useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import "../../../styles/admin/event.css";
 import { useParams } from "react-router-dom";
 import { useEventById } from "../../../hooks/admin/event/useEventById";
 import { decodeId } from "../../../utils/hash";
 // import DashboardCard from "../../../components/dashboard/DashboardCard";
 import { EVENT_STATUS_STYLES } from "../../../styles/status-styles";
-import { UpdateEventPopup } from "../../../components/admin/event/updateEvent";
+import AdminSkeleton from "../../../components/admin/skeleton/AdminSkeleton";
 
-import { TicketCard } from "../../../components/admin/ticketType/ticketCard";
-import { InviteCard } from "../../../components/admin/invite/inviteCard";
-import { InfoCard } from "../../../components/admin/event/infoCard";
-import { StatsCard } from "../../../components/admin/event/statsCard";
-import ItemModal from "../../../components/admin/item/itemModal";
+const TicketCard = lazy(() =>
+  import("../../../components/admin/ticketType/ticketCard").then((module) => ({
+    default: module.TicketCard,
+  })),
+);
+const InviteCard = lazy(() =>
+  import("../../../components/admin/invite/inviteCard").then((module) => ({
+    default: module.InviteCard,
+  })),
+);
+const InfoCard = lazy(() =>
+  import("../../../components/admin/event/infoCard").then((module) => ({
+    default: module.InfoCard,
+  })),
+);
+const StatsCard = lazy(() =>
+  import("../../../components/admin/event/statsCard").then((module) => ({
+    default: module.StatsCard,
+  })),
+);
+const UpdateEventPopup = lazy(() =>
+  import("../../../components/admin/event/updateEvent").then((module) => ({
+    default: module.UpdateEventPopup,
+  })),
+);
+const ItemModal = lazy(() => import("../../../components/admin/item/itemModal"));
 
 const EventDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const realId = decodeId(id || "");
-  const { data: event, refetch } = useEventById(realId);
+  const { data: event, loading, refetch } = useEventById(realId);
+  const eventBanner = event?.eventBanner || "/default-banner.png";
 
   const [showPopup, setShowPopup] = useState<
     "edit" | "items" | "updateTT" | "inviteEmail" | null
@@ -24,25 +46,31 @@ const EventDetail: React.FC = () => {
 
   if (!id) return;
 
+  if (loading) return <AdminSkeleton variant="detail" />;
+
   return (
     <div className="event-detail-container">
       {showPopup === "edit" && (
-        <UpdateEventPopup
-          id={event.id || ""}
-          onClose={() => setShowPopup(null)}
-          onSuccess={() => {
-            setShowPopup(null);
-            refetch();
-          }}
-        />
+        <Suspense fallback={null}>
+          <UpdateEventPopup
+            id={event.id || ""}
+            onClose={() => setShowPopup(null)}
+            onSuccess={() => {
+              setShowPopup(null);
+              refetch();
+            }}
+          />
+        </Suspense>
       )}
       {showPopup === "items" && (
-        <ItemModal
-          isOpen={true}
-          type="create"
-          id={event.id}
-          onClose={() => setShowPopup(null)}
-        />
+        <Suspense fallback={null}>
+          <ItemModal
+            isOpen={true}
+            type="create"
+            id={event.id}
+            onClose={() => setShowPopup(null)}
+          />
+        </Suspense>
       )}
 
       {/* Top Header */}
@@ -60,7 +88,6 @@ const EventDetail: React.FC = () => {
             >
               {event?.status}
             </span>
-            {/* <span className="status-badge status-confirmed">Confirmed</span> */}
           </div>
         </div>
         <div className="btn-content">
@@ -78,18 +105,7 @@ const EventDetail: React.FC = () => {
         {/* Left Column - 70% */}
         {/* Hero Card */}
         <div className="hero-card">
-          {event?.eventPoster ? (
-            <img
-              src={
-                event.eventPoster ||
-                "https://via.placeholder.com/800x400?text=Event+Image"
-              }
-              alt="Event"
-              className="hero-image"
-            />
-          ) : (
-            <div className="hero-preview">Dashboard Preview</div>
-          )}
+          <img src={eventBanner} alt="Event banner" className="hero-image" />
         </div>
 
         <div className="right-column">
@@ -97,9 +113,11 @@ const EventDetail: React.FC = () => {
           {/* Right Column - 30% */}
           {event ? (
             <>
-              <TicketCard id={event.id} />
-              <InviteCard id={event.id} />
-              <StatsCard id={event.id} />
+              <Suspense fallback={<AdminSkeleton variant="table" rows={2} />}>
+                <TicketCard id={event.id} />
+                <InviteCard id={event.id} />
+                <StatsCard id={event.id} />
+              </Suspense>
             </>
           ) : (
             <div className="animate-pulse h-20 bg-gray-200 rounded" />
@@ -118,7 +136,9 @@ const EventDetail: React.FC = () => {
         </div>
 
         {event ? (
-          <InfoCard id={event.id} />
+          <Suspense fallback={<AdminSkeleton variant="detail" />}>
+            <InfoCard id={event.id} />
+          </Suspense>
         ) : (
           <div className="animate-pulse h-20 bg-gray-200 rounded" />
         )}

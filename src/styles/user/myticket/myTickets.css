@@ -1,0 +1,4808 @@
+.myTicketsPage {
+  --bg-main: #04020c;
+  --bg-surface: #0e0b22;
+  --bg-surface-blur: rgba(14, 11, 34, 0.78);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #ffffff;
+  --text-secondary: #c4b5fd;
+  --text-muted: #94a3b8;
+  --accent-purple: #7c3aed;
+  --accent-purple-light: #a78bfa;
+  --accent-purple-gradient: linear-gradient(135deg, #7c3aed, #a855f7);
+  --accent-cyan: #22d3ee;
+  --ticket-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.light-mode .myTicketsPage {
+  --bg-main: #f7f8ff;
+  --bg-surface: #ffffff;
+  --bg-surface-blur: rgba(255, 255, 255, 0.86);
+  --border-color: rgba(124, 58, 237, 0.13);
+  --text-primary: #111827;
+  --text-secondary: #4c1d95;
+  --text-muted: #64748b;
+  --accent-purple: #6d28d9;
+  --accent-purple-light: #7c3aed;
+  --accent-purple-gradient: linear-gradient(135deg, #6d28d9, #a855f7);
+  --accent-cyan: #0891b2;
+  --ticket-shadow: 0 24px 60px rgba(79, 70, 229, 0.1);
+}
+
+.myTicketsPage {
+  min-height: calc(100vh - 80px);
+  color: var(--text-primary);
+  padding-bottom: 56px;
+  background:
+    radial-gradient(
+      780px 420px at 8% 4%,
+      rgba(124, 58, 237, 0.28),
+      transparent 62%
+    ),
+    radial-gradient(
+      680px 360px at 88% 12%,
+      rgba(34, 211, 238, 0.13),
+      transparent 58%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 340px),
+    var(--bg-main);
+}
+
+.light-mode .myTicketsPage {
+  background:
+    radial-gradient(
+      780px 420px at 8% 4%,
+      rgba(124, 58, 237, 0.16),
+      transparent 62%
+    ),
+    radial-gradient(
+      680px 360px at 88% 12%,
+      rgba(14, 165, 233, 0.12),
+      transparent 58%
+    ),
+    #f7f8ff;
+}
+
+.myTicketsPage__container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 112px 24px 0;
+}
+
+.myTicketsHero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  min-height: 260px;
+  margin-bottom: 28px;
+  padding: 34px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 40%),
+    rgba(255, 255, 255, 0.045);
+  box-shadow: var(--ticket-shadow);
+  backdrop-filter: blur(18px);
+}
+
+.myTicketsHero::before,
+.myTicketsHero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.myTicketsHero::before {
+  width: 340px;
+  height: 340px;
+  right: -80px;
+  top: -120px;
+  background: rgba(124, 58, 237, 0.36);
+  filter: blur(18px);
+}
+
+.myTicketsHero::after {
+  width: 220px;
+  height: 220px;
+  left: 34%;
+  bottom: -130px;
+  background: rgba(34, 211, 238, 0.16);
+  filter: blur(12px);
+}
+
+.light-mode .myTicketsHero {
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.myTicketsHero__left {
+  flex: 1;
+  min-width: 0;
+}
+
+.myTicketsHero__leftColumns {
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+}
+
+.myTicketsHero__iconWrap {
+  width: 62px;
+  height: 62px;
+  flex: 0 0 auto;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(124, 58, 237, 0.96), rgba(168, 85, 247, 0.7)),
+    rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 50px rgba(124, 58, 237, 0.32);
+}
+
+.myTicketsHero__icon {
+  stroke-width: 2.4;
+}
+
+.myTicketsHero__text {
+  display: flex;
+  flex-direction: column;
+}
+
+.myTicketsHero__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-bottom: 12px;
+  padding: 7px 11px;
+  border: 1px solid rgba(167, 139, 250, 0.24);
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.12);
+  color: var(--accent-purple-light);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.myTicketsHero__title {
+  font-family: inherit;
+  font-size: clamp(2.35rem, 5vw, 4.5rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+  margin: 0;
+  font-weight: 650;
+}
+
+.myTicketsHero__desc {
+  margin: 14px 0 0;
+  color: var(--text-muted);
+  max-width: 520px;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.myTicketsHero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.myTicketsHero__stat {
+  min-width: 104px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.light-mode .myTicketsHero__stat {
+  background: rgba(124, 58, 237, 0.05);
+}
+
+.myTicketsHero__statValue {
+  font-size: 1.55rem;
+  font-weight: 650;
+}
+
+.myTicketsHero__statLabel {
+  margin-top: 3px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.myTicketsHero__right {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 330px;
+}
+
+.myTicketsTicket3D {
+  width: 330px;
+  height: 176px;
+  position: relative;
+  transform: perspective(900px) rotateY(-18deg) rotateX(7deg);
+}
+
+.myTicketsTicket3D__front {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 22% 28%, rgba(255, 255, 255, 0.36), transparent 18%),
+    linear-gradient(135deg, #7c3aed, #a855f7 54%, #22d3ee);
+  box-shadow:
+    0 30px 90px rgba(124, 58, 237, 0.34),
+    0 0 0 1px rgba(255, 255, 255, 0.22) inset;
+}
+
+.myTicketsTicket3D__stripe {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 58px;
+  height: 54px;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.28),
+    rgba(255, 255, 255, 0.08)
+  );
+  backdrop-filter: blur(10px);
+}
+
+.myTicketsTicket3D__cut {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 22px;
+  height: 16px;
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.55) 0 9px,
+      transparent 9px 18px
+    );
+  opacity: 0.74;
+}
+
+.myTicketsLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 28px;
+  align-items: start;
+}
+
+.myTicketsMain,
+.myTicketsSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.myTicketsControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  background: var(--bg-surface-blur);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(16px);
+}
+
+.myTicketsControls__tabs {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.light-mode .myTicketsControls__tabs {
+  background: rgba(124, 58, 237, 0.06);
+}
+
+.myTicketsTab {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 650;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease,
+    border-color 180ms ease;
+}
+
+.myTicketsTab:hover {
+  color: var(--text-primary);
+}
+
+.myTicketsTab--active {
+  color: #ffffff;
+  background: var(--accent-purple-gradient);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 10px 26px rgba(124, 58, 237, 0.26);
+}
+
+.myTicketsControls__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.myTicketsSort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.myTicketsSort__label {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+.myTicketsSort__select {
+  height: 42px;
+  min-width: 138px;
+}
+
+.myTicketsLayoutIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-purple-light);
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.myTicketsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.myTicketsEmpty {
+  padding: 28px;
+  border: 1px dashed rgba(167, 139, 250, 0.35);
+  border-radius: 22px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.035);
+  text-align: center;
+  font-weight: 700;
+}
+
+.myTicketCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 44%),
+    var(--bg-surface-blur);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(14px);
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.myTicketCard::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: -1px;
+  width: 4px;
+  border-radius: 999px;
+  background: var(--accent-purple-gradient);
+  opacity: 0.85;
+}
+
+.myTicketCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(167, 139, 250, 0.34);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.24);
+}
+
+.light-mode .myTicketCard {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.myTicketCard__left {
+  display: grid;
+  grid-template-columns: 168px 82px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.myTicketCard__eventImageWrap {
+  width: 168px;
+  height: 112px;
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  flex: 0 0 auto;
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.myTicketCard__eventImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.01);
+  transition: transform 240ms ease;
+}
+
+.myTicketCard:hover .myTicketCard__eventImage {
+  transform: scale(1.06);
+}
+
+.myTicketCard__statusTag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(12px);
+}
+
+.myTicketCard__statusTag--upcoming {
+  background: rgba(20, 184, 166, 0.2);
+  border: 1px solid rgba(45, 212, 191, 0.34);
+  color: #ccfbf1;
+}
+
+.light-mode .myTicketCard__statusTag--upcoming {
+  color: #0f766e;
+}
+
+.myTicketCard__statusTag--past {
+  background: rgba(124, 58, 237, 0.18);
+  border: 1px solid rgba(167, 139, 250, 0.34);
+  color: #ddd6fe;
+}
+
+.light-mode .myTicketCard__statusTag--past {
+  color: #6d28d9;
+}
+
+.myTicketCard__dateBadge {
+  width: 82px;
+  min-height: 98px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  background: rgba(124, 58, 237, 0.09);
+}
+
+.myTicketCard__dateMonth {
+  color: var(--accent-purple-light);
+  font-weight: 650;
+  font-size: 0.78rem;
+}
+
+.myTicketCard__dateDay {
+  margin-top: 4px;
+  font-weight: 650;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.myTicketCard__dateWeekday {
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-weight: 650;
+  font-size: 0.78rem;
+}
+
+.myTicketCard__textInfo {
+  min-width: 0;
+}
+
+.myTicketCard__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--accent-purple-light);
+  font-size: 0.78rem;
+  font-weight: 650;
+  margin-bottom: 8px;
+}
+
+.myTicketCard__eventName {
+  margin: 0;
+  font-size: 1.18rem;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.myTicketCard__desc {
+  margin: 7px 0 0;
+  color: var(--text-muted);
+  max-width: 460px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.55;
+}
+
+.myTicketCard__metaRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.myTicketCard__metaIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  color: var(--accent-cyan);
+  background: rgba(34, 211, 238, 0.11);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.myTicketCard__metaText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.myTicketCard__right {
+  display: grid;
+  grid-template-columns: 72px minmax(124px, auto) 42px;
+  align-items: center;
+  gap: 14px;
+  flex: 0 0 auto;
+}
+
+.myTicketCard__ticketQty {
+  min-height: 74px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  color: var(--accent-purple-light);
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.myTicketCard__ticketQtyValue {
+  margin-top: 3px;
+  color: var(--text-primary);
+  font-weight: 650;
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.myTicketCard__ticketQtyLabel {
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 650;
+}
+
+.myTicketCard__primaryBtn,
+.myTicketsSidebar__ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--accent-purple-gradient);
+  color: #ffffff;
+  font-weight: 650;
+  text-decoration: none;
+  box-shadow: 0 14px 34px rgba(124, 58, 237, 0.28);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.myTicketCard__primaryBtn {
+  min-height: 44px;
+  border-radius: 999px;
+  padding: 12px 18px;
+  white-space: nowrap;
+}
+
+.myTicketCard__primaryBtn:hover,
+.myTicketsSidebar__ctaBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 44px rgba(124, 58, 237, 0.34);
+}
+
+.myTicketCard__kebab {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.myTicketCard__kebab:hover {
+  color: var(--text-primary);
+  background: rgba(124, 58, 237, 0.12);
+  transform: translateY(-1px);
+}
+
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsSidebar__ctaBox {
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  padding: 18px;
+  background: var(--bg-surface-blur);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(14px);
+}
+
+.light-mode .myTicketsSidebar__card,
+.light-mode .myTicketsSidebar__help {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.myTicketsSidebar__sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+  font-weight: 650;
+}
+
+.myTicketsSidebar__sectionTitle svg {
+  color: var(--accent-purple-light);
+}
+
+.myTicketsSidebar__summaryList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.myTicketsSidebar__summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 14px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.045);
+  font-weight: 700;
+}
+
+.light-mode .myTicketsSidebar__summaryRow {
+  background: rgba(124, 58, 237, 0.055);
+}
+
+.myTicketsSidebar__summaryRow span:last-child {
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+
+.myTicketsSidebar__nextRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.myTicketsSidebar__nextImage {
+  width: 62px;
+  height: 62px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+}
+
+.myTicketsSidebar__nextText {
+  min-width: 0;
+}
+
+.myTicketsSidebar__nextEvent {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 650;
+  margin-bottom: 4px;
+}
+
+.myTicketsSidebar__nextOrg,
+.myTicketsSidebar__nextDate {
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.84rem;
+}
+
+.myTicketsSidebar__nextDate {
+  margin-top: 5px;
+  color: var(--accent-purple-light);
+}
+
+.myTicketsSidebar__ctaBtn {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 16px;
+  border-radius: 15px;
+}
+
+.myTicketsSidebar__ctaBox {
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+  text-align: left;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.34), transparent 24%),
+    var(--accent-purple-gradient);
+}
+
+.myTicketsSidebar__ctaBox::after {
+  content: "";
+  position: absolute;
+  right: -44px;
+  bottom: -44px;
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  border: 24px solid rgba(255, 255, 255, 0.12);
+}
+
+.myTicketsSidebar__ctaTitle {
+  position: relative;
+  z-index: 1;
+  font-weight: 650;
+  font-size: 1.12rem;
+}
+
+.myTicketsSidebar__ctaSub {
+  position: relative;
+  z-index: 1;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.84);
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.myTicketsSidebar__ctaBtn--purple {
+  position: relative;
+  z-index: 1;
+  border-color: rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: none;
+}
+
+.myTicketsSidebar__helpList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.myTicketsSidebar__helpLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 4px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 700;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.myTicketsSidebar__helpLink:hover {
+  color: var(--text-primary);
+  transform: translateX(2px);
+}
+
+.myTicketsSidebar__helpArrow {
+  color: var(--accent-purple-light);
+  font-weight: 650;
+}
+
+@media (max-width: 1080px) {
+  .myTicketsLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketsSidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .myTicketsPage__container {
+    padding: 96px 18px 0;
+  }
+
+  .myTicketsHero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 26px;
+  }
+
+  .myTicketsHero__right {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .myTicketCard {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 74px 1fr 42px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketsHero__leftColumns {
+    flex-direction: column;
+  }
+
+  .myTicketsHero__stats,
+  .myTicketsControls,
+  .myTicketsControls__right,
+  .myTicketsSort {
+    width: 100%;
+  }
+
+  .myTicketsHero__stat {
+    flex: 1 1 92px;
+  }
+
+  .myTicketsControls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .myTicketsControls__tabs {
+    width: 100%;
+  }
+
+  .myTicketsTab {
+    flex: 1;
+  }
+
+  .myTicketsSort__select {
+    flex: 1;
+  }
+
+  .myTicketsLayoutIcon {
+    display: none;
+  }
+
+  .myTicketCard__left {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 100%;
+    height: 180px;
+  }
+
+  .myTicketCard__dateBadge {
+    width: 100%;
+    min-height: 72px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+  }
+
+  .myTicketCard__dateDay {
+    margin-top: 0;
+  }
+
+  .myTicketCard__desc,
+  .myTicketCard__metaText {
+    white-space: normal;
+  }
+
+  .myTicketsSidebar {
+    grid-template-columns: 1fr;
+  }
+}
+
+.user-layout.dark-mode .myTicketsPage,
+.user-layout.dark-mode .myTicketsHero,
+.user-layout.dark-mode .myTicketsControls,
+.user-layout.dark-mode .myTicketsHero__right,
+.user-layout.dark-mode .myTicketCard,
+.user-layout.dark-mode .myTicketsSidebar__card,
+.user-layout.dark-mode .myTicketsSidebar__help,
+.user-layout.dark-mode .myTicketsSidebar__ctaBox {
+  background: #070817 !important;
+  color: #f8fafc !important;
+}
+
+.user-layout.dark-mode .myTicketCard,
+.user-layout.dark-mode .myTicketsSidebar__card,
+.user-layout.dark-mode .myTicketsSidebar__help,
+.user-layout.dark-mode .myTicketsSidebar__ctaBox {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+/* MyTickets clean white rebuild */
+.user-layout .myTicketsPage {
+  --wallet-bg: #ffffff;
+  --wallet-card: #ffffff;
+  --wallet-border: rgba(15, 23, 42, 0.1);
+  --wallet-line: rgba(109, 40, 217, 0.18);
+  --wallet-ink: #111827;
+  --wallet-muted: #5f6b7c;
+  min-height: 100dvh;
+  color: var(--wallet-ink);
+  background: #ffffff !important;
+}
+
+.myTicketsPage__container {
+  max-width: 1240px;
+  padding: 32px clamp(18px, 4vw, 44px) 70px;
+}
+
+.myTicketsHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  min-height: 190px;
+  margin-bottom: 22px;
+  padding: 24px 0 18px;
+  background: #ffffff !important;
+}
+
+.myTicketsHero__leftColumns {
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.myTicketsHero__iconWrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+}
+
+.myTicketsHero__kicker {
+  margin-bottom: 12px;
+  padding: 7px 12px;
+  font-size: 0.72rem;
+}
+
+.myTicketsHero__title {
+  color: #111827;
+  font-size: clamp(3rem, 5.4vw, 5.2rem);
+  line-height: 0.92;
+  letter-spacing: -0.07em;
+}
+
+.myTicketsHero__desc {
+  max-width: 520px;
+  margin-top: 14px;
+  color: #526078;
+  font-size: 1rem;
+}
+
+.myTicketsHero__right {
+  min-height: 150px;
+  border-radius: 18px;
+  background: #ffffff !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(109, 40, 217, 0.14),
+    0 18px 40px rgba(79, 70, 229, 0.08);
+}
+
+.myTicketsTicket3D {
+  width: 190px;
+  height: 104px;
+}
+
+.myTicketsLayout {
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 22px;
+}
+
+.myTicketsControls {
+  min-height: 48px;
+  margin-bottom: 18px;
+  background: #ffffff !important;
+}
+
+.myTicketsTab {
+  min-width: 100px;
+  min-height: 40px;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.myTicketsSearch {
+  width: min(380px, 32vw);
+  min-height: 40px;
+  background: #ffffff;
+}
+
+.myTicketsSort__select,
+.myTicketsLayoutIcon {
+  min-height: 40px;
+  background: #ffffff;
+}
+
+.myTicketsList {
+  gap: 16px;
+}
+
+.myTicketCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 184px;
+  min-height: 220px;
+  overflow: visible;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-radius: 20px;
+  background: #ffffff !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.065);
+}
+
+.myTicketCard::after {
+  right: 184px;
+}
+
+.myTicketCard__left {
+  grid-template-columns: 300px minmax(0, 1fr);
+}
+
+.myTicketCard__eventImageWrap {
+  width: 300px;
+  min-height: 220px;
+  border-radius: 20px 0 0 20px;
+}
+
+.myTicketCard__textInfo {
+  padding: 30px 32px;
+}
+
+.myTicketCard__category {
+  margin-bottom: 14px;
+  padding: 6px 11px;
+}
+
+.myTicketCard__eyebrow {
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+
+.myTicketCard__eventName {
+  max-width: 460px;
+  font-size: clamp(1.45rem, 2.1vw, 1.85rem);
+  line-height: 1.18;
+}
+
+.myTicketCard__metaRow {
+  margin-top: 15px;
+  font-size: 0.94rem;
+}
+
+.myTicketCard__right {
+  gap: 10px;
+  padding: 22px 18px;
+  background: #ffffff;
+  border-radius: 0 20px 20px 0;
+}
+
+.myTicketCard__right::before,
+.myTicketCard__right::after {
+  background: #ffffff;
+}
+
+.myTicketCard__ticketId {
+  text-align: center;
+}
+
+.myTicketCard__qr {
+  width: 94px;
+  height: 94px;
+}
+
+.myTicketCard__primaryBtn {
+  min-height: 44px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+}
+
+.myTicketsSidebar {
+  top: 108px;
+  gap: 14px;
+}
+
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsSidebar__ctaBox {
+  border-color: rgba(15, 23, 42, 0.09);
+  border-radius: 18px;
+  background: #ffffff !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.06);
+}
+
+.myTicketsSidebar__ctaBox {
+  background: linear-gradient(135deg, #17122f, #6d28d9 58%, #2563eb) !important;
+}
+
+@media (max-width: 1020px) {
+  .myTicketsHero,
+  .myTicketsLayout,
+  .myTicketCard {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketsHero__right {
+    display: none;
+  }
+
+  .myTicketCard::after {
+    display: none;
+  }
+
+  .myTicketCard__left {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 260px;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 1fr 96px 160px;
+    align-items: center;
+    justify-items: stretch;
+    border-radius: 0 0 20px 20px;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketsPage__container {
+    padding-inline: 14px;
+  }
+
+  .myTicketCard__left,
+  .myTicketCard__right {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+  }
+}
+
+/* Ticket wallet premium polish */
+.myTicketsPage {
+  --wallet-bg: #f6f8fc;
+  --wallet-card: #ffffff;
+  --wallet-border: rgba(98, 84, 164, 0.16);
+  --wallet-line: rgba(124, 58, 237, 0.18);
+  --wallet-ink: #101827;
+  --wallet-muted: #64748b;
+  --wallet-purple: #6d28d9;
+  background: #f6f8fc;
+}
+
+.myTicketsPage__container {
+  max-width: 1320px;
+  padding-top: 24px;
+}
+
+.myTicketsHero {
+  min-height: 214px;
+  margin-bottom: 22px;
+  padding: 34px 0 24px;
+  background: transparent !important;
+}
+
+.myTicketsHero__title {
+  font-size: clamp(3rem, 5.4vw, 5.2rem);
+  letter-spacing: -0.07em;
+}
+
+.myTicketsHero__right {
+  min-height: 168px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px var(--wallet-border);
+}
+
+.myTicketsControls {
+  margin-bottom: 18px;
+}
+
+.myTicketsSearch {
+  width: min(360px, 30vw);
+  background: #ffffff;
+}
+
+.myTicketsLayout {
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 26px;
+}
+
+.myTicketsList {
+  gap: 18px;
+}
+
+.myTicketCard {
+  grid-template-columns: minmax(0, 1fr) 196px;
+  min-height: 214px;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.myTicketCard::after {
+  right: 196px;
+  background:
+    radial-gradient(circle at 50% 0, transparent 0 11px, var(--wallet-line) 12px, transparent 13px),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 10px,
+      var(--wallet-line) 10px 18px,
+      transparent 18px 28px
+    );
+}
+
+.myTicketCard__left {
+  grid-template-columns: 282px minmax(0, 1fr);
+}
+
+.myTicketCard__eventImageWrap {
+  width: 282px;
+  min-height: 214px;
+  border-radius: 20px 0 0 20px;
+}
+
+.myTicketCard__textInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 34px;
+}
+
+.myTicketCard__category {
+  order: -1;
+  margin-bottom: 12px;
+  background: #f1eaff;
+}
+
+.myTicketCard__eyebrow {
+  margin-bottom: 10px;
+}
+
+.myTicketCard__eventName {
+  max-width: 420px;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+}
+
+.myTicketCard__metaRow {
+  margin-top: 12px;
+}
+
+.myTicketCard__right {
+  gap: 9px;
+  padding: 20px 18px;
+  background:
+    linear-gradient(180deg, #ffffff, #fbfaff);
+  border-radius: 0 20px 20px 0;
+}
+
+.myTicketCard__right::before,
+.myTicketCard__right::after {
+  background: #f6f8fc;
+}
+
+.myTicketCard__ticketId {
+  padding: 0 8px;
+}
+
+.myTicketCard__ticketId span {
+  color: #64748b;
+}
+
+.myTicketCard__ticketId strong {
+  font-size: 0.84rem;
+}
+
+.myTicketCard__qr {
+  width: 88px;
+  height: 88px;
+  border-radius: 13px;
+  color: #111827;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
+}
+
+.myTicketCard__ticketQty {
+  background: #f3edff;
+}
+
+.myTicketCard__primaryBtn {
+  min-height: 42px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  box-shadow: 0 14px 28px rgba(109, 40, 217, 0.22);
+}
+
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsSidebar__ctaBox {
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.myTicketsSidebar__card:first-child .myTicketsSidebar__summaryList::before {
+  width: 92px;
+  height: 92px;
+}
+
+.myTicketsSidebar__summaryList {
+  padding-top: 116px;
+}
+
+.myTicketsSidebar__ctaBox {
+  background:
+    radial-gradient(circle at 86% 14%, rgba(255, 255, 255, 0.22), transparent 28%),
+    linear-gradient(135deg, #1d1740, #6d28d9 58%, #2f5be8);
+}
+
+@media (max-width: 980px) {
+  .myTicketCard {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketCard::after {
+    display: none;
+  }
+
+  .myTicketCard__left {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 230px;
+    border-radius: 20px 0 0 20px;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: minmax(0, 1fr) 88px 160px;
+    border-radius: 0 0 20px 20px;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketCard__left {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .myTicketCard__textInfo {
+    padding: 22px;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 460px) {
+  .myTicketsPage__container {
+    padding-inline: 12px;
+  }
+
+  .myTicketsHero {
+    border-radius: 22px;
+    padding: 22px;
+  }
+
+  .myTicketsTicket3D {
+    width: min(100%, 300px);
+    height: 150px;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .myTicketCard__kebab {
+    display: none;
+  }
+}
+
+/* My tickets list-pass layout v3 */
+.myTicketsPage__container {
+  max-width: 1220px;
+}
+
+.myTicketsHero {
+  min-height: 230px;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  margin-bottom: 20px;
+  padding: clamp(22px, 3vw, 34px);
+}
+
+.myTicketsHero__title {
+  font-size: clamp(2.6rem, 5vw, 4.7rem);
+}
+
+.myTicketsHero__desc {
+  max-width: 460px;
+  margin-top: 10px;
+}
+
+.myTicketsHero__stats {
+  margin-top: 18px;
+}
+
+.myTicketsHero__right {
+  min-height: 170px;
+}
+
+.myTicketsTicket3D {
+  width: min(84%, 230px);
+  height: 126px;
+}
+
+.myTicketsLayout {
+  grid-template-columns: minmax(0, 1fr) 286px;
+}
+
+.myTicketsControls {
+  margin-bottom: 14px;
+}
+
+.myTicketsList {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.myTicketCard {
+  display: grid;
+  grid-template-columns: 226px minmax(0, 1fr) 172px;
+  min-height: 164px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.myTicketCard::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  right: 172px;
+  width: 1px;
+  background:
+    linear-gradient(180deg, transparent, var(--tickets-line) 16%, var(--tickets-line) 84%, transparent);
+}
+
+.myTicketCard__left {
+  display: contents;
+}
+
+.myTicketCard__eventImageWrap {
+  grid-column: 1;
+  height: 100%;
+  min-height: 164px;
+  aspect-ratio: auto;
+  border-right: 1px solid var(--tickets-line);
+  border-radius: 0;
+}
+
+.myTicketCard__eventImageWrap::after {
+  height: 34%;
+  background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5));
+}
+
+.myTicketCard__dateBadge {
+  top: 12px;
+  left: 12px;
+  width: 54px;
+  min-height: 62px;
+  border-radius: 12px;
+}
+
+.myTicketCard__textInfo {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 20px 24px;
+}
+
+.myTicketCard__eventName {
+  max-width: 560px;
+  font-size: 1.08rem;
+}
+
+.myTicketCard__desc {
+  max-width: 560px;
+  min-height: 0;
+  -webkit-line-clamp: 1;
+}
+
+.myTicketCard__metaRow {
+  max-width: 560px;
+}
+
+.myTicketCard__right {
+  grid-column: 3;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: center;
+  gap: 10px;
+  padding: 18px;
+}
+
+.myTicketCard__ticketQty {
+  min-height: 58px;
+}
+
+.myTicketCard__primaryBtn {
+  min-height: 42px;
+}
+
+.myTicketCard__kebab {
+  justify-self: center;
+}
+
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsSidebar__ctaBox {
+  padding: 16px;
+}
+
+@media (max-width: 980px) {
+  .myTicketCard {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+
+  .myTicketCard::after {
+    display: none;
+  }
+
+  .myTicketCard__right {
+    grid-column: 1 / -1;
+    grid-template-columns: 62px minmax(0, 1fr) 40px;
+    padding: 0 16px 16px;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketCard {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketCard__eventImageWrap,
+  .myTicketCard__textInfo,
+  .myTicketCard__right {
+    grid-column: 1;
+  }
+
+  .myTicketCard__eventImageWrap {
+    min-height: 180px;
+    aspect-ratio: 16 / 9;
+    border-right: 0;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 58px 1fr;
+  }
+}
+
+/* Ticket summary refinement */
+.myTicketsSidebar__card:first-child {
+  padding: 16px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 96% 0%, rgba(109, 40, 217, 0.12), transparent 34%),
+    var(--tickets-card);
+}
+
+.myTicketsSidebar__card:first-child .myTicketsSidebar__sectionTitle {
+  margin-bottom: 12px;
+  color: var(--tickets-ink);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.myTicketsSidebar__summaryList {
+  display: grid;
+  gap: 8px;
+}
+
+.myTicketsSidebar__summaryRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 44px;
+  overflow: hidden;
+  padding: 0 12px 0 14px;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(248, 250, 252, 0.72)),
+    rgba(124, 58, 237, 0.04);
+  color: var(--tickets-muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.myTicketsSidebar__summaryRow::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, #111827, #6d28d9 55%, #2563eb);
+}
+
+.myTicketsSidebar__summaryRow span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  padding-left: 2px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.myTicketsSidebar__summaryRow span:last-child {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #111827, #6d28d9 58%, #2563eb);
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(79, 70, 229, 0.18);
+}
+
+.dark-mode .myTicketsSidebar__summaryRow {
+  border-color: rgba(148, 163, 184, 0.14);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)),
+    rgba(255, 255, 255, 0.04);
+}
+
+/* My tickets rebuild layer */
+.myTicketsPage {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 10% 2%, rgba(109, 40, 217, 0.12), transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(14, 165, 233, 0.1), transparent 28%),
+    linear-gradient(180deg, #f6f8fc 0%, #eef3fb 100%);
+}
+
+.dark-mode .myTicketsPage {
+  background:
+    radial-gradient(circle at 10% 2%, rgba(109, 40, 217, 0.18), transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(14, 165, 233, 0.12), transparent 28%),
+    linear-gradient(180deg, #070a17 0%, #0b1220 100%);
+}
+
+.myTicketsPage__container {
+  max-width: 1280px;
+  padding-top: 18px;
+}
+
+.myTicketsHero {
+  min-height: 330px;
+  padding: clamp(28px, 5vw, 52px);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.72)),
+    radial-gradient(circle at 84% 20%, rgba(14, 165, 233, 0.12), transparent 32%);
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.08);
+}
+
+.dark-mode .myTicketsHero {
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(17, 24, 39, 0.72)),
+    radial-gradient(circle at 84% 20%, rgba(14, 165, 233, 0.12), transparent 32%);
+}
+
+.myTicketsHero__iconWrap {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+.myTicketsHero__title {
+  max-width: 680px;
+  font-size: clamp(3rem, 5.4vw, 5.2rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.065em;
+}
+
+.myTicketsHero__desc {
+  color: var(--text-secondary);
+}
+
+.myTicketsHero__stat {
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.dark-mode .myTicketsHero__stat {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.myTicketsTicket3D {
+  transform: perspective(900px) rotateY(-12deg) rotateX(4deg);
+}
+
+.myTicketsTicket3D__front {
+  border-radius: 18px;
+  background: linear-gradient(135deg, #111827, #6d28d9 55%, #2563eb);
+}
+
+.myTicketsLayout {
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 22px;
+}
+
+.myTicketsControls,
+.myTicketCard,
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsSidebar__ctaBox {
+  border-radius: 16px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
+}
+
+.myTicketsControls {
+  padding: 10px;
+  background: var(--bg-surface-blur);
+}
+
+.myTicketsTab,
+.myTicketsSort__select,
+.myTicketsLayoutIcon,
+.myTicketCard__eventImageWrap,
+.myTicketCard__dateBadge,
+.myTicketCard__ticketQty,
+.myTicketCard__kebab,
+.myTicketCard__primaryBtn,
+.myTicketsSidebar__ctaBtn {
+  border-radius: 12px;
+}
+
+.myTicketsTab {
+  padding: 9px 15px;
+}
+
+.myTicketsTab--active,
+.myTicketCard__primaryBtn,
+.myTicketsSidebar__ctaBtn {
+  background: linear-gradient(135deg, #111827, #6d28d9 55%, #2563eb);
+  box-shadow: none;
+}
+
+.myTicketCard {
+  padding: 12px;
+  background: var(--bg-surface-blur);
+}
+
+.light-mode .myTicketCard,
+.light-mode .myTicketsControls,
+.light-mode .myTicketsSidebar__card,
+.light-mode .myTicketsSidebar__help {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.myTicketCard::before {
+  width: 3px;
+  background: linear-gradient(180deg, #6d28d9, #2563eb);
+}
+
+.myTicketCard__left {
+  grid-template-columns: 150px 72px minmax(0, 1fr);
+}
+
+.myTicketCard__eventImageWrap {
+  width: 150px;
+  height: 98px;
+}
+
+.myTicketCard__dateBadge {
+  width: 72px;
+  min-height: 88px;
+}
+
+.myTicketCard__eventName {
+  font-size: 1.05rem;
+}
+
+.myTicketCard__right {
+  grid-template-columns: 64px minmax(112px, auto) 40px;
+}
+
+.myTicketCard__ticketQty {
+  min-height: 66px;
+}
+
+@media (max-width: 1080px) {
+  .myTicketsLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* My tickets rebuild v2 */
+.myTicketsPage {
+  --tickets-ink: #0f172a;
+  --tickets-muted: #64748b;
+  --tickets-line: rgba(148, 163, 184, 0.22);
+  --tickets-card: rgba(255, 255, 255, 0.9);
+  --tickets-soft: #f3f6fb;
+  --tickets-accent: #6d28d9;
+  --tickets-blue: #2563eb;
+  min-height: 100dvh;
+  padding-bottom: 72px;
+  color: var(--tickets-ink);
+  background:
+    radial-gradient(circle at 12% 4%, rgba(109, 40, 217, 0.11), transparent 28%),
+    radial-gradient(circle at 92% 8%, rgba(14, 165, 233, 0.1), transparent 30%),
+    linear-gradient(180deg, #f8fbff 0%, #eef3fb 100%);
+}
+
+.dark-mode .myTicketsPage {
+  --tickets-ink: #f8fafc;
+  --tickets-muted: #a6b2c6;
+  --tickets-line: rgba(148, 163, 184, 0.16);
+  --tickets-card: rgba(15, 23, 42, 0.78);
+  --tickets-soft: rgba(255, 255, 255, 0.06);
+  background:
+    radial-gradient(circle at 12% 4%, rgba(109, 40, 217, 0.22), transparent 28%),
+    radial-gradient(circle at 92% 8%, rgba(14, 165, 233, 0.12), transparent 30%),
+    linear-gradient(180deg, #070a17 0%, #0b1220 100%);
+}
+
+.myTicketsPage__container {
+  max-width: 1280px;
+  padding: 22px clamp(14px, 3vw, 36px) 0;
+}
+
+.myTicketsHero {
+  min-height: 286px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  align-items: stretch;
+  gap: clamp(18px, 3vw, 34px);
+  margin-bottom: 24px;
+  padding: clamp(24px, 4vw, 42px);
+  overflow: hidden;
+  border: 1px solid rgba(124, 58, 237, 0.14);
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.76)),
+    radial-gradient(circle at 82% 12%, rgba(37, 99, 235, 0.12), transparent 32%);
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
+}
+
+.dark-mode .myTicketsHero {
+  border-color: rgba(148, 163, 184, 0.14);
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(17, 24, 39, 0.72)),
+    radial-gradient(circle at 82% 12%, rgba(37, 99, 235, 0.16), transparent 32%);
+}
+
+.myTicketsHero__leftColumns {
+  height: 100%;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.myTicketsHero__iconWrap {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, #111827, #6d28d9 58%, #2563eb);
+  box-shadow: none;
+}
+
+.myTicketsHero__kicker {
+  width: fit-content;
+  margin-bottom: 12px;
+  padding: 7px 12px;
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.08);
+  color: #0284c7;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.myTicketsHero__title {
+  max-width: 620px;
+  margin: 0;
+  color: var(--tickets-ink);
+  font-size: clamp(3rem, 5.4vw, 5.2rem);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.065em;
+}
+
+.myTicketsHero__desc {
+  max-width: 520px;
+  margin-top: 16px;
+  color: var(--tickets-muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.myTicketsHero__stats {
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.myTicketsHero__stat {
+  min-width: 104px;
+  padding: 12px 14px;
+  border: 1px solid var(--tickets-line);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: none;
+}
+
+.dark-mode .myTicketsHero__stat {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.myTicketsHero__statValue {
+  color: var(--tickets-ink);
+  font-size: 1.35rem;
+}
+
+.myTicketsHero__statLabel {
+  color: var(--tickets-muted);
+  font-size: 0.72rem;
+}
+
+.myTicketsHero__right {
+  display: grid;
+  place-items: center;
+  min-height: 210px;
+  border: 1px solid rgba(124, 58, 237, 0.12);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(109, 40, 217, 0.22), transparent 34%),
+    linear-gradient(135deg, rgba(241, 245, 249, 0.9), rgba(226, 232, 240, 0.6));
+}
+
+.dark-mode .myTicketsHero__right {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(109, 40, 217, 0.24), transparent 34%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.82), rgba(30, 41, 59, 0.48));
+}
+
+.myTicketsTicket3D {
+  width: min(82%, 290px);
+  height: 158px;
+  filter: drop-shadow(0 26px 38px rgba(76, 29, 149, 0.2));
+  transform: perspective(900px) rotateY(-15deg) rotateX(5deg);
+}
+
+.myTicketsTicket3D__front,
+.myTicketsTicket3D__stripe {
+  border-radius: 16px;
+}
+
+.myTicketsLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 22px;
+  align-items: start;
+}
+
+.myTicketsMain {
+  min-width: 0;
+}
+
+.myTicketsControls {
+  min-height: 58px;
+  margin-bottom: 18px;
+  padding: 8px;
+  border: 1px solid var(--tickets-line);
+  border-radius: 16px;
+  background: var(--tickets-card);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(18px);
+}
+
+.myTicketsControls__tabs {
+  gap: 6px;
+  padding: 3px;
+  border-radius: 13px;
+  background: var(--tickets-soft);
+}
+
+.myTicketsTab {
+  min-height: 38px;
+  padding: 8px 16px;
+  border-radius: 11px;
+  color: var(--tickets-muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.myTicketsTab:hover {
+  color: var(--tickets-ink);
+  background: rgba(109, 40, 217, 0.08);
+}
+
+.myTicketsTab--active {
+  color: #fff;
+  background: linear-gradient(135deg, #111827, #6d28d9 58%, #2563eb);
+}
+
+.myTicketsSort__label {
+  color: var(--tickets-muted);
+  font-size: 0.72rem;
+}
+
+.myTicketsSort__select,
+.myTicketsLayoutIcon {
+  min-height: 38px;
+  border-radius: 11px;
+}
+
+.myTicketsList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.myTicketCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  overflow: hidden;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid var(--tickets-line);
+  border-radius: 18px;
+  background: var(--tickets-card);
+  box-shadow: 0 20px 46px rgba(15, 23, 42, 0.07);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.myTicketCard::before {
+  display: none;
+}
+
+.myTicketCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(109, 40, 217, 0.24);
+  box-shadow: 0 28px 64px rgba(76, 29, 149, 0.13);
+}
+
+.myTicketCard__left {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.myTicketCard__eventImageWrap {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+  background: #111827;
+}
+
+.myTicketCard__eventImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.myTicketCard__eventImageWrap::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 46%;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.62));
+}
+
+.myTicketCard__statusTag {
+  top: 12px;
+  right: 12px;
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.myTicketCard__dateBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  width: 60px;
+  min-height: 68px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+}
+
+.myTicketCard__dateMonth {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+}
+
+.myTicketCard__dateDay {
+  margin-top: 2px;
+  font-size: 1.42rem;
+}
+
+.myTicketCard__dateWeekday {
+  font-size: 0.62rem;
+}
+
+.myTicketCard__textInfo {
+  padding: 18px 18px 14px;
+}
+
+.myTicketCard__eyebrow {
+  color: #0284c7;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.myTicketCard__eventName {
+  margin-top: 9px;
+  color: var(--tickets-ink);
+  font-size: 1.08rem;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.myTicketCard__desc {
+  display: -webkit-box;
+  min-height: 42px;
+  margin-top: 8px;
+  overflow: hidden;
+  color: var(--tickets-muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.myTicketCard__metaRow {
+  margin-top: 12px;
+  color: var(--tickets-muted);
+}
+
+.myTicketCard__metaText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.myTicketCard__right {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 38px;
+  gap: 10px;
+  align-items: center;
+  padding: 0 18px 18px;
+}
+
+.myTicketCard__ticketQty {
+  min-height: 54px;
+  border-radius: 12px;
+  background: var(--tickets-soft);
+}
+
+.myTicketCard__ticketQtyValue {
+  font-size: 1rem;
+}
+
+.myTicketCard__ticketQtyLabel {
+  font-size: 0.62rem;
+}
+
+.myTicketCard__primaryBtn {
+  min-height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #111827, #6d28d9 58%, #2563eb);
+  box-shadow: none;
+}
+
+.myTicketCard__primaryBtn:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.08);
+}
+
+.myTicketCard__kebab {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+}
+
+.myTicketsSidebar {
+  position: sticky;
+  top: 114px;
+  display: grid;
+  gap: 14px;
+}
+
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsSidebar__ctaBox {
+  border: 1px solid var(--tickets-line);
+  border-radius: 16px;
+  background: var(--tickets-card);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.06);
+}
+
+.myTicketsSidebar__sectionTitle {
+  color: var(--tickets-ink);
+  font-size: 0.94rem;
+  letter-spacing: -0.02em;
+}
+
+.myTicketsSidebar__summaryRow {
+  min-height: 42px;
+  padding: 10px 0;
+}
+
+.myTicketsSidebar__nextImage {
+  width: 66px;
+  height: 66px;
+  border-radius: 13px;
+}
+
+.myTicketsSidebar__ctaBtn {
+  min-height: 42px;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #111827;
+  box-shadow: none;
+}
+
+.myTicketsSidebar__ctaBtn:hover,
+.myTicketsSidebar__ctaBtn--purple {
+  color: #fff;
+  background: linear-gradient(135deg, #111827, #6d28d9 58%, #2563eb);
+}
+
+.myTicketsSidebar__ctaBox {
+  padding: 18px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(14, 165, 233, 0.28), transparent 34%),
+    linear-gradient(135deg, #111827, #5b21b6 58%, #2563eb);
+}
+
+.myTicketsSidebar__ctaTitle {
+  font-size: 1.04rem;
+}
+
+.myTicketsSidebar__ctaSub {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.myTicketsSidebar__helpLink {
+  min-height: 38px;
+  border-radius: 11px;
+}
+
+.myTicketsEmpty {
+  border-radius: 16px;
+  background: var(--tickets-card);
+}
+
+@media (max-width: 1120px) {
+  .myTicketsHero,
+  .myTicketsLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketsHero__right {
+    display: none;
+  }
+
+  .myTicketsSidebar {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .myTicketsList,
+  .myTicketsSidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketsHero {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .myTicketsHero__leftColumns {
+    flex-direction: column;
+  }
+
+  .myTicketsHero__title {
+    font-size: clamp(2.4rem, 5.4vw, 3.8rem);
+  }
+
+  .myTicketsControls,
+  .myTicketsControls__right {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .myTicketsControls__tabs,
+  .myTicketsSort,
+  .myTicketsSort__select {
+    width: 100%;
+  }
+
+  .myTicketsLayoutIcon {
+    display: none;
+  }
+}
+
+@media (max-width: 460px) {
+  .myTicketsPage__container {
+    padding-inline: 12px;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 56px 1fr;
+  }
+
+  .myTicketCard__kebab {
+    display: none;
+  }
+}
+
+/* Ticket wallet list layout */
+.myTicketsPage {
+  --wallet-bg: #f7f9ff;
+  --wallet-card: rgba(255, 255, 255, 0.94);
+  --wallet-border: rgba(109, 40, 217, 0.12);
+  --wallet-ink: #101827;
+  --wallet-muted: #64748b;
+  --wallet-purple: #6d28d9;
+  --wallet-blue: #2563eb;
+  min-height: 100dvh;
+  color: var(--wallet-ink);
+  background:
+    linear-gradient(180deg, #ffffff 0%, var(--wallet-bg) 100%);
+}
+
+.dark-mode .myTicketsPage {
+  --wallet-bg: #080b17;
+  --wallet-card: rgba(15, 23, 42, 0.88);
+  --wallet-border: rgba(148, 163, 184, 0.16);
+  --wallet-ink: #f8fafc;
+  --wallet-muted: #a6b2c6;
+  background: linear-gradient(180deg, #0b1020 0%, #070a14 100%);
+}
+
+.myTicketsPage__container {
+  max-width: 1280px;
+  padding: 28px clamp(16px, 3vw, 40px) 0;
+}
+
+.myTicketsHero {
+  min-height: 250px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 28px;
+  margin-bottom: 26px;
+  padding: clamp(26px, 5vw, 46px) 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.myTicketsHero::before,
+.myTicketsHero::after {
+  display: none;
+}
+
+.myTicketsHero__leftColumns {
+  align-items: flex-start;
+}
+
+.myTicketsHero__iconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed 58%, #2563eb);
+  box-shadow: none;
+}
+
+.myTicketsHero__kicker {
+  width: fit-content;
+  margin-bottom: 16px;
+  padding: 7px 12px;
+  border: 1px solid rgba(14, 165, 233, 0.18);
+  border-radius: 999px;
+  color: #0284c7;
+  background: rgba(14, 165, 233, 0.08);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.myTicketsHero__title {
+  margin: 0;
+  color: var(--wallet-ink);
+  font-size: clamp(3rem, 5.4vw, 5.2rem);
+  font-weight: 650;
+  line-height: 0.9;
+  letter-spacing: -0.065em;
+}
+
+.myTicketsHero__desc {
+  max-width: 480px;
+  margin-top: 18px;
+  color: var(--wallet-muted);
+  font-size: 1.04rem;
+  line-height: 1.7;
+}
+
+.myTicketsHero__stats {
+  display: none;
+}
+
+.myTicketsHero__right {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 190px;
+  border: 1px solid var(--wallet-border);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 48% 42%, rgba(124, 58, 237, 0.24), transparent 36%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(245, 243, 255, 0.72));
+}
+
+.dark-mode .myTicketsHero__right {
+  background:
+    radial-gradient(circle at 48% 42%, rgba(124, 58, 237, 0.24), transparent 36%),
+    rgba(255, 255, 255, 0.05);
+}
+
+.myTicketsTicket3D {
+  width: 210px;
+  height: 118px;
+  transform: perspective(800px) rotateY(-14deg) rotateX(5deg);
+}
+
+.myTicketsTicket3D__front {
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ede9fe, #8b5cf6 55%, #2563eb);
+}
+
+.myTicketsTicket3D__stripe {
+  top: 42px;
+  height: 34px;
+  border-radius: 12px;
+}
+
+.myTicketsTicket3D__cut {
+  bottom: 16px;
+}
+
+.myTicketsLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 314px;
+  gap: 28px;
+}
+
+.myTicketsMain {
+  min-width: 0;
+}
+
+.myTicketsControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 58px;
+  margin-bottom: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.myTicketsControls__tabs {
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  background: transparent;
+}
+
+.myTicketsTab {
+  min-width: 104px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(109, 40, 217, 0.1);
+  border-radius: 12px;
+  color: var(--wallet-ink);
+  background: #ffffff;
+  font-size: 0.84rem;
+  font-weight: 700;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.04);
+}
+
+.dark-mode .myTicketsTab {
+  background: var(--wallet-card);
+}
+
+.myTicketsTab:hover {
+  color: var(--wallet-purple);
+  border-color: rgba(109, 40, 217, 0.2);
+}
+
+.myTicketsTab--active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed 56%, #2563eb);
+  box-shadow: 0 16px 34px rgba(109, 40, 217, 0.22);
+}
+
+.myTicketsControls__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.myTicketsSearch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(330px, 26vw);
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--wallet-border);
+  border-radius: 12px;
+  color: #8b5cf6;
+  background: var(--wallet-card);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.04);
+}
+
+.myTicketsSearch input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: var(--wallet-ink);
+  background: transparent;
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.myTicketsSearch input::placeholder {
+  color: #94a3b8;
+}
+
+.myTicketsSort {
+  display: flex;
+  align-items: center;
+}
+
+.myTicketsSort__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.myTicketsSort__select,
+.myTicketsLayoutIcon {
+  min-height: 44px;
+  border: 1px solid var(--wallet-border);
+  border-radius: 12px;
+  background: var(--wallet-card);
+  color: var(--wallet-ink);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.04);
+}
+
+.myTicketsLayoutIcon {
+  width: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6d28d9;
+}
+
+.myTicketsList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.myTicketCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 218px;
+  gap: 0;
+  min-height: 226px;
+  overflow: visible;
+  padding: 0;
+  border: 1px solid var(--wallet-border);
+  border-radius: 18px;
+  background: var(--wallet-card);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.07);
+  backdrop-filter: blur(16px);
+}
+
+.myTicketCard::before {
+  display: none;
+}
+
+.myTicketCard::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 218px;
+  width: 1px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(124, 58, 237, 0.18) 0 9px,
+    transparent 9px 18px
+  );
+}
+
+.myTicketCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(109, 40, 217, 0.24);
+  box-shadow: 0 28px 70px rgba(79, 70, 229, 0.13);
+}
+
+.myTicketCard__left {
+  display: grid;
+  grid-template-columns: 292px minmax(0, 1fr);
+  gap: 0;
+  min-width: 0;
+}
+
+.myTicketCard__eventImageWrap {
+  position: relative;
+  width: 292px;
+  height: 100%;
+  min-height: 226px;
+  overflow: hidden;
+  border-radius: 18px 0 0 18px;
+  background: #111827;
+}
+
+.myTicketCard__eventImageWrap::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 45%;
+  background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.66));
+}
+
+.myTicketCard__eventImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.myTicketCard__statusTag {
+  position: absolute;
+  z-index: 2;
+  left: 18px;
+  bottom: 18px;
+  top: auto;
+  right: auto;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.myTicketCard__statusTag--upcoming {
+  color: #ffffff;
+  background: #16a34a;
+}
+
+.myTicketCard__statusTag--past {
+  color: #ffffff;
+  background: #64748b;
+}
+
+.myTicketCard__dateBadge {
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  left: 18px;
+  width: 64px;
+  min-height: 78px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
+  text-align: center;
+}
+
+.myTicketCard__dateMonth {
+  color: #6d28d9;
+  font-size: 0.64rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+}
+
+.myTicketCard__dateDay {
+  margin-top: 3px;
+  color: #101827;
+  font-size: 1.45rem;
+  font-weight: 650;
+}
+
+.myTicketCard__dateWeekday {
+  color: #334155;
+  font-size: 0.66rem;
+  font-weight: 650;
+}
+
+.myTicketCard__textInfo {
+  min-width: 0;
+  padding: 28px 30px;
+}
+
+.myTicketCard__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #6d28d9;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.myTicketCard__category {
+  display: inline-flex;
+  width: fit-content;
+  margin: 0 0 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #6d28d9;
+  background: rgba(109, 40, 217, 0.08);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.myTicketCard__eventName {
+  margin: 0;
+  color: var(--wallet-ink);
+  font-size: clamp(1.28rem, 2vw, 1.65rem);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+
+.myTicketCard__desc {
+  display: none;
+}
+
+.myTicketCard__metaRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 13px;
+  color: var(--wallet-muted);
+  font-weight: 650;
+}
+
+.myTicketCard__metaIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.08);
+}
+
+.myTicketCard__metaText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.myTicketCard__right {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 22px 20px;
+}
+
+.myTicketCard__right::before,
+.myTicketCard__right::after {
+  content: "";
+  position: absolute;
+  left: -11px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--wallet-bg);
+  border: 1px solid var(--wallet-border);
+}
+
+.myTicketCard__right::before {
+  top: -11px;
+}
+
+.myTicketCard__right::after {
+  bottom: -11px;
+}
+
+.myTicketCard__kebab {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--wallet-border);
+  color: #7c3aed;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.dark-mode .myTicketCard__kebab {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.myTicketCard__ticketId {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  width: 100%;
+  padding-left: 4px;
+}
+
+.myTicketCard__ticketId span {
+  color: var(--wallet-muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.myTicketCard__ticketId strong {
+  color: var(--wallet-ink);
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.myTicketCard__qr {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border: 1px solid rgba(109, 40, 217, 0.14);
+  border-radius: 14px;
+  color: #111827;
+  background: #ffffff;
+}
+
+.myTicketCard__ticketQty {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: auto;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #6d28d9;
+  background: rgba(109, 40, 217, 0.08);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.myTicketCard__ticketQtyValue,
+.myTicketCard__ticketQtyLabel {
+  display: none;
+}
+
+.myTicketCard__primaryBtn {
+  width: 100%;
+  min-height: 40px;
+  border-radius: 11px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed 58%, #2563eb);
+  box-shadow: 0 14px 30px rgba(109, 40, 217, 0.2);
+  font-size: 0.84rem;
+}
+
+.myTicketsSidebar {
+  position: sticky;
+  top: 112px;
+  display: grid;
+  gap: 18px;
+}
+
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsSidebar__ctaBox {
+  border: 1px solid var(--wallet-border);
+  border-radius: 18px;
+  background: var(--wallet-card);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.07);
+}
+
+.myTicketsSidebar__sectionTitle {
+  color: var(--wallet-ink);
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.myTicketsSidebar__summaryList {
+  position: relative;
+  display: grid;
+  gap: 9px;
+  padding-top: 108px;
+}
+
+.myTicketsSidebar__card:first-child .myTicketsSidebar__summaryList::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(circle, #ffffff 0 36%, transparent 37%),
+    conic-gradient(#6d28d9 0 66%, #14b8a6 66% 88%, #ef476f 88% 100%);
+  box-shadow: 0 18px 34px rgba(109, 40, 217, 0.16);
+}
+
+.myTicketsSidebar__summaryRow {
+  min-height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wallet-muted);
+  font-size: 0.84rem;
+}
+
+.myTicketsSidebar__summaryRow::before {
+  display: none;
+}
+
+.myTicketsSidebar__summaryRow span:last-child {
+  min-width: auto;
+  height: auto;
+  padding: 0;
+  border-radius: 0;
+  color: var(--wallet-ink);
+  background: transparent;
+  box-shadow: none;
+  font-size: 0.9rem;
+}
+
+.myTicketsSidebar__nextImage {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+}
+
+.myTicketsSidebar__ctaBox {
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.24), transparent 32%),
+    linear-gradient(135deg, #111827, #5b21b6 58%, #2563eb);
+}
+
+.myTicketsSidebar__ctaBtn {
+  min-height: 42px;
+  border-radius: 11px;
+}
+
+.myTicketsSidebar__ctaBox .myTicketsSidebar__ctaBtn {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+
+@media (max-width: 1120px) {
+  .myTicketsHero,
+  .myTicketsLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketsHero__right {
+    display: none;
+  }
+
+  .myTicketsSidebar {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .myTicketCard {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketCard::after {
+    display: none;
+  }
+
+  .myTicketCard__left {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 220px;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 1fr 92px minmax(150px, auto);
+    justify-items: stretch;
+    padding-top: 0;
+  }
+
+  .myTicketCard__right::before,
+  .myTicketCard__right::after {
+    display: none;
+  }
+
+  .myTicketCard__ticketId {
+    align-self: center;
+  }
+
+  .myTicketCard__kebab {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketsControls,
+  .myTicketsControls__right {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .myTicketsControls__tabs,
+  .myTicketsSearch,
+  .myTicketsSort,
+  .myTicketsSort__select {
+    width: 100%;
+  }
+
+  .myTicketsLayoutIcon {
+    display: none;
+  }
+
+  .myTicketCard__left {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 100%;
+    min-height: 210px;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketsSidebar {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Final pass: clean white wallet UI */
+.user-layout .myTicketsPage,
+.user-layout.light-mode .myTicketsPage,
+.user-layout.dark-mode .myTicketsPage {
+  --wallet-bg: #ffffff;
+  --wallet-card: #ffffff;
+  --wallet-border: rgba(15, 23, 42, 0.1);
+  --wallet-ink: #111827;
+  --wallet-muted: #5f6b7a;
+  --wallet-purple: #6d28d9;
+  --wallet-blue: #2563eb;
+  min-height: 100dvh;
+  color: var(--wallet-ink);
+  background: #ffffff !important;
+}
+
+.myTicketsPage__container {
+  max-width: 1220px;
+  padding: 32px clamp(18px, 4vw, 42px) 72px;
+}
+
+.myTicketsHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  align-items: center;
+  min-height: 168px;
+  margin-bottom: 20px;
+  padding: 18px 0 24px;
+  border: 0;
+  border-radius: 0;
+  background: #ffffff !important;
+  box-shadow: none;
+}
+
+.myTicketsHero::before,
+.myTicketsHero::after {
+  display: none !important;
+}
+
+.myTicketsHero__leftColumns {
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.myTicketsHero__iconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed 58%, #2563eb);
+  box-shadow: 0 14px 28px rgba(109, 40, 217, 0.16);
+}
+
+.myTicketsHero__kicker {
+  margin-bottom: 9px;
+  padding: 6px 10px;
+  border: 1px solid rgba(14, 165, 233, 0.18);
+  color: #0284c7;
+  background: rgba(14, 165, 233, 0.07);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.myTicketsHero__title {
+  margin: 0;
+  color: #111827;
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  font-weight: 650;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+}
+
+.myTicketsHero__desc {
+  max-width: 470px;
+  margin-top: 10px;
+  color: #475569;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.myTicketsHero__stats {
+  display: none !important;
+}
+
+.myTicketsHero__right {
+  min-height: 132px;
+  border: 1px solid rgba(109, 40, 217, 0.12);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 54% 50%, rgba(124, 58, 237, 0.2), transparent 40%),
+    #ffffff !important;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.055);
+}
+
+.myTicketsTicket3D {
+  width: 168px;
+  height: 90px;
+}
+
+.myTicketsLayout {
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: 20px;
+}
+
+.myTicketsControls {
+  min-height: 46px;
+  margin-bottom: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  box-shadow: none;
+}
+
+.myTicketsControls__tabs {
+  gap: 8px;
+}
+
+.myTicketsTab {
+  min-width: 88px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(109, 40, 217, 0.1);
+  border-radius: 10px;
+  color: #334155;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.035);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.myTicketsTab:hover {
+  color: #6d28d9;
+  border-color: rgba(109, 40, 217, 0.22);
+  transform: none;
+}
+
+.myTicketsTab--active {
+  color: #ffffff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed 58%, #2563eb);
+  box-shadow: 0 14px 28px rgba(109, 40, 217, 0.18);
+}
+
+.myTicketsSearch {
+  width: min(330px, 30vw);
+  min-height: 38px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.035);
+}
+
+.myTicketsSort__select,
+.myTicketsLayoutIcon {
+  min-height: 38px;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.myTicketsList {
+  gap: 14px;
+}
+
+.myTicketCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  min-height: 188px;
+  overflow: visible;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-radius: 18px;
+  background: #ffffff !important;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.myTicketCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(109, 40, 217, 0.18);
+  box-shadow: 0 22px 48px rgba(15, 23, 42, 0.075);
+}
+
+.myTicketCard::after {
+  right: 168px;
+  border-color: rgba(109, 40, 217, 0.18);
+}
+
+.myTicketCard__left {
+  grid-template-columns: 250px minmax(0, 1fr);
+}
+
+.myTicketCard__eventImageWrap {
+  width: 250px;
+  min-height: 188px;
+  border-radius: 18px 0 0 18px;
+}
+
+.myTicketCard__eventImage {
+  object-fit: cover;
+}
+
+.myTicketCard__dateBadge {
+  left: 18px;
+  top: 18px;
+  width: 56px;
+  min-height: 70px;
+  border-radius: 12px;
+}
+
+.myTicketCard__textInfo {
+  justify-content: center;
+  padding: 24px 28px;
+  text-align: left;
+}
+
+.myTicketCard__category {
+  width: fit-content;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: #6d28d9;
+  background: rgba(109, 40, 217, 0.08);
+  font-size: 0.72rem;
+}
+
+.myTicketCard__eyebrow {
+  margin-bottom: 7px;
+  color: #7c3aed;
+  font-size: 0.74rem;
+}
+
+.myTicketCard__eventName {
+  max-width: 440px;
+  margin: 0;
+  color: #111827;
+  font-size: clamp(1.25rem, 1.9vw, 1.65rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.myTicketCard__desc {
+  display: none !important;
+}
+
+.myTicketCard__metaRow {
+  margin-top: 12px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.myTicketCard__right {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  padding: 18px 16px;
+  border-radius: 0 18px 18px 0;
+  background: #ffffff;
+}
+
+.myTicketCard__right::before,
+.myTicketCard__right::after {
+  left: -10px;
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+}
+
+.myTicketCard__kebab {
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.myTicketCard__ticketId {
+  width: 100%;
+  padding-left: 0;
+  text-align: center;
+}
+
+.myTicketCard__ticketId span {
+  color: #64748b;
+  font-size: 0.64rem;
+}
+
+.myTicketCard__ticketId strong {
+  color: #111827;
+  font-size: 0.82rem;
+}
+
+.myTicketCard__qr {
+  width: 82px;
+  height: 82px;
+  border-radius: 13px;
+  background: #ffffff;
+}
+
+.myTicketCard__qr svg {
+  width: 58px;
+  height: 58px;
+}
+
+.myTicketCard__ticketQty {
+  padding: 5px 9px;
+  font-size: 0.72rem;
+}
+
+.myTicketCard__primaryBtn {
+  min-height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed 58%, #2563eb);
+  box-shadow: 0 12px 26px rgba(109, 40, 217, 0.18);
+  font-size: 0.8rem;
+}
+
+.myTicketsSidebar {
+  top: 104px;
+  gap: 12px;
+}
+
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsSidebar__ctaBox {
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-radius: 16px;
+  background: #ffffff !important;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.055);
+}
+
+.myTicketsSidebar__sectionTitle {
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.myTicketsSidebar__summaryList {
+  gap: 8px;
+  padding-top: 92px;
+}
+
+.myTicketsSidebar__card:first-child .myTicketsSidebar__summaryList::before {
+  top: 4px;
+  width: 72px;
+  height: 72px;
+  box-shadow: 0 16px 28px rgba(109, 40, 217, 0.14);
+}
+
+.myTicketsSidebar__summaryRow {
+  min-height: 26px;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.myTicketsSidebar__summaryRow span:last-child {
+  color: #111827;
+  font-size: 0.86rem;
+}
+
+.myTicketsSidebar__nextImage {
+  width: 58px;
+  height: 58px;
+}
+
+.myTicketsSidebar__ctaBox {
+  color: #ffffff;
+  background: linear-gradient(135deg, #16112f, #6d28d9 58%, #2563eb) !important;
+}
+
+.myTicketsSidebar__ctaBox .myTicketsSidebar__ctaBtn {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 1120px) {
+  .myTicketsHero,
+  .myTicketsLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketsHero__right {
+    display: none;
+  }
+
+  .myTicketsSidebar {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .myTicketCard {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketCard::after,
+  .myTicketCard__right::before,
+  .myTicketCard__right::after {
+    display: none;
+  }
+
+  .myTicketCard__left {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 220px;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 1fr 82px 140px;
+    justify-items: stretch;
+    border-radius: 0 0 18px 18px;
+  }
+
+  .myTicketCard__kebab {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketsPage__container {
+    padding-inline: 14px;
+  }
+
+  .myTicketsControls,
+  .myTicketsControls__right {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .myTicketsControls__tabs,
+  .myTicketsSearch,
+  .myTicketsSort,
+  .myTicketsSort__select {
+    width: 100%;
+  }
+
+  .myTicketsLayoutIcon {
+    display: none;
+  }
+
+  .myTicketCard__left,
+  .myTicketCard__right {
+    grid-template-columns: 1fr;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 100%;
+    min-height: 210px;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .myTicketsSidebar {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* UI skills final calibration: ticket wallet surfaces */
+.myTicketsPage {
+  background: #ffffff !important;
+}
+
+.myTicketsHero,
+.myTicketsControls,
+.myTicketCard,
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsSidebar__ctaBox {
+  border-radius: var(--ux-radius-panel, 18px) !important;
+  box-shadow: var(--ux-shadow-soft, 0 12px 28px rgba(15, 23, 42, 0.055)) !important;
+}
+
+.myTicketCard__eventImageWrap,
+.myTicketCard__image,
+.myTicketCard__qr,
+.myTicketsSidebar__nextImage,
+.myTicketsHero__right {
+  border-radius: var(--ux-radius-card, 16px) !important;
+}
+
+.myTicketCard__right {
+  border-radius: 0 var(--ux-radius-panel, 18px) var(--ux-radius-panel, 18px) 0 !important;
+}
+
+.myTicketsTab,
+.myTicketCard__status,
+.myTicketCard__ticketQty {
+  border-radius: 999px !important;
+}
+
+.myTicketsSearch,
+.myTicketsSort__select,
+.myTicketCard__primaryBtn,
+.myTicketsSidebar__ctaBtn {
+  border-radius: var(--ux-radius-control, 14px) !important;
+  box-shadow: none !important;
+}
+
+.myTicketsSidebar__chart {
+  border-radius: 50% !important;
+}
+
+.user-layout.dark-mode .myTicketsPage {
+  background: #070817 !important;
+}
+
+.user-layout.dark-mode .myTicketsHero,
+.user-layout.dark-mode .myTicketsControls,
+.user-layout.dark-mode .myTicketCard,
+.user-layout.dark-mode .myTicketsSidebar__card,
+.user-layout.dark-mode .myTicketsSidebar__help {
+  background: #0f1224 !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  box-shadow: var(--ux-shadow-soft, 0 12px 30px rgba(0, 0, 0, 0.24)) !important;
+}
+
+@media (max-width: 860px) {
+  .myTicketCard__right {
+    border-radius: 0 0 var(--ux-radius-panel, 18px) var(--ux-radius-panel, 18px) !important;
+  }
+}
+
+/* Final UI pass: bg-ticket hero, compact ticket list and cleaner summary */
+.myTicketsHero {
+  min-height: 190px !important;
+  padding: 24px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(109, 40, 217, 0.1) !important;
+  border-radius: 20px !important;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.9) 54%, rgba(239, 246, 255, 0.78) 100%),
+    url("/bg-ticket.png") right center / contain no-repeat !important;
+}
+
+.myTicketsHero__right {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 132px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.myTicketsHero__image {
+  width: min(100%, 230px);
+  height: 132px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 30px rgba(76, 29, 149, 0.16));
+}
+
+.myTicketsHero__title {
+  font-size: clamp(2.35rem, 4.4vw, 3.8rem) !important;
+}
+
+.myTicketsHero__desc {
+  max-width: 430px !important;
+  font-size: 0.94rem !important;
+}
+
+.myTicketsList {
+  gap: 12px !important;
+}
+
+.myTicketCard {
+  grid-template-columns: minmax(0, 1fr) 132px !important;
+  min-height: 142px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.052) !important;
+}
+
+.myTicketCard:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.07) !important;
+}
+
+.myTicketCard::after {
+  right: 132px !important;
+}
+
+.myTicketCard__left {
+  grid-template-columns: 170px minmax(0, 1fr) !important;
+}
+
+.myTicketCard__eventImageWrap {
+  width: 170px !important;
+  min-height: 142px !important;
+  border-radius: 16px 0 0 16px !important;
+}
+
+.myTicketCard__statusTag {
+  left: 12px !important;
+  bottom: 12px !important;
+  padding: 5px 9px !important;
+  font-size: 0.66rem !important;
+}
+
+.myTicketCard__dateBadge {
+  top: 12px !important;
+  left: 12px !important;
+  width: 48px !important;
+  min-height: 60px !important;
+  border-radius: 10px !important;
+}
+
+.myTicketCard__dateMonth {
+  font-size: 0.58rem !important;
+}
+
+.myTicketCard__dateDay {
+  font-size: 1.18rem !important;
+}
+
+.myTicketCard__dateWeekday {
+  font-size: 0.58rem !important;
+}
+
+.myTicketCard__textInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px 20px !important;
+}
+
+.myTicketCard__category {
+  margin-bottom: 7px !important;
+  padding: 4px 8px !important;
+  font-size: 0.66rem !important;
+}
+
+.myTicketCard__eyebrow {
+  margin-bottom: 5px !important;
+  font-size: 0.68rem !important;
+}
+
+.myTicketCard__eventName {
+  max-width: 360px !important;
+  font-size: clamp(1.02rem, 1.5vw, 1.22rem) !important;
+  line-height: 1.25 !important;
+}
+
+.myTicketCard__desc {
+  display: none !important;
+}
+
+.myTicketCard__metaRow {
+  margin-top: 9px !important;
+  font-size: 0.8rem !important;
+}
+
+.myTicketCard__metaIcon {
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 8px !important;
+}
+
+.myTicketCard__right {
+  gap: 6px !important;
+  padding: 14px 12px !important;
+  border-radius: 0 16px 16px 0 !important;
+}
+
+.myTicketCard__right::before,
+.myTicketCard__right::after {
+  display: none !important;
+}
+
+.myTicketCard__kebab {
+  top: 10px !important;
+  right: 10px !important;
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.myTicketCard__ticketId span {
+  font-size: 0.58rem !important;
+}
+
+.myTicketCard__ticketId strong {
+  font-size: 0.72rem !important;
+}
+
+.myTicketCard__qr {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 10px !important;
+}
+
+.myTicketCard__qr svg {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.myTicketCard__ticketQty {
+  padding: 4px 8px !important;
+  font-size: 0.66rem !important;
+}
+
+.myTicketCard__primaryBtn {
+  min-height: 34px !important;
+  border-radius: 10px !important;
+  font-size: 0.74rem !important;
+}
+
+.myTicketsSidebar__summaryList {
+  gap: 8px !important;
+  padding-top: 0 !important;
+}
+
+.myTicketsSidebar__card:first-child .myTicketsSidebar__summaryList::before {
+  display: none !important;
+}
+
+.myTicketsSidebar__summaryRow {
+  min-height: 42px !important;
+  padding: 0 12px !important;
+  border: 1px solid rgba(109, 40, 217, 0.08) !important;
+  border-radius: 12px !important;
+  background: rgba(109, 40, 217, 0.045) !important;
+}
+
+.myTicketsSidebar__summaryRow span:first-child {
+  color: #64748b !important;
+  font-size: 0.8rem !important;
+}
+
+.myTicketsSidebar__summaryRow span:last-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px !important;
+  height: 30px !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: #4c1d95 !important;
+  font-size: 0.86rem !important;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+@media (max-width: 1120px) {
+  .myTicketsHero {
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92)),
+      url("/bg-ticket.png") right bottom / 220px auto no-repeat !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .myTicketCard {
+    grid-template-columns: 1fr !important;
+  }
+
+  .myTicketCard::after {
+    display: none !important;
+  }
+
+  .myTicketCard__left {
+    grid-template-columns: 160px minmax(0, 1fr) !important;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 160px !important;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 1fr 58px 120px !important;
+    border-top: 1px dashed rgba(109, 40, 217, 0.16);
+    border-radius: 0 0 16px 16px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketsHero {
+    padding: 20px !important;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.96)),
+      url("/bg-ticket.png") right 16px top 16px / 160px auto no-repeat !important;
+  }
+
+  .myTicketCard__left,
+  .myTicketCard__right {
+    grid-template-columns: 1fr !important;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 100% !important;
+    min-height: 150px !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+}
+
+/* Final ticket sizing correction */
+.myTicketsHero {
+  grid-template-columns: minmax(0, 1fr) 360px !important;
+  min-height: 220px !important;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.9) 48%, rgba(239, 246, 255, 0.62) 100%),
+    url("/bg-ticket.png") right 32px center / 340px auto no-repeat !important;
+}
+
+.myTicketsHero__right {
+  min-height: 166px !important;
+}
+
+.myTicketsHero__image {
+  width: 340px !important;
+  height: 168px !important;
+}
+
+.myTicketCard {
+  grid-template-columns: minmax(0, 1fr) 112px !important;
+  min-height: 128px !important;
+}
+
+.myTicketCard::after {
+  right: 112px !important;
+}
+
+.myTicketCard__left {
+  grid-template-columns: 192px minmax(0, 1fr) !important;
+}
+
+.myTicketCard__eventImageWrap {
+  width: 192px !important;
+  min-height: 128px !important;
+}
+
+.myTicketCard__dateBadge {
+  width: 44px !important;
+  min-height: 54px !important;
+}
+
+.myTicketCard__textInfo {
+  padding: 14px 18px !important;
+}
+
+.myTicketCard__category {
+  margin-bottom: 5px !important;
+}
+
+.myTicketCard__eyebrow {
+  margin-bottom: 4px !important;
+}
+
+.myTicketCard__eventName {
+  max-width: 420px !important;
+  font-size: clamp(0.98rem, 1.35vw, 1.14rem) !important;
+}
+
+.myTicketCard__metaRow {
+  margin-top: 7px !important;
+}
+
+.myTicketCard__right {
+  gap: 5px !important;
+  padding: 12px 8px !important;
+}
+
+.myTicketCard__ticketId {
+  margin-top: 4px !important;
+}
+
+.myTicketCard__qr {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.myTicketCard__qr svg {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+.myTicketCard__ticketQty {
+  padding: 3px 7px !important;
+  font-size: 0.62rem !important;
+}
+
+.myTicketCard__primaryBtn {
+  width: 92px !important;
+  min-height: 30px !important;
+  padding: 0 10px !important;
+  font-size: 0.68rem !important;
+}
+
+@media (max-width: 1120px) {
+  .myTicketsHero {
+    grid-template-columns: minmax(0, 1fr) 300px !important;
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.9)),
+      url("/bg-ticket.png") right 24px center / 290px auto no-repeat !important;
+  }
+
+  .myTicketsHero__image {
+    width: 290px !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .myTicketCard {
+    grid-template-columns: 1fr !important;
+  }
+
+  .myTicketCard__left {
+    grid-template-columns: 178px minmax(0, 1fr) !important;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 178px !important;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: minmax(0, 1fr) 50px 96px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketsHero {
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)),
+      url("/bg-ticket.png") right 14px top 16px / 190px auto no-repeat !important;
+  }
+
+  .myTicketsHero__right {
+    display: none !important;
+  }
+
+  .myTicketCard__left,
+  .myTicketCard__right {
+    grid-template-columns: 1fr !important;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 100% !important;
+    min-height: 142px !important;
+  }
+
+  .myTicketCard__primaryBtn {
+    width: 100% !important;
+  }
+}
+
+/* Final hero artwork polish: let the ticket image breathe without a framed wrapper */
+.myTicketsHero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.86fr) minmax(430px, 1.14fr) !important;
+  align-items: center !important;
+  gap: clamp(28px, 4vw, 56px) !important;
+  min-height: 320px !important;
+  padding: clamp(34px, 4.2vw, 52px) clamp(36px, 5vw, 64px) !important;
+  overflow: visible !important;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(124, 58, 237, 0.09), transparent 28%),
+    linear-gradient(112deg, #ffffff 0%, #ffffff 46%, #fcfbff 74%, #faf7ff 100%) !important;
+  border-color: rgba(109, 40, 217, 0.08) !important;
+}
+
+.myTicketsHero__right {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  min-height: 255px !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background:
+    radial-gradient(circle at 18% 30%, rgba(124, 58, 237, 0.22) 0 2px, transparent 3px),
+    radial-gradient(circle at 84% 28%, rgba(37, 99, 235, 0.14) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 74%, rgba(168, 85, 247, 0.14) 0 2px, transparent 3px),
+    radial-gradient(circle at 54% 48%, rgba(124, 58, 237, 0.1), transparent 44%) !important;
+  box-shadow: none !important;
+}
+
+.myTicketsHero__right::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 5% !important;
+  top: 8px !important;
+  width: min(86%, 480px) !important;
+  height: 205px !important;
+  display: block !important;
+  background: url("/bg-ticket.png") center / contain no-repeat !important;
+  filter: blur(2px) saturate(0.9) brightness(1.12) !important;
+  opacity: 0.16 !important;
+  transform: translate(-8px, -10px) rotate(-7deg) scale(1.12) !important;
+  pointer-events: none !important;
+}
+
+.myTicketsHero__right::after {
+  display: none !important;
+}
+
+.myTicketsHero__image {
+  position: relative !important;
+  z-index: 1 !important;
+  width: min(106%, 500px) !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: 245px !important;
+  object-fit: contain !important;
+  transform: translateX(1%) translateY(6px) rotate(-3deg) scale(1.02) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+@media (max-width: 1120px) {
+  .myTicketsHero {
+    grid-template-columns: minmax(0, 1fr) 360px !important;
+    min-height: 300px !important;
+    padding: 34px !important;
+  }
+
+  .myTicketsHero__image {
+    width: min(100%, 390px) !important;
+    transform: translateY(4px) rotate(-2deg) !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketsHero {
+    grid-template-columns: 1fr !important;
+    padding: 28px !important;
+  }
+
+  .myTicketsHero__right {
+    min-height: 220px !important;
+  }
+
+  .myTicketsHero__image {
+    width: min(100%, 320px) !important;
+    transform: translateY(0) rotate(-2deg) !important;
+  }
+}
+
+/* Final ticket list balance: give the QR/action column more breathing room */
+.myTicketCard {
+  grid-template-columns: minmax(0, 1fr) 150px !important;
+}
+
+.myTicketCard::after {
+  right: 150px !important;
+}
+
+.myTicketCard__right {
+  width: 150px !important;
+  min-width: 150px !important;
+  gap: 8px !important;
+  padding: 14px 12px !important;
+}
+
+.myTicketCard__qr {
+  width: 62px !important;
+  height: 62px !important;
+}
+
+.myTicketCard__qr svg {
+  width: 42px !important;
+  height: 42px !important;
+}
+
+.myTicketCard__ticketQty {
+  min-width: 64px !important;
+  padding: 5px 10px !important;
+}
+
+.myTicketCard__primaryBtn {
+  width: 122px !important;
+  min-height: 34px !important;
+}
+
+.myTicketsNotice {
+  padding: 12px 14px;
+  border-left: 3px solid #7c3aed;
+  background: #f6f2ff;
+  color: #4c1d95;
+  font-size: 0.88rem;
+}
+
+.myTicketCard--skeleton {
+  min-height: 170px;
+  pointer-events: none;
+}
+
+.myTicketCard__imageSkeleton,
+.myTicketCard__qrSkeleton,
+.myTicketCard--skeleton span,
+.myTicketCard--skeleton strong,
+.myTicketCard--skeleton p {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #eef2f7 0%, #f8fafc 48%, #e8eef7 100%);
+  background-size: 220% 100%;
+  animation: myTicketsSkeleton 1.2s ease-in-out infinite;
+}
+
+.myTicketCard__imageSkeleton {
+  width: 240px;
+  height: 130px;
+  border-radius: 14px;
+  margin: 18px;
+}
+
+.myTicketCard--skeleton .myTicketCard__content {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  padding: 22px;
+}
+
+.myTicketCard--skeleton span {
+  width: 98px;
+  height: 18px;
+}
+
+.myTicketCard--skeleton strong {
+  width: 72%;
+  height: 24px;
+}
+
+.myTicketCard--skeleton p {
+  width: 54%;
+  height: 16px;
+}
+
+.myTicketCard__qrSkeleton {
+  width: 70px;
+  height: 70px;
+  align-self: center;
+  justify-self: center;
+  border-radius: 14px;
+}
+
+@keyframes myTicketsSkeleton {
+  to {
+    background-position: -220% 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .myTicketCard {
+    grid-template-columns: 1fr !important;
+  }
+
+  .myTicketCard::after {
+    right: auto !important;
+  }
+
+  .myTicketCard__right {
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: minmax(0, 1fr) 64px 124px !important;
+  }
+}
+
+.user-layout.dark-mode .myTicketsHero__kicker,
+.user-layout.dark-mode .myTicketsSearch,
+.user-layout.dark-mode .myTicketsSort__select,
+.user-layout.dark-mode .myTicketsLayoutIcon,
+.user-layout.dark-mode .myTicketCard__statusTag,
+.user-layout.dark-mode .myTicketCard__ticketQty,
+.user-layout.dark-mode .myTicketsSidebar__summaryRow {
+  border-color: rgba(148, 163, 184, 0.2) !important;
+  background: rgba(148, 163, 184, 0.1) !important;
+  color: #e5e7eb !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode .myTicketsSearch input,
+.user-layout.dark-mode .myTicketsSort__select {
+  color: #f8fafc !important;
+}
+
+.user-layout.dark-mode .myTicketsSearch input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Final pass: keep purchased ticket cards balanced in two real zones */
+.myTicketCard {
+  grid-template-columns: minmax(0, 1fr) 170px !important;
+  min-height: 156px !important;
+  overflow: hidden !important;
+}
+
+.myTicketCard::after {
+  right: 170px !important;
+}
+
+.myTicketCard__left {
+  display: grid !important;
+  grid-template-columns: 210px minmax(240px, 0.82fr) !important;
+  align-items: stretch !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+}
+
+.myTicketCard__eventImageWrap {
+  width: 210px !important;
+  min-height: 156px !important;
+}
+
+.myTicketCard__textInfo {
+  width: min(100%, 430px) !important;
+  padding: 18px 22px !important;
+}
+
+.myTicketCard__eventName,
+.myTicketCard__metaRow,
+.myTicketCard__metaText {
+  max-width: 100% !important;
+}
+
+.myTicketCard__right {
+  width: 170px !important;
+  min-width: 170px !important;
+  margin-left: auto !important;
+  padding: 14px 14px !important;
+}
+
+.myTicketCard__primaryBtn {
+  width: 132px !important;
+}
+
+@media (max-width: 860px) {
+  .myTicketCard {
+    grid-template-columns: 1fr !important;
+  }
+
+  .myTicketCard__left {
+    width: 100% !important;
+    grid-template-columns: 178px minmax(0, 1fr) !important;
+  }
+
+  .myTicketCard__right {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    grid-template-columns: minmax(0, 1fr) 58px 132px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .myTicketCard__left,
+  .myTicketCard__right {
+    grid-template-columns: 1fr !important;
+  }
+
+  .myTicketCard__eventImageWrap,
+  .myTicketCard__textInfo,
+  .myTicketCard__right {
+    width: 100% !important;
+  }
+}
+
+/* Media ratio guard: ticket event artwork follows the same 16:9 banner contract */
+.myTicketCard__eventImageWrap,
+.myTicketCard__imageSkeleton,
+.myTicketsSidebar__nextImage {
+  aspect-ratio: 16 / 9 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.myTicketCard__eventImage,
+.myTicketsSidebar__nextImage img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* Deploy polish: purchased tickets should read as a clean wallet list, not split columns. */
+.myTicketsList {
+  gap: 14px !important;
+}
+
+.myTicketCard {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 176px !important;
+  align-items: stretch !important;
+  min-height: 154px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.055) !important;
+}
+
+.myTicketCard::before,
+.myTicketCard::after {
+  display: none !important;
+}
+
+.myTicketCard:hover {
+  transform: translateY(-1px) !important;
+  border-color: rgba(109, 40, 217, 0.22) !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.075) !important;
+}
+
+.myTicketCard__left {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 230px minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+.myTicketCard__eventImageWrap {
+  grid-column: 1 !important;
+  width: 230px !important;
+  min-width: 230px !important;
+  height: 100% !important;
+  min-height: 154px !important;
+  aspect-ratio: auto !important;
+  border-radius: 16px 0 0 16px !important;
+  background: #eef2ff !important;
+}
+
+.myTicketCard__eventImage {
+  transform: none !important;
+}
+
+.myTicketCard:hover .myTicketCard__eventImage {
+  transform: scale(1.025) !important;
+}
+
+.myTicketCard__dateBadge {
+  position: absolute !important;
+  top: 12px !important;
+  left: 12px !important;
+  z-index: 2 !important;
+  width: 54px !important;
+  min-height: 66px !important;
+  display: grid !important;
+  place-items: center !important;
+  gap: 0 !important;
+  padding: 6px 0 !important;
+  border: 1px solid rgba(226, 232, 240, 0.88) !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08) !important;
+}
+
+.myTicketCard__dateMonth,
+.myTicketCard__dateWeekday {
+  color: #6d28d9 !important;
+  font-size: 0.58rem !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+
+.myTicketCard__dateDay {
+  margin: 2px 0 !important;
+  color: #111827 !important;
+  font-size: 1.24rem !important;
+  font-weight: 620 !important;
+  line-height: 1 !important;
+}
+
+.myTicketCard__textInfo {
+  grid-column: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 20px 24px !important;
+  background: #ffffff !important;
+}
+
+.myTicketCard__category,
+.myTicketCard__eyebrow {
+  width: fit-content !important;
+  margin: 0 0 8px !important;
+  color: #6d28d9 !important;
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+}
+
+.myTicketCard__eventName {
+  max-width: 100% !important;
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: clamp(1.02rem, 1.45vw, 1.18rem) !important;
+  font-weight: 620 !important;
+  line-height: 1.3 !important;
+}
+
+.myTicketCard__desc {
+  display: block !important;
+  max-width: 540px !important;
+  margin: 7px 0 0 !important;
+  color: #64748b !important;
+  font-size: 0.86rem !important;
+  line-height: 1.45 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.myTicketCard__metaRow {
+  margin-top: 10px !important;
+  color: #64748b !important;
+  font-size: 0.82rem !important;
+  font-weight: 400 !important;
+}
+
+.myTicketCard__metaIcon {
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 8px !important;
+  color: #6d28d9 !important;
+  background: #f5f3ff !important;
+}
+
+.myTicketCard__right {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-content: center !important;
+  justify-items: center !important;
+  gap: 8px !important;
+  width: 176px !important;
+  min-width: 176px !important;
+  margin-left: 0 !important;
+  padding: 16px !important;
+  border-left: 1px dashed rgba(148, 163, 184, 0.32) !important;
+  border-radius: 0 !important;
+  background: #fbfcff !important;
+}
+
+.myTicketCard__ticketId {
+  max-width: 132px !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+.myTicketCard__ticketId span {
+  color: #64748b !important;
+  font-size: 0.62rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em !important;
+}
+
+.myTicketCard__ticketId strong {
+  display: block !important;
+  margin-top: 3px !important;
+  color: #111827 !important;
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  white-space: normal !important;
+  word-break: break-all !important;
+}
+
+.myTicketCard__kebab {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.myTicketCard__qr {
+  width: 64px !important;
+  height: 64px !important;
+  border: 1px solid rgba(109, 40, 217, 0.14) !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+}
+
+.myTicketCard__ticketQty {
+  min-width: 76px !important;
+  min-height: 28px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  background: #f3f4f6 !important;
+  color: #475569 !important;
+  font-size: 0.7rem !important;
+  font-weight: 400 !important;
+}
+
+.myTicketCard__primaryBtn {
+  width: 132px !important;
+  min-height: 36px !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: linear-gradient(135deg, #5b21b6, #4f46e5) !important;
+  color: #ffffff !important;
+  font-size: 0.76rem !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode .myTicketCard {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  background: #0f1224 !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode .myTicketCard__textInfo,
+.user-layout.dark-mode .myTicketCard__right {
+  background: #0f1224 !important;
+}
+
+.user-layout.dark-mode .myTicketCard__right {
+  border-left-color: rgba(148, 163, 184, 0.22) !important;
+}
+
+.user-layout.dark-mode .myTicketCard__eventName,
+.user-layout.dark-mode .myTicketCard__ticketId strong,
+.user-layout.dark-mode .myTicketCard__dateDay {
+  color: #f8fafc !important;
+}
+
+.user-layout.dark-mode .myTicketCard__desc,
+.user-layout.dark-mode .myTicketCard__metaRow,
+.user-layout.dark-mode .myTicketCard__ticketId span {
+  color: #cbd5e1 !important;
+}
+
+.user-layout.dark-mode .myTicketCard__dateBadge,
+.user-layout.dark-mode .myTicketCard__kebab,
+.user-layout.dark-mode .myTicketCard__qr {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  background: #111827 !important;
+}
+
+@media (max-width: 980px) {
+  .myTicketCard {
+    grid-template-columns: 1fr !important;
+  }
+
+  .myTicketCard__right {
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: minmax(0, 1fr) 64px 96px 132px !important;
+    align-items: center !important;
+    justify-items: center !important;
+    padding: 12px 16px !important;
+    border-top: 1px dashed rgba(148, 163, 184, 0.32) !important;
+    border-left: 0 !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .myTicketCard__left {
+    grid-template-columns: 1fr !important;
+  }
+
+  .myTicketCard__eventImageWrap {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+
+  .myTicketCard__textInfo {
+    grid-column: 1 !important;
+    padding: 18px !important;
+  }
+
+  .myTicketCard__desc {
+    white-space: normal !important;
+  }
+
+  .myTicketCard__right {
+    grid-template-columns: 1fr !important;
+    justify-items: stretch !important;
+  }
+
+  .myTicketCard__ticketId,
+  .myTicketCard__primaryBtn {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+/* Deploy polish: ticket tabs keep readable text in both themes. */
+.myTicketsControls__tabs {
+  border: 1px solid rgba(148, 163, 184, 0.16) !important;
+  background: #f8fafc !important;
+}
+
+.myTicketsTab,
+.myTicketsTab:hover,
+.myTicketsTab:focus-visible {
+  color: #475569 !important;
+  font-weight: 500 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.myTicketsTab--active,
+.myTicketsTab--active:hover,
+.myTicketsTab--active:focus-visible {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #5b21b6, #4f46e5) !important;
+}
+
+.user-layout.dark-mode .myTicketsControls__tabs {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  background: #111827 !important;
+}
+
+.user-layout.dark-mode .myTicketsTab,
+.user-layout.dark-mode .myTicketsTab:hover,
+.user-layout.dark-mode .myTicketsTab:focus-visible {
+  color: #cbd5e1 !important;
+}
+
+.user-layout.dark-mode .myTicketsTab--active,
+.user-layout.dark-mode .myTicketsTab--active:hover,
+.user-layout.dark-mode .myTicketsTab--active:focus-visible {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #5b21b6, #4f46e5) !important;
+}

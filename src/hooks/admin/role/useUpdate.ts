@@ -8,7 +8,6 @@ export const useUpdateRole = () => {
   const updateRole = async (id: string, payload: RolePayload) => {
     try {
       setLoading(true);
-      console.log(payload)
       await roleService.updateRole(id, payload);
       return true;
     } catch (error) {

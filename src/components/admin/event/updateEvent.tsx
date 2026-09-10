@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 import { toast } from "react-toastify";
 import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";
 import Select from "react-select";
@@ -13,6 +13,40 @@ import Flatpickr from "react-flatpickr";
 import { Vietnamese } from "flatpickr/dist/l10n/vn.js";
 import { useUpdateEvent } from "../../../hooks/admin/event/useUpdateEvent";
 import { PlaceInput } from "../layout/Place";
+import { eventService } from "../../../services/admin/event.service";
+import type { CategoryDto } from "../../../types/event/event";
+
+type SelectOption = {
+  value: string;
+  label: string;
+};
+
+type CategoryResponse =
+  | CategoryDto[]
+  | {
+      data?: CategoryDto[] | { items?: CategoryDto[] };
+      items?: CategoryDto[];
+    };
+
+function extractCategories(response: CategoryResponse) {
+  if (Array.isArray(response)) return response;
+  if (Array.isArray(response.items)) return response.items;
+  if (Array.isArray(response.data)) return response.data;
+  if (response.data && "items" in response.data && Array.isArray(response.data.items)) {
+    return response.data.items;
+  }
+
+  return [];
+}
+
+function getEventCategoryIds(event: any) {
+  const eventCategories = event?.categories ?? event?.eventCategories ?? [];
+  if (!Array.isArray(eventCategories)) return [];
+
+  return eventCategories
+    .map((category: CategoryDto) => category.id)
+    .filter(Boolean);
+}
 
 export const UpdateEventPopup = ({
   id,
@@ -23,38 +57,70 @@ export const UpdateEventPopup = ({
   onClose: () => void;
   onSuccess: () => void;
 }) => {
-  const [poster, setPoster] = useState<File | null>(null);
-  const [posterUrl, setPosterUrl] = useState<string>("");
+  const [banner, setBanner] = useState<File | null>(null);
+  const [bannerUrl, setBannerUrl] = useState<string>("");
   const { updateEvent } = useUpdateEvent();
   const { data: switchOrgs } = useSwitchOrg();
+  const [categories, setCategories] = useState<CategoryDto[]>([]);
   const [uiLoading, setUiLoading] = useState(false);
   // const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
   const eventById = useEventById(id);
   const { upload } = useUpload();
   const [form, setForm] = useState<Partial<EventPayload>>({
     title: "",
-    eventPoster: "",
+    eventBanner: "",
     startDateTime: "",
     endDateTime: "",
     registrationEndDate: "",
     capacity: 0,
     organizationId: "",
+    categoryIds: [],
     description: "",
     place: "",
   });
+
+  useEffect(() => {
+    let ignore = false;
+
+    const fetchCategories = async () => {
+      try {
+        const response = await eventService.getCategories({ limit: 100 });
+        if (!ignore) setCategories(extractCategories(response));
+      } catch {
+        if (!ignore) setCategories([]);
+      }
+    };
+
+    fetchCategories();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const categoryOptions = useMemo<SelectOption[]>(
+    () =>
+      categories.map((category) => ({
+        value: category.id,
+        label: category.name,
+      })),
+    [categories],
+  );
+
   useEffect(() => {
     const loadData = async () => {
       if (eventById.data) {
         // console.log(eventById.data);
-        setPosterUrl(eventById.data.eventPoster || "");
+        setBannerUrl(eventById.data.eventBanner || "");
         setForm({
           title: eventById?.data?.title || "",
-          // eventPoster: eventById?.data?.eventPoster || "",
+          eventBanner: eventById?.data?.eventBanner || "",
           startDateTime: eventById?.data?.startDateTime || "",
           endDateTime: eventById?.data?.endDateTime || "",
           registrationEndDate: eventById.data.registrationEndDate,
           capacity: eventById.data.capacity,
           organizationId: eventById.data.organization.id,
+          categoryIds: getEventCategoryIds(eventById.data),
           description: eventById.data.description,
           place: eventById.data.place,
         });
@@ -76,18 +142,25 @@ export const UpdateEventPopup = ({
     setForm((prev) => ({ ...prev, organizationId: selected?.value || "" }));
   };
 
+  const handleCategoryChange = (selected: readonly SelectOption[]) => {
+    setForm((prev) => ({
+      ...prev,
+      categoryIds: selected.map((category) => category.value),
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("poster before submit:", posterUrl, poster);
 
-    if (!posterUrl && !poster) {
-      toast.warning("Event poster is required");
+    if (!bannerUrl && !banner) {
+      toast.warning("Event banner is required");
       return;
     }
 
     if (
       !form.title ||
       !form.organizationId ||
+      !form.categoryIds?.length ||
       form.capacity === 0 ||
       !form.startDateTime ||
       !form.endDateTime ||
@@ -100,22 +173,22 @@ export const UpdateEventPopup = ({
 
     setUiLoading(true);
     try {
-      let posterFinal = posterUrl;
+      let bannerFinal = bannerUrl;
 
       // upload ảnh mới nếu có
-      if (poster) {
+      if (banner) {
         const formData = new FormData();
-        formData.append("file", poster);
-        formData.append("folder", "poster");
+        formData.append("file", banner);
+        formData.append("folder", "banner");
 
         await toast.promise(
           upload(formData).then((res) => {
-            posterFinal = res.secure_url;
+            bannerFinal = res.secure_url;
           }),
           {
-            pending: "Uploading poster...",
-            success: "Poster uploaded!",
-            error: "Failed to upload poster",
+            pending: "Uploading banner...",
+            success: "Banner uploaded!",
+            error: "Failed to upload banner",
           },
         );
       }
@@ -123,7 +196,7 @@ export const UpdateEventPopup = ({
       // update event
       await updateEvent(id, {
         ...form,
-        eventPoster: posterFinal,
+        eventBanner: bannerFinal,
       } as EventPayload);
       toast.success("Event updated successfully");
 
@@ -157,11 +230,20 @@ export const UpdateEventPopup = ({
         </div>
         <form id="popup-form" className="popup-form" onSubmit={handleSubmit}>
           <div className="form-group full-width">
+            <label className="required event-media-label">Event Banner</label>
+            <p className="event-media-hint">
+              Used on event cards, event detail hero, and public discovery pages.
+            </p>
             <PosterUpload
-              value={poster}
-              onChange={setPoster}
-              defaultUrl={posterUrl}
-              onRemove={() => setPosterUrl("")}
+              value={banner}
+              onChange={setBanner}
+              defaultUrl={bannerUrl}
+              onRemove={() => setBannerUrl("")}
+              inputId="event-banner-update-input"
+              title="Drag & drop your event banner here"
+              subtitle="Recommended 16:9 banner — PNG, JPG, WEBP"
+              previewAlt="Event banner preview"
+              variant="banner"
             />
           </div>
           <div className="form-group">
@@ -329,6 +411,24 @@ export const UpdateEventPopup = ({
                 Option: CustomOption,
                 SingleValue: CustomSingleValue,
               }}
+            />
+          </div>
+          <div className="form-group full-width">
+            <label className="required">Categories</label>
+            <Select
+              isMulti
+              closeMenuOnSelect={false}
+              className="react-select event-category-select"
+              classNamePrefix="custom-select"
+              placeholder="Select one or more categories"
+              options={categoryOptions}
+              value={categoryOptions.filter((category) =>
+                form.categoryIds?.includes(category.value),
+              )}
+              onChange={(selected) =>
+                handleCategoryChange(selected as readonly SelectOption[])
+              }
+              noOptionsMessage={() => "No categories found"}
             />
           </div>
           <div className="form-group-textarea">

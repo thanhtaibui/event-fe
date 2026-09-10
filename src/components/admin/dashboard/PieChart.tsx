@@ -23,7 +23,12 @@ function DashboardCard({ title, data }: DashboardCardProps) {
 
   return (
     <div className="pie-chart-card">
-      <h3 className="chart-title">{title}</h3>
+      <div className="chart-box__header">
+        <div>
+          <span className="dashboard-eyebrow">Distribution</span>
+          <h2>{title}</h2>
+        </div>
+      </div>
       <PieChart
         series={[
           {

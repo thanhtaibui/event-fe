@@ -1,0 +1,63 @@
+@media (max-width: 1100px) {
+  .auth-layout,
+  .login-page,
+  .org-register-page {
+    min-height: 100dvh;
+  }
+
+  .login-shell,
+  .org-register-shell,
+  .org-register-card {
+    width: min(100%, calc(100vw - 32px)) !important;
+  }
+
+  .login-shell,
+  .org-register-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .login-page,
+  .org-register-page {
+    padding: 16px !important;
+  }
+
+  .login-showcase,
+  .org-register-aside {
+    text-align: left !important;
+  }
+
+  .login-showcase h1,
+  .org-register-title {
+    font-size: clamp(2rem, 9vw, 3.4rem) !important;
+  }
+
+  .login-panel,
+  .org-register-form,
+  .org-register-card {
+    border-radius: 18px !important;
+    padding: clamp(18px, 5vw, 28px) !important;
+  }
+
+  .org-register-grid,
+  .org-register-stepGrid,
+  .org-register-confirmGrid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .login-actions,
+  .org-register-actions,
+  .org-document-mode {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .login-submit,
+  .org-register-actions button,
+  .org-document-mode button {
+    width: 100% !important;
+  }
+}

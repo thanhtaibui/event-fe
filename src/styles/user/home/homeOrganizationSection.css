@@ -1,0 +1,163 @@
+.user-home-org {
+  padding: clamp(54px, 7vw, 92px) clamp(18px, 5vw, 72px);
+  background: #ffffff;
+}
+
+.user-home-org__layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.62fr) minmax(0, 1.38fr);
+  align-items: stretch;
+  gap: clamp(24px, 5vw, 58px);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 54px);
+  border: 1px solid rgba(109, 40, 217, 0.12);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.user-home-org__copy {
+  align-self: center;
+}
+
+.user-home-org__eyebrow {
+  display: block;
+  margin-bottom: 14px;
+  color: #6d28d9;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.user-home-org__title {
+  max-width: 500px;
+  margin: 0;
+  color: #111827;
+  font-size: clamp(2.2rem, 4.4vw, 4.4rem);
+  font-weight: 650;
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.user-home-org__title span {
+  color: #6d28d9;
+}
+
+.user-home-org__subtitle {
+  max-width: 430px;
+  margin: 22px 0 0;
+  color: #64748b;
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.user-home-org__flow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.user-home-org__flowCard {
+  position: relative;
+  overflow: hidden;
+  min-height: 214px;
+  padding: 22px;
+  border: 1px solid rgba(109, 40, 217, 0.11);
+  border-radius: 16px;
+  background: #fbfbff;
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.user-home-org__flowCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(109, 40, 217, 0.24);
+  box-shadow: none;
+}
+
+.user-home-org__step {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  color: rgba(109, 40, 217, 0.16);
+  font-size: 2.4rem;
+  font-weight: 650;
+  letter-spacing: -0.08em;
+}
+
+.user-home-org__flowIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 38px;
+  border-radius: 14px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4c1d95, #7c3aed 58%, #2563eb);
+  box-shadow: none;
+}
+
+.user-home-org__flowCard h3 {
+  margin: 0 0 10px;
+  color: #111827;
+  font-size: 1.04rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.user-home-org__flowCard p {
+  max-width: 260px;
+  margin: 0;
+  color: #64748b;
+  font-size: 0.88rem;
+  line-height: 1.62;
+}
+
+@media (max-width: 920px) {
+  .user-home-org__layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .user-home-org {
+    padding: 42px 14px;
+  }
+
+  .user-home-org__layout {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .user-home-org__flow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* UI skills calibration */
+.user-home-org {
+  background: #ffffff !important;
+}
+
+.user-home-org__layout {
+  border-radius: var(--ux-radius-shell, 22px) !important;
+  box-shadow: none !important;
+}
+
+.user-home-org__flowCard {
+  border-radius: var(--ux-radius-card, 16px) !important;
+  box-shadow: none !important;
+}
+
+.user-home-org__flowIcon {
+  border-radius: var(--ux-radius-control, 14px) !important;
+}
+
+.user-layout.dark-mode .user-home-org {
+  background: #070817 !important;
+}

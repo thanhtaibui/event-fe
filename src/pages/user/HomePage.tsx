@@ -4,7 +4,7 @@ import HomeCommunityPlatform from "../../components/user/home/HomeCommunityPlatf
 import HomeOrganizationSection from "../../components/user/home/HomeOrganizationSection";
 import HomeCTA from "../../components/user/home/HomeCTA";
 
-import "../../styles/user/home.css";
+import "../../styles/user/home/home.css";
 
 export default function HomePage() {
   return (

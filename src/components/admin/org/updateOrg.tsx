@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useUser } from "../../../hooks/admin/user/useUser";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 import { toast } from "react-toastify";
 import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";
 import Select from "react-select";
 import { useOrgById } from "../../../hooks/admin/org/useOrgById";
 import { useUpdateOrg } from "../../../hooks/admin/org/useUpdate";
 import type { PayloadOrganizationDto } from "../../../types/organization/create";
+import {
+  buildIndustryValue,
+  INDUSTRY_OTHER_VALUE,
+  parseIndustryValue,
+} from "../../../constants/industryOptions";
+import IndustryMultiSelect from "../../common/IndustryMultiSelect";
 
 export const UpdateOrgPopup = ({
   id,
@@ -34,12 +40,15 @@ export const UpdateOrgPopup = ({
     phone: "",
     website: "",
   });
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
+  const [otherIndustry, setOtherIndustry] = useState("");
 
   const { data: usersData } = useUser();
   const users = usersData?.items ?? [];
   useEffect(() => {
     const loadData = async () => {
       if (orgById.data) {
+        const parsedIndustry = parseIndustryValue(orgById.data.industry);
         // console.log(orgById.data);
         setForm({
           name: orgById?.data?.name || "",
@@ -53,6 +62,8 @@ export const UpdateOrgPopup = ({
           phone: orgById.data.phone,
           website: orgById.data.website,
         });
+        setSelectedIndustries(parsedIndustry.selected);
+        setOtherIndustry(parsedIndustry.other);
       }
     };
     loadData();
@@ -84,7 +95,9 @@ export const UpdateOrgPopup = ({
   };
 
   const handleSubmit = async () => {
-    if (!form.name || !form.ownerId) {
+    const industry = buildIndustryValue(selectedIndustries, otherIndustry);
+
+    if (!form.name || !form.ownerId || !industry) {
       toast.warning("Please fill required fields");
       return;
     }
@@ -92,6 +105,7 @@ export const UpdateOrgPopup = ({
     setUiLoading(true);
     const success = await updateOrg(id, {
       ...form,
+      industry,
       bio: form.bio || null,
     } as PayloadOrganizationDto);
     if (success) {
@@ -242,13 +256,22 @@ export const UpdateOrgPopup = ({
 
           <div className="form-group">
             <label>Industry</label>
-            <input
-              name="industry"
-              placeholder="e.g. Technology, Finance"
-              value={form.industry || ""}
-              onChange={handleChange}
+            <IndustryMultiSelect
+              selected={selectedIndustries}
+              onChange={setSelectedIndustries}
             />
           </div>
+
+          {selectedIndustries.includes(INDUSTRY_OTHER_VALUE) && (
+            <div className="form-group">
+              <label>Other Industry</label>
+              <input
+                placeholder="Enter industry"
+                value={otherIndustry}
+                onChange={(event) => setOtherIndustry(event.target.value)}
+              />
+            </div>
+          )}
 
           <div className="form-group">
             <label>Address</label>

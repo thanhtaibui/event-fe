@@ -1,0 +1,104 @@
+@media (max-width: 1180px) {
+  .user-home-hero,
+  .user-home-platform,
+  .user-home-cta,
+  .event-page,
+  .org-page,
+  .myTicketsPage,
+  .user-event-detail {
+    overflow-x: hidden;
+  }
+
+  .user-home-hero__grid,
+  .user-home-platform__grid,
+  .user-home-cta__layout,
+  .event-hero,
+  .event-page__main,
+  .org-hero,
+  .org-page__layout,
+  .myTicketsLayout,
+  .user-event-detail__layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .event-card,
+  .org-list__card,
+  .myTicketCard {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .user-layout__main {
+    padding-inline: clamp(14px, 4vw, 24px) !important;
+  }
+
+  .user-eventixHeader {
+    padding-inline: clamp(12px, 4vw, 22px) !important;
+  }
+
+  .event-filter,
+  .event-hero__search-grid,
+  .org-hero__search-grid,
+  .myTicketsControls,
+  .myTicketsControls__right,
+  .user-event-detail__cartBar {
+    grid-template-columns: minmax(0, 1fr) !important;
+    flex-wrap: wrap;
+    gap: 12px !important;
+  }
+
+  .event-card__body,
+  .org-list__content,
+  .myTicketCard__textInfo,
+  .myTicketCard__content {
+    text-align: left !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .user-layout__main {
+    padding-inline: 12px !important;
+  }
+
+  .user-home-hero,
+  .event-hero,
+  .org-hero,
+  .myTicketsHero,
+  .user-event-detail__hero {
+    border-radius: 18px !important;
+    padding: 22px 16px !important;
+  }
+
+  .event-card,
+  .org-list__card,
+  .myTicketCard,
+  .user-event-detail__card,
+  .user-event-detail__ticket {
+    border-radius: 16px !important;
+  }
+
+  .event-card,
+  .myTicketCard {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .event-card__image,
+  .myTicketCard__eventImageWrap {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .myTicketCard__right,
+  .user-event-detail__ticketActions,
+  .user-event-detail__cartActions {
+    width: 100%;
+    justify-content: stretch !important;
+  }
+
+  .myTicketCard__primaryBtn,
+  .user-event-detail__ticketActions button,
+  .user-event-detail__cartActions button {
+    flex: 1 1 auto;
+  }
+}

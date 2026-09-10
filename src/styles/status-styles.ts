@@ -25,6 +25,10 @@ export const STATUS_STYLES: Record<string, { bg: string; text: string; border: s
   // Chờ duyệt khi User tạo
   PENDING: { bg: '#FFFBEB', text: '#B45309', border: '#FDE68A' },
 
+  PROCESSING: { bg: '#EFF6FF', text: '#1D4ED8', border: '#BFDBFE' },
+
+  RESOLVED: { bg: '#ECFDF5', text: '#047857', border: '#A7F3D0' },
+
   // Đang hoạt động bình thường
   ACTIVE: { bg: '#ECFDF5', text: '#047857', border: '#A7F3D0' },
 
@@ -36,6 +40,8 @@ export const STATUS_STYLES: Record<string, { bg: string; text: string; border: s
 
   // Từ chối phê duyệt lúc mới tạo
   REJECTED: { bg: '#FEF2F2', text: '#B91C1C', border: '#FECACA' },
+
+  SPAM: { bg: '#F3F4F6', text: '#475569', border: '#CBD5E1' },
 }
 export const EVENT_STATUS_STYLES: Record<string, { bg: string; text: string; border: string, statusDot: boolean }> = {
   // Bản nháp: Đang chuẩn bị, chưa công khai

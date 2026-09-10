@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import "../../../styles/popup/popup.css";
+import "../../../styles/admin/popup/popup.css";
 import { ROLE_COLOR_PALETTE } from "../../../styles/status-styles";
 import Select from "react-select";
 import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";

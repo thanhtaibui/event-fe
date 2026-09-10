@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useTicketTypeByIdEvent } from "../../../hooks/admin/event/useTicketTypes";
 import { CreateTT } from "./createTT";
 import { UpdateTT } from "./updateTT";
-import { Cursor3D } from "../layout/Cursor3D";
 
 interface TicketCardProps {
   id: string;
@@ -12,8 +11,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({ id }) => {
   const { data: ticketTypes, refetch: refTicketType } =
     useTicketTypeByIdEvent(id);
   const [showPopup, setShowPopup] = useState<"createTT" | "updateTT" | null>();
-  const [cursorHover, setCursorHover] = useState(false);
-  const [cursorPress, setCursorPress] = useState(false);
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN").format(price);
   };
@@ -40,8 +37,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({ id }) => {
           }}
         />
       )}
-      <Cursor3D show={cursorHover} press={cursorPress} />
-
       <div className="tickets-title">
         <h3>Ticket Types</h3>
         <button onClick={() => setShowPopup("createTT")}>Add Tier +</button>
@@ -79,20 +74,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({ id }) => {
                 setTicketId(ticketType.id);
                 setShowPopup("updateTT");
               }}
-              onPointerEnter={() => setCursorHover(true)}
-              onPointerLeave={() => {
-                setCursorPress(false);
-                setCursorHover(false);
-              }}
-              onPointerDown={(e) => {
-                e.preventDefault();
-                setCursorPress(true);
-              }}
-              onPointerUp={() => {
-                // Giữ hover SVG lại ngay cả sau khi thả chuột (không tắt cursorHover)
-                setCursorPress(false);
-              }}
-              onPointerCancel={() => setCursorPress(false)}
             >
               <div className="ticket-info">
                 <h5 className="ticket-item__name">{ticketType.name}</h5>
