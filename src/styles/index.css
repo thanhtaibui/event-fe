@@ -294,6 +294,34 @@ html body #root select option {
   }
 }
 
+.light-mode,
+.user-layout.light-mode,
+.layout-container.light-mode {
+  --skeleton-base: #e5e7eb;
+  --skeleton-highlight: #f8fafc;
+  --skeleton-gradient: linear-gradient(
+    100deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-highlight) 48%,
+    var(--skeleton-base) 100%
+  );
+  color-scheme: light;
+}
+
+.dark-mode,
+.user-layout.dark-mode,
+.layout-container.dark-mode {
+  --skeleton-base: #111827;
+  --skeleton-highlight: #1f2937;
+  --skeleton-gradient: linear-gradient(
+    100deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-highlight) 48%,
+    var(--skeleton-base) 100%
+  );
+  color-scheme: dark;
+}
+
 /* Shared checkbox multi-select */
 .industry-multiselect {
   position: relative;

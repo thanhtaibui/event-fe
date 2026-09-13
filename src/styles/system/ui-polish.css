@@ -1245,3 +1245,197 @@ select {
 .layout-container.light-mode .sidebar-nav li.active a {
   color: #5b21b6 !important;
 }
+
+/* Final highlight layer: white-first UI with brand accents. */
+.light-mode,
+.user-layout.light-mode,
+.layout-container.light-mode {
+  --ux-brand-gradient: linear-gradient(135deg, #080b16, #5b21b6 48%, #2563eb);
+  --ux-highlight: #2563eb;
+  --ux-highlight-strong: #5b21b6;
+  --ux-highlight-soft: rgba(91, 33, 182, 0.075);
+  --ux-highlight-softer: rgba(37, 99, 235, 0.045);
+  --ux-highlight-border: rgba(91, 33, 182, 0.16);
+  --ux-highlight-shadow: 0 18px 36px rgba(91, 33, 182, 0.12);
+  --ux-surface-shadow: 0 14px 32px rgba(15, 23, 42, 0.065);
+}
+
+.dark-mode,
+.user-layout.dark-mode,
+.layout-container.dark-mode {
+  --ux-brand-gradient: linear-gradient(135deg, #080b16, #5b21b6 48%, #2563eb);
+  --ux-highlight: #818cf8;
+  --ux-highlight-strong: #c4b5fd;
+  --ux-highlight-soft: rgba(129, 140, 248, 0.14);
+  --ux-highlight-softer: rgba(129, 140, 248, 0.08);
+  --ux-highlight-border: rgba(165, 180, 252, 0.24);
+  --ux-highlight-shadow: 0 20px 42px rgba(37, 99, 235, 0.2);
+  --ux-surface-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.layout-container.light-mode :where(
+  .custom-table-container,
+  .admin-toolbar,
+  .admin-pagination.MuiTablePagination-root,
+  .membership-hero,
+  .membership-panel,
+  .membership-stats article,
+  .org-detail__header,
+  .org-detail__panel,
+  .org-detail__map,
+  .org-verification__hero,
+  .org-verification__toolbar,
+  .report-stat-card,
+  .report-detail-card,
+  .popup-content,
+  .modal-content
+),
+.user-layout.light-mode :where(
+  .event-page .event-card,
+  .event-page .trending-panel,
+  .org-page .org-list__card,
+  .org-page .org-sidebar__panel,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help,
+  .user-event-detail__card,
+  .user-event-detail__tickets,
+  .user-event-detail__related,
+  .user-event-detail__asideCard
+) {
+  border-color: rgba(91, 33, 182, 0.12) !important;
+  background: #ffffff !important;
+  box-shadow: var(--ux-surface-shadow) !important;
+}
+
+.layout-container.light-mode :where(
+  .custom-table-container,
+  .membership-panel,
+  .org-detail__panel,
+  .report-stat-card,
+  .report-detail-card
+),
+.user-layout.light-mode :where(
+  .event-page .event-card,
+  .org-page .org-list__card,
+  .myTicketCard,
+  .user-event-detail__card
+) {
+  position: relative;
+  overflow: hidden;
+}
+
+.layout-container.light-mode :where(
+  .custom-table-container,
+  .membership-panel,
+  .org-detail__panel,
+  .report-stat-card,
+  .report-detail-card
+)::before,
+.user-layout.light-mode :where(
+  .event-page .event-card,
+  .org-page .org-list__card,
+  .myTicketCard,
+  .user-event-detail__card
+)::before {
+  content: "";
+  position: absolute;
+  inset: 18px auto 18px 0;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--ux-brand-gradient);
+  opacity: 0.78;
+}
+
+.layout-container.light-mode :where(
+  .custom-table-container,
+  .membership-panel,
+  .org-detail__panel,
+  .report-stat-card,
+  .report-detail-card
+):hover,
+.user-layout.light-mode :where(
+  .event-page .event-card,
+  .org-page .org-list__card,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help,
+  .user-event-detail__card
+):hover {
+  border-color: rgba(91, 33, 182, 0.22) !important;
+  box-shadow: var(--ux-highlight-shadow) !important;
+}
+
+.layout-container.light-mode :where(
+  .admin-search-field .MuiOutlinedInput-root,
+  .admin-filter-button.MuiButton-root,
+  .header-right .round-button,
+  .admin-theme-toggle,
+  .user-info
+),
+.user-layout.light-mode :where(
+  .event-filter,
+  .myTicketsSearch,
+  .myTicketsSort__select,
+  .org-hero__search-grid
+) {
+  border-color: rgba(91, 33, 182, 0.14) !important;
+  background: #ffffff !important;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.045) !important;
+}
+
+.layout-container.light-mode :where(
+  .admin-search-field .MuiOutlinedInput-root,
+  .admin-filter-button.MuiButton-root,
+  .header-right .round-button,
+  .admin-theme-toggle,
+  .user-info
+):hover,
+.user-layout.light-mode :where(
+  .event-filter,
+  .myTicketsSearch,
+  .myTicketsSort__select,
+  .org-hero__search-grid
+):hover {
+  border-color: rgba(91, 33, 182, 0.24) !important;
+}
+
+.layout-container.light-mode :where(
+  .admin-skeleton__block,
+  .membership-row-card--skeleton span
+),
+.user-layout.light-mode :where(
+  .event-card-skeleton span,
+  .event-card-skeleton strong,
+  .event-card-skeleton small,
+  .org-list__skeletonBlock,
+  .myTicketCard__imageSkeleton,
+  .myTicketCard__qrSkeleton,
+  .myTicketCard--skeleton span,
+  .myTicketCard--skeleton strong,
+  .myTicketCard--skeleton p,
+  .user-event-detail__skeletonLine
+) {
+  background: var(--skeleton-gradient, linear-gradient(100deg, #e5e7eb 0%, #f8fafc 48%, #e5e7eb 100%)) !important;
+  background-size: 220% 100% !important;
+}
+
+.layout-container.dark-mode :where(
+  .admin-skeleton__block,
+  .membership-row-card--skeleton span
+),
+.user-layout.dark-mode :where(
+  .event-card-skeleton span,
+  .event-card-skeleton strong,
+  .event-card-skeleton small,
+  .org-list__skeletonBlock,
+  .myTicketCard__imageSkeleton,
+  .myTicketCard__qrSkeleton,
+  .myTicketCard--skeleton span,
+  .myTicketCard--skeleton strong,
+  .myTicketCard--skeleton p,
+  .user-event-detail__skeletonLine
+) {
+  background: var(--skeleton-gradient, linear-gradient(100deg, #111827 0%, #1f2937 48%, #111827 100%)) !important;
+  background-size: 220% 100% !important;
+}

@@ -1239,3 +1239,89 @@ a:has(li.active) {
     display: none;
   }
 }
+
+/* Sidebar state polish based on the supplied reference. */
+.layout-container.light-mode .sidebar-nav ul {
+  gap: 10px;
+}
+
+.layout-container.light-mode .sidebar-nav li {
+  min-height: 56px;
+  padding: 0 44px 0 18px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  color: #475569;
+}
+
+.layout-container.light-mode .sidebar-nav li::before {
+  left: 12px;
+  width: 4px;
+  height: 30px;
+  background: linear-gradient(180deg, #5b21b6 0%, #2563eb 100%);
+}
+
+.layout-container.light-mode .sidebar-nav li::after {
+  content: "›";
+  position: absolute;
+  right: 18px;
+  color: #94a3b8;
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+  opacity: 0.9;
+  transform: translateX(0);
+  transition:
+    color 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.layout-container.light-mode .sidebar-nav a {
+  color: #475569 !important;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.layout-container.light-mode .sidebar-nav li:hover {
+  border-color: rgba(91, 33, 182, 0.1) !important;
+  background:
+    linear-gradient(135deg, rgba(91, 33, 182, 0.055), rgba(37, 99, 235, 0.035)),
+    #ffffff !important;
+  color: #334155 !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.045) !important;
+}
+
+.layout-container.light-mode .sidebar-nav li:hover::after {
+  color: #5b21b6;
+  transform: translateX(2px);
+}
+
+.layout-container.light-mode .sidebar-nav li.active,
+.layout-container.light-mode .sidebar-nav li.active:hover {
+  border-color: rgba(91, 33, 182, 0.18) !important;
+  background:
+    linear-gradient(135deg, rgba(91, 33, 182, 0.13), rgba(37, 99, 235, 0.07)),
+    #ffffff !important;
+  color: #3b22d6 !important;
+  box-shadow:
+    0 18px 34px rgba(91, 33, 182, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.72) !important;
+}
+
+.layout-container.light-mode .sidebar-nav li.active span,
+.layout-container.light-mode .sidebar-nav li.active a {
+  color: #3b22d6 !important;
+}
+
+.layout-container.light-mode .sidebar-nav li.active::after {
+  color: #3b22d6;
+  opacity: 1;
+}
+
+.layout-container.collapsed .sidebar-nav li {
+  padding-inline: 0;
+}
+
+.layout-container.collapsed .sidebar-nav li::after {
+  display: none;
+}

@@ -269,8 +269,8 @@
 }
 
 .layout-container.light-mode .admin-skeleton__block {
-  background: linear-gradient(100deg, #e5e7eb 0%, #f3f4f6 48%, #e5e7eb 100%);
-  background-size: 220% 100%;
+  background: var(--skeleton-gradient, linear-gradient(100deg, #e5e7eb 0%, #f8fafc 48%, #e5e7eb 100%)) !important;
+  background-size: 220% 100% !important;
 }
 
 .layout-container.light-mode .admin-skeleton__table,
@@ -278,17 +278,17 @@
 .layout-container.light-mode .admin-skeleton__card,
 .layout-container.light-mode .admin-skeleton__chart,
 .layout-container.light-mode .admin-skeleton__panel {
-  border-color: #e5e7eb;
-  background: #ffffff;
+  border-color: #e5e7eb !important;
+  background: #ffffff !important;
 }
 
 .layout-container.light-mode .admin-skeleton__table-head {
-  background: #f8fafc;
+  background: #f8fafc !important;
 }
 
 .layout-container.dark-mode .admin-skeleton__block {
-  background: linear-gradient(100deg, #111827 0%, #1f2937 48%, #111827 100%);
-  background-size: 220% 100%;
+  background: var(--skeleton-gradient, linear-gradient(100deg, #111827 0%, #1f2937 48%, #111827 100%)) !important;
+  background-size: 220% 100% !important;
 }
 
 .layout-container.dark-mode .admin-skeleton__table,
@@ -296,6 +296,10 @@
 .layout-container.dark-mode .admin-skeleton__card,
 .layout-container.dark-mode .admin-skeleton__chart,
 .layout-container.dark-mode .admin-skeleton__panel {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: #111827;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: #111827 !important;
+}
+
+.layout-container.dark-mode .admin-skeleton__table-head {
+  background: #080b16 !important;
 }
