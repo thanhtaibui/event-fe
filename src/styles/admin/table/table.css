@@ -13,6 +13,7 @@
   border-radius: 12px;
   background: #ffffff;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  transition: var(--theme-transition, background-color 180ms ease, border-color 180ms ease);
 }
 
 .admin-toolbar__controls {
@@ -26,6 +27,7 @@
   border-radius: 8px;
   background: #f8fafc;
   color: #0f172a;
+  transition: var(--theme-transition, background-color 180ms ease, border-color 180ms ease, color 180ms ease);
 }
 
 .admin-search-field .MuiOutlinedInput-notchedOutline {
@@ -52,6 +54,7 @@
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+  transition: var(--theme-transition, background-color 180ms ease, border-color 180ms ease);
 }
 
 .custom-table-container.MuiPaper-root {
@@ -147,7 +150,7 @@
   width: 58px;
   height: 28px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #eef2f7 0%, #f8fafc 48%, #e8eef7 100%);
+  background: var(--skeleton-gradient, linear-gradient(90deg, #eef2f7 0%, #f8fafc 48%, #e8eef7 100%));
   background-size: 220% 100%;
   animation: adminSkeletonShimmer 1.25s ease-in-out infinite;
 }
@@ -606,9 +609,112 @@
 .membership-row-card--skeleton span {
   display: block;
   border-radius: 999px;
-  background: linear-gradient(90deg, #eef2f7 0%, #f8fafc 48%, #e8eef7 100%);
+  background: var(--skeleton-gradient, linear-gradient(90deg, #eef2f7 0%, #f8fafc 48%, #e8eef7 100%));
   background-size: 220% 100%;
   animation: adminSkeletonShimmer 1.25s ease-in-out infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+  .admin-page,
+  .report {
+    color: #ffffff;
+  }
+
+  .admin-toolbar,
+  .custom-table-container,
+  .admin-pagination.MuiTablePagination-root,
+  .permission-matrix-container,
+  .membership-hero,
+  .membership-panel,
+  .membership-stats article,
+  .membership-row-card,
+  .org-membership-modal,
+  .report-review-modal,
+  .report-review-modal__body,
+  .report-review-modal__footer,
+  .report-detail-card,
+  .report-readonly-note {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    background: #111827 !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  .admin-search-field .MuiOutlinedInput-root,
+  .admin-filter-button.MuiButton-root,
+  .membership-search,
+  .membership-toolbar select,
+  .org-membership-modal__header,
+  .org-membership-modal__metric,
+  .org-membership-modal__row,
+  .membership-empty,
+  .custom-checkbox,
+  .group-header,
+  .report-modal-close,
+  .report-btn--ghost {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    background: #080b16 !important;
+    color: #cbd5e1 !important;
+  }
+
+  .custom-table-container .MuiTableCell-root,
+  .custom-table-container .MuiTableCell-head {
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    color: #cbd5e1 !important;
+    background: transparent !important;
+  }
+
+  .custom-table-container .MuiTableCell-head {
+    background: #080b16 !important;
+    color: #94a3b8 !important;
+  }
+
+  .custom-table-container .MuiTableRow-root:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .admin-search-field .MuiInputBase-input,
+  .membership-search input,
+  .membership-member__name,
+  .membership-stats strong,
+  .membership-hero h2,
+  .org-membership-modal__header h3,
+  .org-membership-modal__metric strong,
+  .report-review-modal__header h2,
+  .report-detail-card strong,
+  .report-user-cell strong,
+  .report-org-cell strong {
+    color: #ffffff !important;
+  }
+
+  .membership-hero p,
+  .membership-stats span,
+  .membership-member span,
+  .membership-date,
+  .report-review-modal__header p,
+  .report-detail-card p,
+  .report-detail-reason,
+  .report-reason-cell,
+  .report-user-cell span,
+  .report-org-cell span,
+  .report-review-help,
+  .org-membership-modal__metric span,
+  .org-membership-modal__footer {
+    color: #cbd5e1 !important;
+  }
+
+  .permission-card,
+  .permission-tag {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+  }
+
+  .permission-loading i,
+  .membership-row-card--skeleton span {
+    background: linear-gradient(90deg, #111827 0%, #1f2937 48%, #111827 100%);
+    background-size: 220% 100%;
+  }
 }
 
 .membership-skeleton__avatar {
@@ -1156,5 +1262,81 @@
 
   .report-btn {
     width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .admin-toolbar,
+  .custom-table-container,
+  .admin-pagination.MuiTablePagination-root,
+  .permission-matrix-container,
+  .membership-hero,
+  .membership-panel,
+  .membership-stats article,
+  .membership-row-card,
+  .org-membership-modal,
+  .report-review-modal,
+  .report-review-modal__body,
+  .report-review-modal__footer,
+  .report-detail-card,
+  .report-readonly-note {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    background: #111827 !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  .admin-search-field .MuiOutlinedInput-root,
+  .admin-filter-button.MuiButton-root,
+  .membership-search,
+  .membership-toolbar select,
+  .org-membership-modal__header,
+  .org-membership-modal__metric,
+  .org-membership-modal__row,
+  .membership-empty,
+  .group-header,
+  .report-modal-close,
+  .report-btn--ghost {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    background: #080b16 !important;
+    color: #cbd5e1 !important;
+  }
+
+  .custom-table-container .MuiTableCell-root {
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    color: #cbd5e1 !important;
+  }
+
+  .custom-table-container .MuiTableCell-head {
+    background: #080b16 !important;
+    color: #94a3b8 !important;
+  }
+
+  .membership-hero h2,
+  .membership-stats strong,
+  .membership-member__name,
+  .org-membership-modal__header h3,
+  .org-membership-modal__metric strong,
+  .report-review-modal__header h2,
+  .report-detail-card strong,
+  .report-user-cell strong,
+  .report-org-cell strong {
+    color: #ffffff !important;
+  }
+
+  .membership-hero p,
+  .membership-stats span,
+  .membership-member span,
+  .membership-date,
+  .org-membership-modal__metric span,
+  .org-membership-modal__footer,
+  .report-review-modal__header p,
+  .report-detail-card p,
+  .report-detail-reason,
+  .report-reason-cell,
+  .report-user-cell span,
+  .report-org-cell span,
+  .report-review-help {
+    color: #cbd5e1 !important;
   }
 }

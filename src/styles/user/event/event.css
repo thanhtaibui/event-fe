@@ -3777,6 +3777,95 @@
   }
 }
 
+/* Theme consistency fix: filters, cards and skeletons must follow light/dark tokens. */
+.user-layout.light-mode .event-page {
+  --eventix-event-bg: #f8f9fc;
+  --eventix-event-surface: #ffffff;
+  --eventix-event-surface-solid: #ffffff;
+  --eventix-event-text: #0f172a;
+  --eventix-event-muted: #64748b;
+  --eventix-event-border: #e5e7eb;
+  --eventix-event-gradient: linear-gradient(135deg, #5b21b6, #2563eb);
+  background: #f8f9fc !important;
+}
+
+.user-layout.dark-mode .event-page {
+  --eventix-event-bg: #000000;
+  --eventix-event-surface: #111827;
+  --eventix-event-surface-solid: #111827;
+  --eventix-event-text: #ffffff;
+  --eventix-event-muted: #cbd5e1;
+  --eventix-event-border: rgba(255, 255, 255, 0.08);
+  --eventix-event-gradient: linear-gradient(135deg, #5b21b6, #2563eb);
+  background: #000000 !important;
+}
+
+.event-page .event-filter,
+.event-page .category-tabs,
+.event-page .event-card,
+.event-page .trending-panel,
+.event-page .event-empty-state,
+.event-page .event-card-skeleton {
+  transition: var(--theme-transition, background-color 180ms ease, border-color 180ms ease, color 180ms ease);
+}
+
+.user-layout.dark-mode .event-page .event-filter,
+.user-layout.dark-mode .event-page .category-tabs,
+.user-layout.dark-mode .event-page .event-card,
+.user-layout.dark-mode .event-page .trending-panel,
+.user-layout.dark-mode .event-page .event-empty-state,
+.user-layout.dark-mode .event-page .event-card-skeleton {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: #111827 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode .event-page .event-filter__field,
+.user-layout.dark-mode .event-page .event-filter__select {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #cbd5e1 !important;
+}
+
+.user-layout.dark-mode .event-page .event-filter input,
+.user-layout.dark-mode .event-page .event-filter select,
+.user-layout.dark-mode .event-page .event-card__body h3,
+.user-layout.dark-mode .event-page .event-section-heading h2,
+.user-layout.dark-mode .event-page .event-sidebar__heading h2,
+.user-layout.dark-mode .event-page .trending-item h3 {
+  color: #ffffff !important;
+}
+
+.user-layout.dark-mode .event-page .event-filter input::placeholder,
+.user-layout.dark-mode .event-page .event-card__location,
+.user-layout.dark-mode .event-page .event-card__organizer,
+.user-layout.dark-mode .event-page .event-section-heading h2::after,
+.user-layout.dark-mode .event-page .trending-item p {
+  color: #cbd5e1 !important;
+}
+
+.user-layout.dark-mode .event-page .event-filter__locationMenu {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: #111827 !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode .event-page .event-filter__locationOption {
+  color: #cbd5e1 !important;
+}
+
+.user-layout.dark-mode .event-page .event-filter__locationOption:hover {
+  background: rgba(91, 33, 182, 0.18) !important;
+  color: #ffffff !important;
+}
+
+.user-layout.dark-mode .event-page .event-card-skeleton span,
+.user-layout.dark-mode .event-page .event-card-skeleton strong,
+.user-layout.dark-mode .event-page .event-card-skeleton small {
+  background: linear-gradient(90deg, #111827 0%, #1f2937 48%, #111827 100%) !important;
+  background-size: 220% 100% !important;
+}
+
 /* Media ratio guard: event banners are generated and displayed as 16:9 */
 .event-page .event-card:not(.event-card--spotlight) .event-card__media,
 .event-page .event-card:not(.event-card--spotlight) .event-card__cover,

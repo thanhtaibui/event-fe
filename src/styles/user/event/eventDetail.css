@@ -2935,7 +2935,7 @@
 .user-event-detail__skeletonLine {
   display: block;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(124, 58, 237, 0.09), rgba(255, 255, 255, 0.82), rgba(124, 58, 237, 0.09));
+  background: var(--skeleton-gradient, linear-gradient(90deg, rgba(124, 58, 237, 0.09), rgba(255, 255, 255, 0.82), rgba(124, 58, 237, 0.09)));
   background-size: 220% 100%;
   animation: user-event-detail-skeleton-line 1.15s ease-in-out infinite;
 }
@@ -2981,4 +2981,72 @@
   .user-event-detail__skeletonLine--button {
     width: 100%;
   }
+}
+
+/* Theme consistency fix: event detail loading and purchase surfaces. */
+.user-layout.light-mode .user-event-detail {
+  --detail-text: #0f172a;
+  --detail-muted: #64748b;
+  --detail-line: #e5e7eb;
+  --detail-card: #ffffff;
+  background: #f8f9fc !important;
+}
+
+.user-layout.dark-mode .user-event-detail {
+  --detail-text: #ffffff;
+  --detail-muted: #cbd5e1;
+  --detail-line: rgba(255, 255, 255, 0.08);
+  --detail-card: #111827;
+  background: #000000 !important;
+}
+
+.user-layout.dark-mode .user-event-detail__skeletonHero,
+.user-layout.dark-mode .user-event-detail__skeletonCard,
+.user-layout.dark-mode .user-event-detail__ticketState,
+.user-layout.dark-mode .user-event-detail__orderModal,
+.user-layout.dark-mode .user-event-detail__orderSummary > div,
+.user-layout.dark-mode .user-event-detail__cartEmpty,
+.user-layout.dark-mode .user-event-detail__cartItem,
+.user-layout.dark-mode .user-event-detail__cartStepper,
+.user-layout.dark-mode .user-event-detail__orderQuantity > div,
+.user-layout.dark-mode .user-event-detail__secureNote,
+.user-layout.dark-mode .user-event-detail__cartBar {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: #111827 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode .user-event-detail__skeletonHero::before,
+.user-layout.dark-mode .user-event-detail__skeletonCard::before {
+  background: linear-gradient(90deg, transparent, rgba(31, 41, 55, 0.86), transparent) !important;
+}
+
+.user-layout.dark-mode .user-event-detail__skeletonHero span,
+.user-layout.dark-mode .user-event-detail__skeletonHero strong,
+.user-layout.dark-mode .user-event-detail__skeletonHero p,
+.user-layout.dark-mode .user-event-detail__skeletonHero div,
+.user-layout.dark-mode .user-event-detail__ticket--skeleton span,
+.user-layout.dark-mode .user-event-detail__ticket--skeleton strong,
+.user-layout.dark-mode .user-event-detail__ticket--skeleton i,
+.user-layout.dark-mode .user-event-detail__ticket--skeleton button,
+.user-layout.dark-mode .user-event-detail__skeletonLine {
+  background: linear-gradient(90deg, #111827 0%, #1f2937 48%, #111827 100%) !important;
+  background-size: 220% 100% !important;
+}
+
+.user-layout.dark-mode .user-event-detail__orderModal h2,
+.user-layout.dark-mode .user-event-detail__orderSummary strong,
+.user-layout.dark-mode .user-event-detail__cartItem > div:first-child strong,
+.user-layout.dark-mode .user-event-detail__cartStepper input,
+.user-layout.dark-mode .user-event-detail__orderQuantity input {
+  color: #ffffff !important;
+}
+
+.user-layout.dark-mode .user-event-detail__orderModal > p,
+.user-layout.dark-mode .user-event-detail__orderSummary span,
+.user-layout.dark-mode .user-event-detail__cartItem > div:first-child span,
+.user-layout.dark-mode .user-event-detail__cartEmpty,
+.user-layout.dark-mode .user-event-detail__secureNote {
+  color: #cbd5e1 !important;
 }

@@ -4222,7 +4222,7 @@
 .myTicketCard--skeleton p {
   display: block;
   border-radius: 999px;
-  background: linear-gradient(90deg, #eef2f7 0%, #f8fafc 48%, #e8eef7 100%);
+  background: var(--skeleton-gradient, linear-gradient(90deg, #eef2f7 0%, #f8fafc 48%, #e8eef7 100%));
   background-size: 220% 100%;
   animation: myTicketsSkeleton 1.2s ease-in-out infinite;
 }
@@ -4756,4 +4756,60 @@
 .user-layout.dark-mode .myTicketsTab--active:focus-visible {
   color: #ffffff !important;
   background: linear-gradient(135deg, #5b21b6, #4f46e5) !important;
+}
+
+/* Theme consistency fix: wallet controls and skeletons. */
+.user-layout.light-mode .myTicketsPage {
+  --wallet-card: #ffffff;
+  --tickets-card: #ffffff;
+  background: #f8f9fc !important;
+}
+
+.user-layout.dark-mode .myTicketsPage {
+  --wallet-card: #111827;
+  --tickets-card: #111827;
+  background: #000000 !important;
+}
+
+.myTicketsHero,
+.myTicketsControls,
+.myTicketsSearch,
+.myTicketsSort__select,
+.myTicketsSidebar__card,
+.myTicketsSidebar__help,
+.myTicketsNotice,
+.myTicketCard {
+  transition: var(--theme-transition, background-color 180ms ease, border-color 180ms ease, color 180ms ease);
+}
+
+.user-layout.dark-mode .myTicketsHero,
+.user-layout.dark-mode .myTicketsControls,
+.user-layout.dark-mode .myTicketsSidebar__card,
+.user-layout.dark-mode .myTicketsSidebar__help,
+.user-layout.dark-mode .myTicketsNotice {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: #111827 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode .myTicketCard__imageSkeleton,
+.user-layout.dark-mode .myTicketCard__qrSkeleton,
+.user-layout.dark-mode .myTicketCard--skeleton span,
+.user-layout.dark-mode .myTicketCard--skeleton strong,
+.user-layout.dark-mode .myTicketCard--skeleton p {
+  background: linear-gradient(90deg, #111827 0%, #1f2937 48%, #111827 100%) !important;
+  background-size: 220% 100% !important;
+}
+
+.user-layout.dark-mode .myTicketsHero h1,
+.user-layout.dark-mode .myTicketsSidebar__card h3,
+.user-layout.dark-mode .myTicketsSidebar__card strong {
+  color: #ffffff !important;
+}
+
+.user-layout.dark-mode .myTicketsHero p,
+.user-layout.dark-mode .myTicketsSidebar__card p,
+.user-layout.dark-mode .myTicketsNotice {
+  color: #cbd5e1 !important;
 }

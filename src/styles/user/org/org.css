@@ -4222,6 +4222,82 @@
   text-decoration: none !important;
 }
 
+/* Theme consistency fix: organization search/filter/cards follow the page mode. */
+.user-layout.light-mode .org-page {
+  --bg-main: #f8f9fc;
+  --bg-surface: #ffffff;
+  --bg-surface-blur: #ffffff;
+  --border-color: #e5e7eb;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  background: #f8f9fc !important;
+}
+
+.user-layout.dark-mode .org-page {
+  --bg-main: #000000;
+  --bg-surface: #111827;
+  --bg-surface-blur: #111827;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  background: #000000 !important;
+}
+
+.org-page .org-hero__search-grid,
+.org-page .org-list__sort select,
+.org-page .org-list__card,
+.org-page .org-category,
+.org-page .org-category__tile,
+.org-page .org-sidebar__panel,
+.org-page .org-sidebar__promo,
+.org-page .org-sidebar__rank-item,
+.org-page .org-list__pagination button,
+.org-page .org-list__pagination span {
+  transition: var(--theme-transition, background-color 180ms ease, border-color 180ms ease, color 180ms ease);
+}
+
+.user-layout.dark-mode .org-page .org-hero__search-grid,
+.user-layout.dark-mode .org-page .org-hero__search-item,
+.user-layout.dark-mode .org-page .org-list__sort select,
+.user-layout.dark-mode .org-page .org-list__card,
+.user-layout.dark-mode .org-page .org-category,
+.user-layout.dark-mode .org-page .org-category__tile,
+.user-layout.dark-mode .org-page .org-sidebar__panel,
+.user-layout.dark-mode .org-page .org-sidebar__promo,
+.user-layout.dark-mode .org-page .org-sidebar__rank-item,
+.user-layout.dark-mode .org-page .org-list__pagination button,
+.user-layout.dark-mode .org-page .org-list__pagination span {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: #111827 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode .org-page .org-hero__search-item input,
+.user-layout.dark-mode .org-page .org-hero__search-item select,
+.user-layout.dark-mode .org-page .org-list__sort select,
+.user-layout.dark-mode .org-page .org-list__title-row h3,
+.user-layout.dark-mode .org-page .org-category__tile p,
+.user-layout.dark-mode .org-page .org-sidebar__rank-meta p {
+  color: #ffffff !important;
+}
+
+.user-layout.dark-mode .org-page .org-hero__search-item input::placeholder,
+.user-layout.dark-mode .org-page .org-list__card-top p,
+.user-layout.dark-mode .org-page .org-list__location,
+.user-layout.dark-mode .org-page .org-list__metrics,
+.user-layout.dark-mode .org-page .org-category__tile span,
+.user-layout.dark-mode .org-page .org-sidebar__rank-meta span {
+  color: #cbd5e1 !important;
+}
+
+.user-layout.dark-mode .org-page .org-list__skeletonBlock {
+  background: linear-gradient(100deg, #111827 0%, #1f2937 48%, #111827 100%) !important;
+  background-size: 220% 100% !important;
+}
+
 /* Media ratio guard: keep AI/generated assets aligned with their display slots */
 .org-profile-page .org-profile-hero {
   min-height: 0 !important;

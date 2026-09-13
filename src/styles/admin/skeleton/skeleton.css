@@ -8,14 +8,7 @@
   display: block;
   min-height: 12px;
   border-radius: 10px;
-  background:
-    linear-gradient(
-      100deg,
-      rgba(241, 245, 249, 0.84) 0%,
-      rgba(226, 232, 240, 0.88) 42%,
-      rgba(248, 250, 252, 0.94) 58%,
-      rgba(241, 245, 249, 0.84) 100%
-    );
+  background: var(--skeleton-gradient, linear-gradient(100deg, #e5e7eb 0%, #f3f4f6 48%, #e5e7eb 100%));
   background-size: 220% 100%;
   animation: adminSkeletonShimmer 1.25s ease-in-out infinite;
 }
@@ -27,6 +20,7 @@
 .admin-skeleton__panel {
   border: 1px solid rgba(226, 232, 240, 0.9);
   background: rgba(255, 255, 255, 0.86);
+  transition: var(--theme-transition, background-color 180ms ease, border-color 180ms ease);
 }
 
 .admin-skeleton__action {
@@ -247,5 +241,29 @@
 
   .admin-skeleton__metric {
     width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .admin-skeleton__block {
+    background: linear-gradient(100deg, #111827 0%, #1f2937 48%, #111827 100%);
+    background-size: 220% 100%;
+  }
+
+  .admin-skeleton__table,
+  .admin-skeleton__hero,
+  .admin-skeleton__card,
+  .admin-skeleton__chart,
+  .admin-skeleton__panel {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: #111827;
+  }
+
+  .admin-skeleton__table-head {
+    background: #080b16;
+  }
+
+  .admin-skeleton__table-row + .admin-skeleton__table-row {
+    border-top-color: rgba(255, 255, 255, 0.08);
   }
 }

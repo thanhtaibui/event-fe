@@ -5,7 +5,9 @@
   max-width: 400px;
   padding: 24px 20px 16px;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.14);
+  transition: var(--theme-transition, background-color 180ms ease, color 180ms ease);
 }
 
 /* Icon vòng tròn warning */
@@ -56,7 +58,7 @@
   padding: 13px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(90deg, #7c3aed, #a855f7);
+  background: linear-gradient(135deg, #5b21b6, #2563eb);
   color: white;
   font-size: 15px;
   font-weight: 500;
@@ -86,24 +88,17 @@
   padding: 13px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(90deg, #7c3aed, #a855f7);
+  background: linear-gradient(135deg, #5b21b6, #2563eb);
   color: white;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow:
-    0 8px 20px rgba(124, 58, 237, 0.25),
-    0 0 0 rgba(124, 58, 237, 0);
+  box-shadow: none;
 }
 
 .confirm-dialog .btn-confirm:hover {
   transform: translateY(-2px);
-
-  box-shadow:
-    0 16px 30px rgba(124, 58, 237, 0.35),
-    0 0 20px rgba(168, 85, 247, 0.2);
-
   filter: brightness(1.05);
 }
 
@@ -141,9 +136,9 @@
 }
 
 .confirm-dialog .btn-cancel:hover {
-  background: white;
+  background: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
   color: #111;
 }
 
@@ -169,4 +164,39 @@
   border-radius: 50%;
   background: #a855f7;
   display: inline-block;
+}
+
+@media (prefers-color-scheme: dark) {
+  .confirm-dialog .MuiDialog-paper {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #111827;
+    color: #ffffff;
+    box-shadow: none;
+  }
+
+  .confirm-dialog-icon {
+    background: rgba(91, 33, 182, 0.18);
+    color: #c4b5fd;
+  }
+
+  .confirm-dialog .MuiDialogTitle-root,
+  .confirm-dialog .MuiDialogContent-root strong {
+    color: #ffffff;
+  }
+
+  .confirm-dialog .MuiDialogContent-root,
+  .confirm-dialog-safety {
+    color: #cbd5e1;
+  }
+
+  .confirm-dialog .btn-cancel {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #080b16;
+    color: #cbd5e1;
+  }
+
+  .confirm-dialog .btn-cancel:hover {
+    background: #111827;
+    color: #ffffff;
+  }
 }

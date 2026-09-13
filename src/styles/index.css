@@ -63,19 +63,19 @@
   --space-48: 48px;
 
   /* ============== Colors (Clean Modern SaaS Palette) ============== */
-  --color-bg: #090d16;
+  --color-bg: #000000;
   --color-bg-soft: #f8fafc;
   --color-surface: #ffffff;
   --color-surface-2: #f1f5f9;
-  --color-surface-dark: #0f172a;
+  --color-surface-dark: #111827;
 
   --color-white: #ffffff;
   --color-text: #475569;
   --color-text-strong: #0f172a;
   --color-text-muted: #64748b;
 
-  --color-primary: #4f46e5;
-  --color-primary-2: #4338ca;
+  --color-primary: #5b21b6;
+  --color-primary-2: #4c1d95;
   --color-primary-3: #2563eb;
   --color-cyan: #0284c7;
 
@@ -90,8 +90,8 @@
   --border-color: #e2e8f0;
   --code-bg: #f1f5f9;
 
-  --gradient-primary: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-  --gradient-accent: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  --gradient-primary: linear-gradient(135deg, #080b16 0%, #5b21b6 48%, #2563eb 100%);
+  --gradient-accent: linear-gradient(135deg, #5b21b6 0%, #2563eb 100%);
   --bg-header-popup: #ffffff;
   --bg-header: #0f172a;
 
@@ -127,6 +127,20 @@
 
   --transition-fast: 150ms ease;
   --transition: 250ms ease;
+  --theme-transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+
+  --skeleton-base: #e5e7eb;
+  --skeleton-highlight: #f3f4f6;
+  --skeleton-gradient: linear-gradient(
+    100deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-highlight) 48%,
+    var(--skeleton-base) 100%
+  );
 
   /* ============== Font rendering ============== */
   --letter-tight: -0.02em;
@@ -239,6 +253,45 @@ html body #root select option {
   --select-text: #f8fafc;
   --select-border: rgba(148, 163, 184, 0.32);
   --select-border-hover: rgba(196, 181, 253, 0.58);
+}
+
+.user-layout.dark-mode,
+.dark-mode {
+  --color-bg: #000000;
+  --color-bg-soft: #080b16;
+  --color-surface: #111827;
+  --color-surface-2: #080b16;
+  --color-surface-dark: #111827;
+  --color-text: #cbd5e1;
+  --color-text-strong: #ffffff;
+  --color-text-muted: #64748b;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --bg: #000000;
+  --text: #cbd5e1;
+  --text-h: #ffffff;
+  --code-bg: #111827;
+  --select-bg: #111827;
+  --select-text: #ffffff;
+  --select-muted: #94a3b8;
+  --select-border: rgba(255, 255, 255, 0.1);
+  --select-border-hover: rgba(196, 181, 253, 0.52);
+  --skeleton-base: #111827;
+  --skeleton-highlight: #1f2937;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --admin-bg: #000000;
+    --admin-surface: #111827;
+    --admin-surface-2: #080b16;
+    --admin-text: #ffffff;
+    --admin-muted: #cbd5e1;
+    --admin-subtle: #64748b;
+    --admin-line: rgba(255, 255, 255, 0.08);
+    --skeleton-base: #111827;
+    --skeleton-highlight: #1f2937;
+  }
 }
 
 /* Shared checkbox multi-select */
@@ -395,6 +448,7 @@ body {
   letter-spacing: 0;
   overflow-x: hidden;
   background: #ffffff;
+  transition: var(--theme-transition);
 }
 
 #root {
@@ -409,6 +463,7 @@ body {
   flex-direction: column;
   box-sizing: border-box;
   background: white;
+  transition: var(--theme-transition);
   /* box-shadow: var(--shadow) inset; */
 }
 
@@ -481,6 +536,7 @@ textarea,
 input {
   font-family: var(--font-body);
   letter-spacing: 0;
+  transition: var(--theme-transition);
 }
 
 button,
