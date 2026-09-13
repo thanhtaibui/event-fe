@@ -1198,3 +1198,50 @@ select {
     margin-left: 0 !important;
   }
 }
+
+/* Admin theme guard: keep light mode light even when the OS prefers dark. */
+.layout-container.light-mode,
+.layout-container.light-mode .main-wrapper,
+.layout-container.light-mode .content-body {
+  background:
+    radial-gradient(circle at 88% 0%, rgba(91, 33, 182, 0.06), transparent 28%),
+    #f8f9fc !important;
+  color: #0f172a !important;
+}
+
+.layout-container.light-mode :where(
+  .sidebar,
+  .admin-header,
+  .user-info,
+  .admin-settings__menu,
+  .eventixNotification--admin .eventixNotification__menu
+) {
+  border-color: #e5e7eb !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: none !important;
+}
+
+.layout-container.light-mode .sidebar-nav a {
+  color: #475569 !important;
+}
+
+.layout-container.light-mode .sidebar-nav li:hover {
+  border-color: rgba(91, 33, 182, 0.14) !important;
+  background: #f8f7ff !important;
+}
+
+.layout-container.light-mode .sidebar-nav li.active,
+.layout-container.light-mode .sidebar-nav li.active:hover {
+  border-color: rgba(91, 33, 182, 0.22) !important;
+  background:
+    linear-gradient(135deg, rgba(91, 33, 182, 0.13), rgba(37, 99, 235, 0.08)),
+    #ffffff !important;
+  color: #5b21b6 !important;
+  box-shadow: 0 12px 28px rgba(91, 33, 182, 0.13) !important;
+}
+
+.layout-container.light-mode .sidebar-nav li.active span,
+.layout-container.light-mode .sidebar-nav li.active a {
+  color: #5b21b6 !important;
+}

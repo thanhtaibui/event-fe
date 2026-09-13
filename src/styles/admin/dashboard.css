@@ -268,6 +268,78 @@
   }
 }
 
+/* Light admin highlight layer: mostly white, with subtle brand emphasis. */
+.layout-container.light-mode .dashboard-hero,
+.layout-container.light-mode .chart-box,
+.layout-container.light-mode .stat-card {
+  border-color: rgba(91, 33, 182, 0.12) !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow:
+    0 16px 34px rgba(15, 23, 42, 0.055),
+    0 8px 18px rgba(91, 33, 182, 0.045) !important;
+}
+
+.layout-container.light-mode .dashboard-hero {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(91, 33, 182, 0.1), transparent 34%),
+    linear-gradient(135deg, #ffffff 0%, #ffffff 62%, #f3efff 100%) !important;
+}
+
+.layout-container.light-mode .dashboard-hero::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  display: block;
+  width: 4px;
+  border-radius: 0 999px 999px 0;
+  background: linear-gradient(135deg, #080b16, #5b21b6 48%, #2563eb);
+}
+
+.layout-container.light-mode .stat-card {
+  overflow: hidden;
+}
+
+.layout-container.light-mode .stat-card:hover,
+.layout-container.light-mode .chart-box:hover {
+  border-color: rgba(91, 33, 182, 0.22) !important;
+  box-shadow:
+    0 18px 38px rgba(15, 23, 42, 0.07),
+    0 10px 24px rgba(91, 33, 182, 0.07) !important;
+  transform: translateY(-1px);
+}
+
+.layout-container.light-mode .dashboard-eyebrow,
+.layout-container.light-mode .chart-pill,
+.layout-container.light-mode .stat-trend {
+  border: 1px solid rgba(91, 33, 182, 0.14);
+  background:
+    linear-gradient(135deg, rgba(91, 33, 182, 0.08), rgba(37, 99, 235, 0.05)),
+    #ffffff;
+  color: #5b21b6 !important;
+}
+
+.layout-container.light-mode .dashboard-eyebrow {
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.layout-container.light-mode .dashboard-hero__metric,
+.layout-container.light-mode .stat-icon,
+.layout-container.light-mode .chart-box-inset {
+  border-color: rgba(91, 33, 182, 0.12) !important;
+  background:
+    linear-gradient(135deg, rgba(91, 33, 182, 0.07), rgba(37, 99, 235, 0.04)),
+    #ffffff !important;
+}
+
+.layout-container.light-mode .stat-icon {
+  box-shadow: 0 8px 18px rgba(91, 33, 182, 0.08);
+}
+
 .layout-container.light-mode .dashboard-hero,
 .layout-container.light-mode .chart-box,
 .layout-container.light-mode .stat-card {
