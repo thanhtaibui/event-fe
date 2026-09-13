@@ -143,6 +143,10 @@ export const Sidebar = ({ isCollapsed, onToggleSidebar }: SidebarProps) => {
       </button>
       <div className="logo">
         <img src="/logo-event.png" alt="event logo" />
+        <span className="logo__text">
+          <strong>Eventix</strong>
+          <small>Community OS</small>
+        </span>
       </div>
       <nav className="sidebar-nav">
         <ul>

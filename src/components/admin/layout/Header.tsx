@@ -2,7 +2,7 @@ import { Facehash } from "facehash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Search, Sun } from "lucide-react";
 import { clearAccessToken } from "../../../constants/authStorage";
 import { getAccessToken } from "../../../constants/authStorage";
 import { useAuth } from "../../../hooks/auth/AuthProvider";
@@ -110,6 +110,11 @@ export const Header = ({ theme, onToggleTheme }: HeaderProps) => {
         <h3>{title}</h3>
       </div>
       <div className="header-right">
+        <label className="admin-header-search" aria-label="Search admin">
+          <Search size={17} aria-hidden="true" />
+          <input type="search" placeholder="Search anything..." />
+          <span>Ctrl K</span>
+        </label>
         <button
           type="button"
           className="admin-theme-toggle"
