@@ -8,13 +8,11 @@
 .admin-toolbar {
   flex-wrap: wrap;
   gap: 14px !important;
-  padding: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.14);
-  border-radius: var(--radius-lg);
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.92)),
-    #ffffff;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.045);
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
 .admin-toolbar__controls {
@@ -24,36 +22,36 @@
 }
 
 .admin-search-field .MuiOutlinedInput-root {
-  min-height: 44px;
-  border-radius: var(--radius-md);
+  min-height: 40px;
+  border-radius: 8px;
   background: #f8fafc;
-  color: #111827;
+  color: #0f172a;
 }
 
 .admin-search-field .MuiOutlinedInput-notchedOutline {
-  border-color: rgba(148, 163, 184, 0.22) !important;
+  border-color: #e2e8f0 !important;
 }
 
 .admin-search-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: rgba(124, 58, 237, 0.48) !important;
+  border-color: #4f46e5 !important;
 }
 
 .admin-filter-button.MuiButton-root {
-  min-height: 44px;
-  border-radius: var(--radius-md) !important;
-  border-color: rgba(148, 163, 184, 0.22) !important;
+  min-height: 40px;
+  border-radius: 8px !important;
+  border-color: #e2e8f0 !important;
   background: #ffffff !important;
   color: #475569 !important;
-  font-weight: 620 !important;
+  font-weight: 500 !important;
 }
 
 .custom-table-container {
-  border-radius: var(--radius-lg) !important;
+  border-radius: 12px !important;
   margin-bottom: 8px;
   overflow: auto;
   background: #ffffff !important;
-  border: 1px solid rgba(148, 163, 184, 0.14) !important;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.055) !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
 .custom-table-container.MuiPaper-root {
@@ -61,36 +59,39 @@
 }
 .custom-table-container .MuiTableCell-root {
   font-size: var(--fs-14) !important;
-  font-weight: 500 !important;
+  font-weight: 450 !important;
   color: #1f2937 !important;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.07) !important;
+  border-bottom: 1px solid #f1f5f9 !important;
   background: transparent !important;
-  padding: 14px 18px !important;
+  padding: 12px 16px !important;
 }
 .custom-table-container .MuiTableCell-head {
   font-size: 0.75rem !important;
-  font-weight: 650 !important;
-  letter-spacing: 0.08em !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
   text-transform: uppercase !important;
-  color: #6b7280 !important;
-  background:
-    linear-gradient(180deg, #fbfdff, #f6f8fc) !important;
-  padding-block: 13px !important;
+  color: #64748b !important;
+  background: #f8fafc !important;
+  padding-block: 12px !important;
 }
 .custom-table-container .MuiTableRow-root:hover {
-  background: rgba(76, 29, 149, 0.045);
+  background: #f8fafc;
 }
 
 .custom-table-container .MuiCheckbox-root {
-  color: rgba(124, 58, 237, 0.64) !important;
+  color: #94a3b8 !important;
+}
+
+.custom-table-container .MuiCheckbox-root.Mui-checked {
+  color: #4f46e5 !important;
 }
 
 .custom-table-container .MuiTableSortLabel-root {
-  color: #6b7280 !important;
+  color: #64748b !important;
 }
 
 .custom-table-container .MuiTableSortLabel-root.Mui-active {
-  color: #5b21b6 !important;
+  color: #4f46e5 !important;
 }
 
 .custom-table-container .MuiTableRow-root:last-child .MuiTableCell-root {

@@ -23,46 +23,43 @@
 
 .user-home-hero__badge {
   width: fit-content;
-  margin-bottom: 24px;
-  padding: 9px 16px;
+  margin-bottom: 20px;
+  padding: 5px 14px;
   border: 1px solid var(--border-color);
   border-radius: 999px;
-  color: var(--accent-purple-light);
+  color: var(--accent-purple);
   font-size: 13px;
-  font-weight: 700;
-  background: var(--bg-surface-blur);
-  backdrop-filter: blur(16px);
+  font-weight: 500;
+  background: var(--user-surface-soft);
 }
 
 .user-home-hero__title {
   margin: 0;
   color: var(--text-primary);
   font-family: var(--font-heading);
-  font-size: clamp(44px, 5.2vw, 72px);
-  font-weight: 650;
-  line-height: 0.96;
-  letter-spacing: 0;
+  font-size: clamp(38px, 4.8vw, 64px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
 .user-home-hero__title span {
-  background: var(--accent-purple-gradient);
-  -webkit-background-clip: text;
-  color: transparent;
+  color: var(--accent-purple);
 }
 
 .user-home-hero__subtitle {
   max-width: 520px;
-  margin: 28px 0 0;
+  margin: 20px 0 0;
   color: var(--text-secondary);
-  font-size: 20px;
-  line-height: 1.7;
+  font-size: 18px;
+  line-height: 1.6;
 }
 
 .user-home-hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
-  margin-top: 38px;
+  gap: 14px;
+  margin-top: 32px;
 }
 
 .user-home-hero__btn {
@@ -70,33 +67,39 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  height: 56px;
-  padding: 0 30px;
-  border-radius: 0;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 8px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 500;
   text-decoration: none;
   transition:
-    transform 220ms ease,
-    box-shadow 220ms ease,
-    background 220ms ease;
+    background-color 150ms ease,
+    border-color 150ms ease;
 }
 
 .user-home-hero__btn--primary {
   color: #ffffff;
-  background: var(--accent-purple-gradient);
-  box-shadow: none;
+  background: var(--accent-purple);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.user-home-hero__btn--primary:hover {
+  filter: brightness(0.92);
 }
 
 .user-home-hero__btn--ghost {
-  color: var(--text-secondary);
-  background: var(--bg-surface-blur);
+  color: var(--text-primary);
+  background: transparent;
   border: 1px solid var(--border-color);
-  backdrop-filter: blur(16px);
+}
+
+.user-home-hero__btn--ghost:hover {
+  background: var(--user-surface-soft);
 }
 
 .user-home-hero__btn:hover {
-  transform: translateY(-1px);
+  transform: none;
 }
 
 .user-home-hero__trust {

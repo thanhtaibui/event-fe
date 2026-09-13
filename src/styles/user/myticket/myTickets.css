@@ -1,122 +1,73 @@
 .myTicketsPage {
-  --bg-main: #04020c;
-  --bg-surface: #0e0b22;
-  --bg-surface-blur: rgba(14, 11, 34, 0.78);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --text-primary: #ffffff;
-  --text-secondary: #c4b5fd;
-  --text-muted: #94a3b8;
-  --accent-purple: #7c3aed;
-  --accent-purple-light: #a78bfa;
-  --accent-purple-gradient: linear-gradient(135deg, #7c3aed, #a855f7);
-  --accent-cyan: #22d3ee;
-  --ticket-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  --bg-main: #0b0f19;
+  --bg-surface: #111827;
+  --bg-surface-blur: #111827;
+  --border-color: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-purple: #4f46e5;
+  --accent-purple-light: #6366f1;
+  --accent-purple-gradient: #4f46e5;
+  --accent-cyan: #0284c7;
+  --ticket-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 .light-mode .myTicketsPage {
-  --bg-main: #f7f8ff;
+  --bg-main: #f8fafc;
   --bg-surface: #ffffff;
-  --bg-surface-blur: rgba(255, 255, 255, 0.86);
-  --border-color: rgba(124, 58, 237, 0.13);
-  --text-primary: #111827;
-  --text-secondary: #4c1d95;
+  --bg-surface-blur: #ffffff;
+  --border-color: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
   --text-muted: #64748b;
-  --accent-purple: #6d28d9;
-  --accent-purple-light: #7c3aed;
-  --accent-purple-gradient: linear-gradient(135deg, #6d28d9, #a855f7);
-  --accent-cyan: #0891b2;
-  --ticket-shadow: 0 24px 60px rgba(79, 70, 229, 0.1);
+  --accent-purple: #4f46e5;
+  --accent-purple-light: #6366f1;
+  --accent-purple-gradient: #4f46e5;
+  --accent-cyan: #0284c7;
+  --ticket-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
 .myTicketsPage {
   min-height: calc(100vh - 80px);
   color: var(--text-primary);
   padding-bottom: 56px;
-  background:
-    radial-gradient(
-      780px 420px at 8% 4%,
-      rgba(124, 58, 237, 0.28),
-      transparent 62%
-    ),
-    radial-gradient(
-      680px 360px at 88% 12%,
-      rgba(34, 211, 238, 0.13),
-      transparent 58%
-    ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 340px),
-    var(--bg-main);
+  background-color: var(--bg-main);
 }
 
 .light-mode .myTicketsPage {
-  background:
-    radial-gradient(
-      780px 420px at 8% 4%,
-      rgba(124, 58, 237, 0.16),
-      transparent 62%
-    ),
-    radial-gradient(
-      680px 360px at 88% 12%,
-      rgba(14, 165, 233, 0.12),
-      transparent 58%
-    ),
-    #f7f8ff;
+  background-color: #f8fafc;
 }
 
 .myTicketsPage__container {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 112px 24px 0;
+  padding: 80px 24px 0;
 }
 
 .myTicketsHero {
   position: relative;
-  isolation: isolate;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 32px;
-  min-height: 260px;
+  min-height: 200px;
   margin-bottom: 28px;
-  padding: 34px;
+  padding: 28px 32px;
   overflow: hidden;
   border: 1px solid var(--border-color);
-  border-radius: 28px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 40%),
-    rgba(255, 255, 255, 0.045);
-  box-shadow: var(--ticket-shadow);
-  backdrop-filter: blur(18px);
+  border-radius: 16px;
+  background: var(--bg-surface);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
 .myTicketsHero::before,
 .myTicketsHero::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  border-radius: 999px;
-  pointer-events: none;
-}
-
-.myTicketsHero::before {
-  width: 340px;
-  height: 340px;
-  right: -80px;
-  top: -120px;
-  background: rgba(124, 58, 237, 0.36);
-  filter: blur(18px);
-}
-
-.myTicketsHero::after {
-  width: 220px;
-  height: 220px;
-  left: 34%;
-  bottom: -130px;
-  background: rgba(34, 211, 238, 0.16);
-  filter: blur(12px);
+  display: none !important;
 }
 
 .light-mode .myTicketsHero {
-  background: rgba(255, 255, 255, 0.78);
+  background: #ffffff;
 }
 
 .myTicketsHero__left {

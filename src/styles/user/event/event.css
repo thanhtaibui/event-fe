@@ -55,53 +55,54 @@
   --event-tag-new-text: #062d32;
 }
 
-/* Event discovery redesign - clean purple/white marketplace */
+/* Event discovery redesign - clean marketplace */
 .event-page {
   --eventix-event-bg: #ffffff;
-  --eventix-event-text: #101827;
-  --eventix-event-muted: #5b6680;
-  --eventix-event-border: rgba(99, 102, 241, 0.16);
-  --eventix-event-surface: rgba(255, 255, 255, 0.92);
+  --eventix-event-text: #0f172a;
+  --eventix-event-muted: #64748b;
+  --eventix-event-border: #e2e8f0;
+  --eventix-event-surface: #ffffff;
   --eventix-event-surface-solid: #ffffff;
-  --eventix-event-purple: #5b21b6;
-  --eventix-event-indigo: #3557f6;
+  --eventix-event-purple: #4f46e5;
+  --eventix-event-indigo: #4f46e5;
   --eventix-event-cyan: #0284c7;
-  --eventix-event-gradient: linear-gradient(135deg, #35146f 0%, #7c3aed 52%, #2563eb 100%);
-  --eventix-event-shadow: 0 16px 42px rgba(42, 38, 92, 0.08);
-  --eventix-event-hover-shadow: 0 18px 44px rgba(75, 56, 167, 0.14);
+  --eventix-event-gradient: #4f46e5;
+  --eventix-event-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  --eventix-event-hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
   overflow: visible !important;
   padding: 22px clamp(16px, 4vw, 48px) 54px !important;
   background: #ffffff !important;
 }
 
 .dark-mode .event-page {
-  --eventix-event-bg: #080a16;
+  --eventix-event-bg: #0b0f19;
   --eventix-event-text: #f8fafc;
-  --eventix-event-muted: #aeb8ca;
-  --eventix-event-border: rgba(148, 163, 184, 0.2);
-  --eventix-event-surface: rgba(15, 23, 42, 0.88);
-  --eventix-event-surface-solid: #0f172a;
-  background: #080a16 !important;
+  --eventix-event-muted: #94a3b8;
+  --eventix-event-border: #1e293b;
+  --eventix-event-surface: #111827;
+  --eventix-event-surface-solid: #111827;
+  background: #0b0f19 !important;
 }
 
 .event-page .event-hero {
   display: grid !important;
   grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.9fr) !important;
   align-items: center !important;
-  gap: clamp(24px, 4vw, 58px) !important;
+  gap: clamp(24px, 4vw, 48px) !important;
   max-width: 1320px !important;
-  min-height: 520px !important;
+  min-height: 460px !important;
   margin: 10px auto 34px !important;
-  padding: clamp(34px, 5vw, 66px) !important;
+  padding: clamp(28px, 4vw, 48px) !important;
   overflow: visible !important;
   border: 1px solid var(--eventix-event-border) !important;
-  border-radius: 24px !important;
-  background: linear-gradient(135deg, #ffffff 0%, #fbfdff 58%, #f5f7ff 100%) !important;
-  box-shadow: none !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
 .dark-mode .event-page .event-hero {
-  background: linear-gradient(135deg, #0c1020 0%, #10162a 100%) !important;
+  background: #111827 !important;
+  border-color: #1e293b !important;
 }
 
 .event-page .event-hero__content {

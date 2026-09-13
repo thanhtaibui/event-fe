@@ -1,8 +1,13 @@
 :root {
-  --theme-transition-duration: 160ms;
+  --theme-transition-duration: 150ms;
   --theme-transition-ease: ease;
-  --clean-shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.055);
-  --clean-shadow-modal: 0 18px 48px rgba(15, 23, 42, 0.18);
+  --clean-shadow-soft: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --clean-shadow-modal: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Anti AI-vibe Resets: Ensure no text-clip gradients or neon glows */
+h1 span, h2 span, h3 span {
+  -webkit-text-fill-color: initial !important;
 }
 
 :where(
@@ -75,7 +80,11 @@
   box-shadow: none !important;
 }
 
-:where(button, .btn, [role="button"], select) {
+:where(button, .btn, [role="button"]) {
+  font-weight: 500 !important;
+}
+
+:where(select) {
   font-weight: 400 !important;
 }
 

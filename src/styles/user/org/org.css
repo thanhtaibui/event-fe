@@ -1,51 +1,48 @@
 .org-page {
   /* Default: Dark Mode */
-  --bg-main: #070a17;
-  --bg-surface: #101426;
-  --bg-surface-blur: rgba(16, 20, 38, 0.78);
-  --border-color: rgba(255, 255, 255, 0.1);
+  --bg-main: #0b0f19;
+  --bg-surface: #111827;
+  --bg-surface-blur: #111827;
+  --border-color: #1e293b;
 
-  --text-primary: #ffffff;
+  --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
 
-  --accent-purple: #6d28d9;
-  --accent-purple-gradient: linear-gradient(135deg, #24124f, #6d28d9, #2563eb);
-  --accent-cyan: #0ea5e9;
-  --accent-green: #16a34a;
-  --accent-pink: #db2777;
+  --accent-purple: #4f46e5;
+  --accent-purple-gradient: #4f46e5;
+  --accent-cyan: #0284c7;
+  --accent-green: #10b981;
+  --accent-pink: #f43f5e;
 
-  --shadow-glow: 0 14px 34px rgba(76, 29, 149, 0.16);
+  --shadow-glow: none;
 }
 
 /* Light mode overrides applied when a parent wrapper has `.light-mode` */
 .light-mode .org-page {
   --bg-main: #f8fafc;
   --bg-surface: #ffffff;
-  --bg-surface-blur: rgba(255, 255, 255, 0.8);
-  --border-color: rgba(0, 0, 0, 0.08);
+  --bg-surface-blur: #ffffff;
+  --border-color: #e2e8f0;
 
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-muted: #64748b;
 
-  --accent-purple: #6d28d9;
-  --accent-purple-gradient: linear-gradient(135deg, #24124f, #6d28d9, #2563eb);
-  --accent-cyan: #0ea5e9;
-  --accent-green: #16a34a;
-  --accent-pink: #db2777;
+  --accent-purple: #4f46e5;
+  --accent-purple-gradient: #4f46e5;
+  --accent-cyan: #0284c7;
+  --accent-green: #10b981;
+  --accent-pink: #f43f5e;
 
-  --shadow-glow: 0 14px 34px rgba(76, 29, 149, 0.12);
+  --shadow-glow: none;
 }
 
 .org-page {
-  background:
-    radial-gradient(circle at 16% 8%, rgba(124, 58, 237, 0.22), transparent 30%),
-    radial-gradient(circle at 86% 18%, rgba(34, 211, 238, 0.1), transparent 28%),
-    linear-gradient(180deg, var(--bg-main) 0%, var(--bg-main) 100%);
+  background-color: var(--bg-main);
   color: var(--text-primary);
   min-height: 100dvh;
-  padding: 28px clamp(18px, 4vw, 64px) 80px;
+  padding: 24px clamp(18px, 4vw, 64px) 80px;
   overflow-x: hidden;
 }
 
@@ -71,12 +68,11 @@
   gap: 24px;
   max-width: 1240px;
   margin: 0 auto 36px;
-  padding: clamp(28px, 5vw, 58px);
+  padding: clamp(28px, 4vw, 48px);
   border: 1px solid var(--border-color);
-  border-radius: 28px;
-  background: var(--bg-surface-blur);
-  box-shadow: var(--user-card-shadow);
-  backdrop-filter: blur(16px);
+  border-radius: 16px;
+  background: var(--bg-surface);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
 .org-hero__content {
