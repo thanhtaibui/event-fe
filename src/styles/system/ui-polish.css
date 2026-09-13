@@ -196,3 +196,244 @@ h1 span, h2 span, h3 span {
     animation: none !important;
   }
 }
+
+/* Highlight pass: keep the clean white UI, but restore hierarchy on important surfaces. */
+:root {
+  --ux-highlight: #4f46e5;
+  --ux-highlight-strong: #5b21b6;
+  --ux-highlight-soft: rgba(79, 70, 229, 0.08);
+  --ux-highlight-softer: rgba(79, 70, 229, 0.045);
+  --ux-highlight-border: rgba(79, 70, 229, 0.18);
+  --ux-highlight-shadow: 0 16px 34px rgba(79, 70, 229, 0.12);
+  --ux-surface-shadow: 0 10px 26px rgba(15, 23, 42, 0.065);
+}
+
+.dark-mode,
+.user-layout.dark-mode,
+.admin-layout.dark-mode {
+  --ux-highlight: #818cf8;
+  --ux-highlight-strong: #a78bfa;
+  --ux-highlight-soft: rgba(129, 140, 248, 0.14);
+  --ux-highlight-softer: rgba(129, 140, 248, 0.08);
+  --ux-highlight-border: rgba(165, 180, 252, 0.26);
+  --ux-highlight-shadow: 0 18px 38px rgba(79, 70, 229, 0.22);
+  --ux-surface-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+}
+
+:where(
+  .user-home-hero,
+  .event-page .event-hero,
+  .org-page .org-hero,
+  .myTicketsHero,
+  .dashboard-hero,
+  .login-showcase,
+  .org-register-card
+) {
+  border-color: var(--ux-highlight-border) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96)),
+    radial-gradient(circle at 88% 12%, var(--ux-highlight-soft), transparent 32%) !important;
+  box-shadow: var(--ux-surface-shadow) !important;
+}
+
+.dark-mode :where(
+  .user-home-hero,
+  .event-page .event-hero,
+  .org-page .org-hero,
+  .myTicketsHero,
+  .dashboard-hero,
+  .login-showcase,
+  .org-register-card
+) {
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(17, 24, 39, 0.96)),
+    radial-gradient(circle at 88% 12%, var(--ux-highlight-soft), transparent 32%) !important;
+}
+
+:where(
+  .dashboard-hero,
+  .chart-box,
+  .stat-card,
+  .event-page .event-card,
+  .event-page .trending-panel,
+  .org-list__card,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help,
+  .admin-page .table-container,
+  .admin-page .table-wrapper,
+  .popup-content,
+  .modal-content
+) {
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+:where(
+  .chart-box,
+  .stat-card,
+  .event-page .event-card,
+  .event-page .trending-panel,
+  .org-list__card,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help
+):hover {
+  border-color: var(--ux-highlight-border) !important;
+  box-shadow: var(--ux-surface-shadow) !important;
+}
+
+:where(
+  .dashboard-hero,
+  .chart-box,
+  .stat-card,
+  .event-page .event-card,
+  .event-page .trending-panel,
+  .org-list__card,
+  .myTicketCard,
+  .myTicketsSidebar__card,
+  .myTicketsSidebar__help,
+  .popup-content,
+  .modal-content
+) {
+  position: relative;
+}
+
+:where(.dashboard-hero, .chart-box, .stat-card, .myTicketCard)::before {
+  background: linear-gradient(180deg, var(--ux-highlight), var(--ux-highlight-strong)) !important;
+}
+
+:where(.dashboard-hero, .chart-box, .stat-card)::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 14px auto 14px 0 !important;
+  display: block !important;
+  width: 3px !important;
+  border-radius: 999px !important;
+  opacity: 0.9 !important;
+}
+
+:where(
+  .dashboard-eyebrow,
+  .event-page .event-hero__eyebrow,
+  .event-page .event-section-heading__eyebrow,
+  .org-hero__eyebrow,
+  .org-section__eyebrow,
+  .myTicketsHero__kicker,
+  .user-home-hero__badge,
+  .org-register-card__eyebrow
+) {
+  border-color: var(--ux-highlight-border) !important;
+  background: var(--ux-highlight-soft) !important;
+  color: var(--ux-highlight-strong) !important;
+}
+
+:where(
+  .event-filter__submit,
+  .event-page__load-more,
+  .user-home-hero__btn--primary,
+  .myTicketCard__primaryBtn,
+  .myTicketsSidebar__ctaBtn,
+  .org-hero__search-btn,
+  .org-profile-btn,
+  .org-register-btn--primary,
+  .login-submit,
+  .report-btn--primary,
+  .invite-btn--primary,
+  .btn-confirm,
+  button[type="submit"]
+) {
+  background: linear-gradient(135deg, var(--ux-highlight-strong), var(--ux-highlight)) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.16) !important;
+}
+
+:where(
+  .event-filter__submit,
+  .event-page__load-more,
+  .user-home-hero__btn--primary,
+  .myTicketCard__primaryBtn,
+  .myTicketsSidebar__ctaBtn,
+  .org-hero__search-btn,
+  .org-profile-btn,
+  .org-register-btn--primary,
+  .login-submit,
+  .report-btn--primary,
+  .invite-btn--primary,
+  .btn-confirm,
+  button[type="submit"]
+):hover:not(:disabled) {
+  box-shadow: var(--ux-highlight-shadow) !important;
+  filter: none !important;
+}
+
+:where(
+  .user-eventixHeader__navLink--active,
+  .user-eventixHeader__mobileNavLink--active,
+  .category-tabs__pill--active,
+  .myTicketsTab--active,
+  .sidebar-nav a.active,
+  .sidebar-item.active
+):not(.event-card):not(.card):not(.modal-content) {
+  box-shadow: inset 0 -2px 0 var(--ux-highlight) !important;
+}
+
+:where(
+  input,
+  textarea,
+  select,
+  .industry-multiselect__trigger,
+  .event-filter,
+  .myTicketsSearch
+):focus-within,
+:where(input, textarea, select):focus-visible {
+  border-color: var(--ux-highlight-border) !important;
+  box-shadow: 0 0 0 3px var(--ux-highlight-softer) !important;
+}
+
+:where(
+  .stat-icon,
+  .myTicketCard__metaIcon,
+  .myTicketsLayoutIcon,
+  .event-sidebar__heading svg,
+  .event-card__location svg,
+  .org-list__meta svg,
+  .user-eventixHeader__membershipIcon
+) {
+  background: var(--ux-highlight-soft) !important;
+  color: var(--ux-highlight-strong) !important;
+}
+
+:where(
+  .event-card__organizer small,
+  .event-card__tag,
+  .myTicketCard__statusTag,
+  .myTicketsHero__stat,
+  .dashboard-hero__metric,
+  .chart-pill,
+  .badge,
+  [class*="badge"],
+  [class*="Badge"],
+  [class*="pill"],
+  [class*="Pill"]
+) {
+  border-color: var(--ux-highlight-border) !important;
+  background: var(--ux-highlight-soft) !important;
+  color: var(--ux-highlight-strong) !important;
+}
+
+:where(.event-page .event-card__body h3, .myTicketCard__eventName, .org-list__name, .stat-value) {
+  color: #111827 !important;
+}
+
+.dark-mode :where(.event-page .event-card__body h3, .myTicketCard__eventName, .org-list__name, .stat-value) {
+  color: #f8fafc !important;
+}
+
+@media (max-width: 680px) {
+  :where(.dashboard-hero, .chart-box, .stat-card)::before {
+    inset: 0 18px auto 18px !important;
+    width: auto !important;
+    height: 3px !important;
+  }
+}
