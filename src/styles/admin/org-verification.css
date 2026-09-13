@@ -394,3 +394,104 @@
     min-width: 920px;
   }
 }
+
+/* Explicit admin theme and light highlight pass for verification page. */
+.layout-container.light-mode .verification-page {
+  color: #0f172a;
+}
+
+.layout-container.light-mode .verification-hero {
+  border-color: rgba(91, 33, 182, 0.12);
+  background:
+    radial-gradient(circle at 88% 18%, rgba(91, 33, 182, 0.14), transparent 32%),
+    linear-gradient(135deg, #ffffff 0%, #f4f1ff 100%);
+  box-shadow: 0 18px 42px rgba(91, 33, 182, 0.08);
+}
+
+.layout-container.light-mode .verification-toolbar,
+.layout-container.light-mode .verification-table,
+.layout-container.light-mode .verification-modal {
+  border-color: #e5e7eb;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.055);
+}
+
+.layout-container.light-mode .verification-search {
+  border-color: rgba(91, 33, 182, 0.16);
+  background: #ffffff;
+  color: #5b21b6;
+}
+
+.layout-container.light-mode .verification-search:focus-within {
+  border-color: rgba(91, 33, 182, 0.38);
+  box-shadow: 0 0 0 4px rgba(91, 33, 182, 0.08);
+}
+
+.layout-container.light-mode .verification-review-btn {
+  background: #f0ebff;
+  color: #5b21b6;
+}
+
+.layout-container.light-mode .verification-review-btn:hover {
+  background: linear-gradient(135deg, #080b16, #5b21b6 48%, #2563eb);
+  color: #ffffff;
+}
+
+.layout-container.dark-mode .verification-hero,
+.layout-container.dark-mode .verification-toolbar,
+.layout-container.dark-mode .verification-table,
+.layout-container.dark-mode .verification-modal,
+.layout-container.dark-mode .verification-hero__metric,
+.layout-container.dark-mode .verification-review-card,
+.layout-container.dark-mode .verification-doc-checklist,
+.layout-container.dark-mode .verification-document-preview,
+.layout-container.dark-mode .verification-field {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: #111827;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.layout-container.dark-mode .verification-hero {
+  background:
+    radial-gradient(circle at 88% 18%, rgba(91, 33, 182, 0.22), transparent 32%),
+    #111827;
+}
+
+.layout-container.dark-mode .verification-table__head,
+.layout-container.dark-mode .verification-modal__close,
+.layout-container.dark-mode .verification-btn--ghost,
+.layout-container.dark-mode .verification-search {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: #080b16;
+  color: #cbd5e1;
+}
+
+.layout-container.dark-mode .verification-row {
+  border-top-color: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+}
+
+.layout-container.dark-mode .verification-hero h1,
+.layout-container.dark-mode .verification-modal h2,
+.layout-container.dark-mode .verification-org-cell strong,
+.layout-container.dark-mode .verification-review-card strong,
+.layout-container.dark-mode .verification-search input,
+.layout-container.dark-mode .verification-field select,
+.layout-container.dark-mode .verification-field textarea {
+  color: #ffffff;
+}
+
+.layout-container.dark-mode .verification-hero p,
+.layout-container.dark-mode .verification-org-cell small,
+.layout-container.dark-mode .verification-review-card p,
+.layout-container.dark-mode .verification-review-card span,
+.layout-container.dark-mode .verification-field,
+.layout-container.dark-mode .verification-doc-checklist label {
+  color: #cbd5e1;
+}
+
+.layout-container.dark-mode .verification-review-btn {
+  background: rgba(91, 33, 182, 0.18);
+  color: #e9d5ff;
+}

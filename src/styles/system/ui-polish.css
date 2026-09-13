@@ -1076,6 +1076,91 @@ select {
   }
 }
 
+.layout-container.light-mode {
+  background: #f8f9fc !important;
+  color: #0f172a !important;
+}
+
+.layout-container.light-mode .content-body {
+  background:
+    radial-gradient(circle at 86% 0%, rgba(91, 33, 182, 0.08), transparent 28%),
+    #f8f9fc !important;
+}
+
+.layout-container.light-mode :where(
+  .sidebar,
+  .admin-header,
+  .dashboard-hero,
+  .stat-card,
+  .chart-box,
+  .dashboard-hero__metric,
+  .admin-toolbar,
+  .custom-table-container,
+  .admin-pagination.MuiTablePagination-root,
+  .membership-hero,
+  .membership-panel,
+  .membership-stats article,
+  .org-detail__header,
+  .org-detail__panel,
+  .org-detail__map,
+  .report-review-modal,
+  .report-detail-card,
+  .popup-content,
+  .modal-content
+) {
+  border-color: #e5e7eb !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.055) !important;
+}
+
+.layout-container.light-mode :where(
+  .custom-table-container .MuiTableCell-root,
+  .header-left h3,
+  .dashboard-hero h1,
+  .chart-box__header h2,
+  .stat-value,
+  .org-detail__title,
+  .org-detail__value,
+  .membership-hero h2,
+  .membership-stats strong
+) {
+  color: #0f172a !important;
+}
+
+.layout-container.light-mode :where(
+  .custom-table-container .MuiTableCell-head,
+  .admin-search-field .MuiOutlinedInput-root,
+  .admin-filter-button.MuiButton-root,
+  .toggle-btn,
+  .header-right .round-button,
+  .user-info,
+  input,
+  textarea,
+  select
+) {
+  border-color: #e5e7eb !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.layout-container.light-mode :where(
+  .header-left a,
+  .role,
+  .dashboard-hero p,
+  .stat-title,
+  .org-detail__subtitle,
+  .org-detail__label,
+  .membership-hero p
+) {
+  color: #64748b !important;
+}
+
+.layout-container.dark-mode {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
 @media (max-width: 900px) {
   .content-body {
     padding: 16px !important;

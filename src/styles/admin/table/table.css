@@ -1340,3 +1340,88 @@
     color: #cbd5e1 !important;
   }
 }
+
+.layout-container.light-mode .admin-toolbar,
+.layout-container.light-mode .custom-table-container,
+.layout-container.light-mode .admin-pagination.MuiTablePagination-root,
+.layout-container.light-mode .permission-matrix-container,
+.layout-container.light-mode .membership-hero,
+.layout-container.light-mode .membership-panel,
+.layout-container.light-mode .membership-stats article,
+.layout-container.light-mode .membership-row-card,
+.layout-container.light-mode .org-membership-modal,
+.layout-container.light-mode .report-review-modal,
+.layout-container.light-mode .report-review-modal__body,
+.layout-container.light-mode .report-review-modal__footer,
+.layout-container.light-mode .report-detail-card,
+.layout-container.light-mode .report-readonly-note {
+  border-color: #e5e7eb !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.055) !important;
+}
+
+.layout-container.light-mode .membership-hero,
+.layout-container.light-mode .report-readonly-note {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(91, 33, 182, 0.1), transparent 30%),
+    #ffffff !important;
+}
+
+.layout-container.light-mode .admin-search-field .MuiOutlinedInput-root,
+.layout-container.light-mode .admin-filter-button.MuiButton-root,
+.layout-container.light-mode .membership-search,
+.layout-container.light-mode .membership-toolbar select,
+.layout-container.light-mode .org-membership-modal__header,
+.layout-container.light-mode .org-membership-modal__metric,
+.layout-container.light-mode .org-membership-modal__row,
+.layout-container.light-mode .membership-empty,
+.layout-container.light-mode .group-header,
+.layout-container.light-mode .report-modal-close,
+.layout-container.light-mode .report-btn--ghost {
+  border-color: #e5e7eb !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+}
+
+.layout-container.light-mode .custom-table-container .MuiTableCell-root {
+  border-bottom-color: #f1f5f9 !important;
+  color: #1f2937 !important;
+}
+
+.layout-container.light-mode .custom-table-container .MuiTableCell-head {
+  background: #f8fafc !important;
+  color: #64748b !important;
+}
+
+.layout-container.light-mode .membership-hero h2,
+.layout-container.light-mode .membership-stats strong,
+.layout-container.light-mode .membership-member__name,
+.layout-container.light-mode .org-membership-modal__header h3,
+.layout-container.light-mode .org-membership-modal__metric strong,
+.layout-container.light-mode .report-review-modal__header h2,
+.layout-container.light-mode .report-detail-card strong,
+.layout-container.light-mode .report-user-cell strong,
+.layout-container.light-mode .report-org-cell strong {
+  color: #0f172a !important;
+}
+
+.layout-container.dark-mode .admin-toolbar,
+.layout-container.dark-mode .custom-table-container,
+.layout-container.dark-mode .admin-pagination.MuiTablePagination-root,
+.layout-container.dark-mode .permission-matrix-container,
+.layout-container.dark-mode .membership-hero,
+.layout-container.dark-mode .membership-panel,
+.layout-container.dark-mode .membership-stats article,
+.layout-container.dark-mode .membership-row-card,
+.layout-container.dark-mode .org-membership-modal,
+.layout-container.dark-mode .report-review-modal,
+.layout-container.dark-mode .report-review-modal__body,
+.layout-container.dark-mode .report-review-modal__footer,
+.layout-container.dark-mode .report-detail-card,
+.layout-container.dark-mode .report-readonly-note {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: #111827 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}

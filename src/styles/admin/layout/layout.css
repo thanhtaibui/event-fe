@@ -880,3 +880,157 @@ a:has(li.active) {
     color: #c4b5fd;
   }
 }
+
+/* Explicit admin theme follows localStorage eventix-theme, not OS preference. */
+.layout-container.light-mode {
+  --admin-page-bg: #f8f9fc;
+  --admin-page-surface: #ffffff;
+  --admin-page-surface-soft: #f8fafc;
+  --admin-page-text: #0f172a;
+  --admin-page-muted: #64748b;
+  --admin-page-border: #e5e7eb;
+  background:
+    radial-gradient(circle at 88% 0%, rgba(91, 33, 182, 0.08), transparent 26%),
+    #f8f9fc;
+  color: #0f172a;
+}
+
+.layout-container.dark-mode {
+  --admin-page-bg: #000000;
+  --admin-page-surface: #111827;
+  --admin-page-surface-soft: #080b16;
+  --admin-page-text: #ffffff;
+  --admin-page-muted: #cbd5e1;
+  --admin-page-border: rgba(255, 255, 255, 0.08);
+  background: #000000;
+  color: #ffffff;
+}
+
+.layout-container.light-mode .sidebar,
+.layout-container.light-mode .admin-header,
+.layout-container.light-mode .user-info,
+.layout-container.light-mode .admin-settings__menu,
+.layout-container.light-mode .eventixNotification--admin .eventixNotification__menu {
+  border-color: #e5e7eb;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: none;
+}
+
+.layout-container.light-mode .content-body {
+  background:
+    radial-gradient(circle at 86% 0%, rgba(91, 33, 182, 0.08), transparent 28%),
+    #f8f9fc;
+}
+
+.layout-container.dark-mode .sidebar,
+.layout-container.dark-mode .admin-header,
+.layout-container.dark-mode .user-info,
+.layout-container.dark-mode .admin-settings__menu,
+.layout-container.dark-mode .eventixNotification--admin .eventixNotification__menu {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: #080b16;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.layout-container.dark-mode .content-body {
+  background:
+    radial-gradient(circle at 84% 0%, rgba(91, 33, 182, 0.18), transparent 28%),
+    #000000;
+}
+
+.layout-container.light-mode .header-left h3,
+.layout-container.light-mode .name,
+.layout-container.light-mode .admin-settings__head span,
+.layout-container.light-mode .eventixNotification--admin .eventixNotification__head strong,
+.layout-container.light-mode .eventixNotification--admin .eventixNotification__content strong {
+  color: #0f172a;
+}
+
+.layout-container.dark-mode .header-left h3,
+.layout-container.dark-mode .name,
+.layout-container.dark-mode .admin-settings__head span,
+.layout-container.dark-mode .eventixNotification--admin .eventixNotification__head strong,
+.layout-container.dark-mode .eventixNotification--admin .eventixNotification__content strong {
+  color: #ffffff;
+}
+
+.layout-container.dark-mode .sidebar-nav a,
+.layout-container.dark-mode .header-left a,
+.layout-container.dark-mode .role,
+.layout-container.dark-mode .admin-settings__head small,
+.layout-container.dark-mode .eventixNotification--admin .eventixNotification__head small,
+.layout-container.dark-mode .eventixNotification--admin .eventixNotification__content small,
+.layout-container.dark-mode .eventixNotification--admin .eventixNotification__empty {
+  color: #cbd5e1;
+}
+
+.layout-container.light-mode .header-right .round-button,
+.layout-container.light-mode .toggle-btn,
+.layout-container.light-mode .admin-settings__item,
+.layout-container.light-mode .eventixNotification--admin .eventixNotification__item {
+  border-color: #e5e7eb;
+  background: #ffffff;
+  color: #475569;
+}
+
+.layout-container.dark-mode .header-right .round-button,
+.layout-container.dark-mode .toggle-btn,
+.layout-container.dark-mode .admin-settings__item,
+.layout-container.dark-mode .eventixNotification--admin .eventixNotification__item {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: #111827;
+  color: #cbd5e1;
+}
+
+.admin-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--admin-page-border, #e5e7eb);
+  border-radius: 999px;
+  background: var(--admin-page-surface, #ffffff);
+  color: var(--admin-page-muted, #64748b);
+  cursor: pointer;
+}
+
+.admin-theme-toggle__track {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  width: 54px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(91, 33, 182, 0.08);
+}
+
+.admin-theme-toggle__icon,
+.admin-theme-toggle__knob {
+  display: grid;
+  place-items: center;
+}
+
+.admin-theme-toggle__icon {
+  color: #64748b;
+}
+
+.admin-theme-toggle__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #080b16, #5b21b6 48%, #2563eb);
+  color: #ffffff;
+  transition: transform 180ms ease;
+}
+
+.layout-container.dark-mode .admin-theme-toggle__knob {
+  transform: translateX(26px);
+}

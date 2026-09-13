@@ -268,6 +268,83 @@
   }
 }
 
+.layout-container.light-mode .dashboard-hero,
+.layout-container.light-mode .chart-box,
+.layout-container.light-mode .stat-card {
+  border-color: #e5e7eb;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.055);
+}
+
+.layout-container.light-mode .dashboard-hero {
+  background:
+    radial-gradient(circle at 88% 16%, rgba(91, 33, 182, 0.12), transparent 32%),
+    linear-gradient(135deg, #ffffff 0%, #f7f3ff 100%);
+}
+
+.layout-container.light-mode .dashboard-hero h1,
+.layout-container.light-mode .chart-box__header h2,
+.layout-container.light-mode .dashboard-hero__metric strong,
+.layout-container.light-mode .stat-value {
+  color: #0f172a;
+}
+
+.layout-container.light-mode .dashboard-hero p,
+.layout-container.light-mode .dashboard-hero__metric span,
+.layout-container.light-mode .dashboard-hero__metric small,
+.layout-container.light-mode .stat-title,
+.layout-container.light-mode .bar-chart__item {
+  color: #64748b;
+}
+
+.layout-container.light-mode .dashboard-eyebrow,
+.layout-container.light-mode .chart-pill,
+.layout-container.light-mode .stat-trend {
+  color: #5b21b6;
+}
+
+.layout-container.light-mode .dashboard-hero__metric,
+.layout-container.light-mode .stat-icon,
+.layout-container.light-mode .stat-trend,
+.layout-container.light-mode .chart-pill,
+.layout-container.light-mode .chart-box-inset {
+  border-color: rgba(91, 33, 182, 0.12);
+  background:
+    linear-gradient(135deg, rgba(91, 33, 182, 0.08), rgba(37, 99, 235, 0.05)),
+    #ffffff;
+}
+
+.layout-container.dark-mode .dashboard-hero,
+.layout-container.dark-mode .chart-box,
+.layout-container.dark-mode .stat-card {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: #111827;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.layout-container.dark-mode .dashboard-hero {
+  background:
+    radial-gradient(circle at 88% 16%, rgba(91, 33, 182, 0.22), transparent 32%),
+    #111827;
+}
+
+.layout-container.dark-mode .dashboard-hero h1,
+.layout-container.dark-mode .chart-box__header h2,
+.layout-container.dark-mode .dashboard-hero__metric strong,
+.layout-container.dark-mode .stat-value {
+  color: #ffffff;
+}
+
+.layout-container.dark-mode .dashboard-hero p,
+.layout-container.dark-mode .dashboard-hero__metric span,
+.layout-container.dark-mode .dashboard-hero__metric small,
+.layout-container.dark-mode .stat-title,
+.layout-container.dark-mode .bar-chart__item {
+  color: #cbd5e1;
+}
+
 .revenue-chart {
   background:
     linear-gradient(180deg, rgba(124, 58, 237, 0.045), transparent 40%),

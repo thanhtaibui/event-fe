@@ -200,3 +200,27 @@
     color: #ffffff;
   }
 }
+
+.layout-container.light-mode .confirm-dialog .MuiDialog-paper {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.14);
+}
+
+.layout-container.light-mode .confirm-dialog .MuiDialogTitle-root,
+.layout-container.light-mode .confirm-dialog .MuiDialogContent-root strong {
+  color: #0f172a;
+}
+
+.layout-container.light-mode .confirm-dialog .MuiDialogContent-root,
+.layout-container.light-mode .confirm-dialog-safety {
+  color: #64748b;
+}
+
+.layout-container.dark-mode .confirm-dialog .MuiDialog-paper {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #111827;
+  color: #ffffff;
+  box-shadow: none;
+}

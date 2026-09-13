@@ -2,6 +2,7 @@ import { Facehash } from "facehash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { Moon, Sun } from "lucide-react";
 import { clearAccessToken } from "../../../constants/authStorage";
 import { getAccessToken } from "../../../constants/authStorage";
 import { useAuth } from "../../../hooks/auth/AuthProvider";
@@ -18,7 +19,12 @@ import type { JwtPayloadCustom } from "../../../types/JwtPayloadCustom";
 import { Breadcrumb } from "./Breadcrumb";
 import NotificationMenu from "../../common/NotificationMenu";
 // import Avatar from "react-avatar";
-export const Header = () => {
+type HeaderProps = {
+  theme: string;
+  onToggleTheme: () => void;
+};
+
+export const Header = ({ theme, onToggleTheme }: HeaderProps) => {
   const title = useHeader();
   const userInfo = useInfo();
   const navigate = useNavigate();
@@ -104,6 +110,26 @@ export const Header = () => {
         <h3>{title}</h3>
       </div>
       <div className="header-right">
+        <button
+          type="button"
+          className="admin-theme-toggle"
+          aria-label={
+            theme === "light" ? "Switch to dark mode" : "Switch to light mode"
+          }
+          onClick={onToggleTheme}
+        >
+          <span className="admin-theme-toggle__track" aria-hidden="true">
+            <span className="admin-theme-toggle__icon admin-theme-toggle__icon--sun">
+              <Sun size={15} />
+            </span>
+            <span className="admin-theme-toggle__icon admin-theme-toggle__icon--moon">
+              <Moon size={15} />
+            </span>
+            <span className="admin-theme-toggle__knob">
+              {theme === "light" ? <Sun size={16} /> : <Moon size={16} />}
+            </span>
+          </span>
+        </button>
         <NotificationMenu variant="admin" enabled={Boolean(currentUserId)} />
         <div className="admin-settings" ref={settingsRef}>
           <button
