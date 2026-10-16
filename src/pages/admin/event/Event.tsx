@@ -17,7 +17,6 @@ import { UseEvent } from "../../../hooks/admin/event/useEvent";
 import { UseOrgEvent } from "../../../hooks/org/event/useEvent";
 import { useDataTable } from "../../../hooks/admin/useDataTable";
 import { usePageActions } from "../../../hooks/admin/usePageActions";
-import DashboardCard from "../../../components/admin/dashboard/DashboardCard";
 import { CreateEventPopup } from "../../../components/admin/event/createEvent";
 import { useCancelled } from "../../../hooks/admin/event/useCancelled";
 import { toast } from "react-toastify";
@@ -38,6 +37,35 @@ import {
 import { getAccessToken } from "../../../constants/authStorage";
 import { useOrgsByUser } from "../../../hooks/admin/org/useOrgsByUser";
 import type { JwtPayloadCustom } from "../../../types/JwtPayloadCustom";
+import {
+  CalendarDays,
+  Clock3,
+  Eye,
+  FileText,
+  MapPin,
+  Pencil,
+  Plus,
+  Radio,
+  Ticket,
+  Trash2,
+  XCircle,
+} from "lucide-react";
+
+const getEventStatusClass = (status?: string) =>
+  `event-admin-status event-admin-status--${(status || "unknown").toLowerCase()}`;
+
+const formatEventDate = (date: string | Date) =>
+  new Date(date).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+const formatEventTime = (date: string | Date) =>
+  new Date(date).toLocaleTimeString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
 export default function Event() {
   const navigate = useNavigate();
@@ -83,7 +111,6 @@ export default function Event() {
     useDataTable<EventDto>({
       fetchHook: (query) =>
         isOrgWorkspace ? UseOrgEvent(slug || "", query) : UseEvent(query),
-      // updateApi: orgService.updateActive,
     });
   const { cancelledEvent, loading: cancellingEvent } = useCancelled();
 
@@ -115,57 +142,69 @@ export default function Event() {
       setPopupType(null);
     }
   };
+  const events = data.items || [];
+  const totalEvents = data.total || events.length;
+  const activeEvents = events.filter((event) =>
+    ["published", "upcoming", "ongoing"].includes(event.status)
+  ).length;
+  const draftEvents = events.filter((event) => event.status === "draft").length;
+  const cancelledEvents = events.filter(
+    (event) => event.status === "cancelled"
+  ).length;
+
   // setup column
   const eventColumns: Column<EventDto>[] = [
     {
       id: "title",
-      label: "Event Name",
+      label: "Event",
       render: (event: EventDto) => {
         return (
-          <div className="event-content" style={{ whiteSpace: "normal" }}>
-            <div className="img-event">
-              <img src={event.eventBanner || "/default-banner.png"} alt="event banner" />
+          <div className="event-admin-cell">
+            <div className="event-admin-thumb">
+              <img
+                src={event.eventBanner || "/default-banner.png"}
+                alt={`${event.title} banner`}
+              />
             </div>
-            <div className="event-right">
-              <span>{event.title}</span>
-              <span className="org-name">{event.organization.name}</span>
+            <div className="event-admin-cell__text">
+              <strong title={event.title}>{event.title}</strong>
+              <span title={event.place || "No location"}>
+                <MapPin size={13} aria-hidden="true" />
+                {event.place || "No location"}
+              </span>
             </div>
           </div>
         );
       },
       sortable: true,
     },
-    // {
-    //   id: "organization",
-    //   label: "Organization",
-    //   render: (row: EventDto) => {
-    //     // Truy cập vào lồng bên trong OrgDto
-    //     return row.organization?.name || "N/A";
-    //   },
-    //   sortable: true,
-    // },
+    {
+      id: "organization",
+      label: "Organizer",
+      render: (row: EventDto) => (
+        <div className="event-admin-org">
+          <strong title={row.organization?.name || "N/A"}>
+            {row.organization?.name || "N/A"}
+          </strong>
+          {row.organization?.isVerified && <span>Verified organizer</span>}
+        </div>
+      ),
+      sortable: false,
+    },
     {
       id: "eventTime",
-      label: "Time",
+      label: "Date",
       render: (row: EventDto) => {
-        const start = new Date(row.startDateTime);
-        const end = new Date(row.endDateTime);
-
-        const format = (date: Date) =>
-          `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")} ${date.getDate()}/${date.getMonth() + 1}`;
-
         return (
-          <div
-            style={{
-              fontSize: "14px",
-              color: "#858f9d",
-              whiteSpace: "nowrap",
-              userSelect: "none",
-            }}
-          >
-            <span style={{ fontWeight: "500" }}>{format(start)}</span>
-            <span style={{ margin: "0 4px", color: "#9CA3AF" }}>-</span>
-            <span style={{ fontWeight: "500" }}>{format(end)}</span>
+          <div className="event-admin-date">
+            <CalendarDays size={15} aria-hidden="true" />
+            <div>
+              <strong>{formatEventDate(row.startDateTime)}</strong>
+              <span>
+                {formatEventTime(row.startDateTime)} -{" "}
+                {formatEventTime(row.endDateTime)}
+              </span>
+            </div>
           </div>
         );
       },
@@ -175,12 +214,11 @@ export default function Event() {
       id: "status",
       label: "Status",
       render: (row: EventDto) => {
-        // Dùng giá trị enum từ EventStatus để lấy style
         const style =
           EVENT_STATUS_STYLES[row.status] || EVENT_STATUS_STYLES.UPCOMING;
         return (
           <span
-            className="role-badge"
+            className={getEventStatusClass(row.status)}
             style={{
               background: style.bg,
               color: style.text,
@@ -204,16 +242,15 @@ export default function Event() {
         const percentage = Math.min(Math.round((sold / total) * 100), 100);
 
         return (
-          <div className="capacity-container" style={{ userSelect: "none" }}>
-            <div className="content-top">
-              <div className="capacity-percent">{percentage}</div>{" "}
-              <span className="capacity-text">
+          <div className="event-admin-capacity">
+            <div>
+              <strong>{percentage}%</strong>
+              <span>
                 {sold.toLocaleString()}/{total.toLocaleString()}
               </span>
             </div>
-            <div className="progress-bar-bg">
+            <div className="event-admin-progress">
               <div
-                className="progress-bar-fill"
                 style={{ width: `${percentage}%` }}
               />
             </div>
@@ -226,60 +263,40 @@ export default function Event() {
       id: "actions",
       label: "Actions",
       render: (event: EventDto) => (
-        <div style={{ display: "flex", gap: "8px" }}>
+        <div className="event-admin-actions">
           {canEditEvent && (
             <button
-              className="btn-edit"
+              className="event-admin-action event-admin-action--edit"
               onClick={() => {
                 setPopupType("update");
                 setSelectedIds([event.id]);
               }}
             >
-              <img
-                width="20"
-                height="20"
-                className="icon-white"
-                src="https://img.icons8.com/nolan/64/pencil.png"
-                alt="pencil"
-              />
-              <span className="text-edit">Edit</span>
+              <Pencil size={16} aria-hidden="true" />
+              <span>Edit</span>
             </button>
           )}
           {canDeleteEvent && (
             <button
-              className="btn-delete"
+              className="event-admin-action event-admin-action--delete"
               onClick={() => {
                 setPopupType("confirm");
                 setSelectedIds([event.id]);
               }}
             >
-              <img
-                width="20"
-                height="20"
-                className="icon-white"
-                src="https://img.icons8.com/nolan/64/waste.png"
-                alt="waste"
-              />
-              <span className="text-delete">Delete</span>
+              <Trash2 size={16} aria-hidden="true" />
+              <span>Delete</span>
             </button>
           )}
           <button
-            className="btn-detail"
+            className="event-admin-action event-admin-action--view"
             onClick={() => {
-              // const shortId = btoa(event.id).slice(0, 10);
               const basePath = isOrgWorkspace ? `/org/${slug}` : "/admin";
               navigate(`${basePath}/events/${encodeId(event.id)}`);
             }}
           >
-            <img
-              width="64"
-              height="64"
-              className="icon-white"
-              src="https://img.icons8.com/nolan/64/fine-print.png"
-              alt="fine-print"
-            />
-
-            <span className="text-detail">Detail</span>
+            <Eye size={16} aria-hidden="true" />
+            <span>View</span>
           </button>
         </div>
       ),
@@ -301,77 +318,99 @@ export default function Event() {
         onConfirm={() => handleOpenConfirm(table.selected.map(String))}
         onClose={() => handleCloseAndClear()}
       />
-      <div className="event__cards">
-        <DashboardCard
-          title="Total Members"
-          value="100"
-          icon={
-            <img
-              width="35"
-              height="35"
-              src="https://img.icons8.com/nolan/64/gender-neutral-user.png"
-              alt="members"
-            />
-          }
+      <section className="event-admin-hero">
+        <div className="event-admin-hero__content">
+          <span className="event-admin-eyebrow">
+            <Radio size={16} aria-hidden="true" />
+            Event Control Center
+          </span>
+          <h1>Admin Event Management</h1>
+          <p>
+            Quản lý sự kiện, trạng thái xuất bản, sức chứa và thao tác vận hành
+            trong một giao diện gọn hơn.
+          </p>
+        </div>
+        {canCreateEvent && (
+          <button
+            type="button"
+            className="event-admin-primary-action"
+            onClick={() => setPopupType("create")}
+          >
+            <Plus size={18} aria-hidden="true" />
+            Create Event
+          </button>
+        )}
+      </section>
+
+      <section className="event-admin-summary" aria-label="Event summary">
+        <article>
+          <span className="event-summary-icon">
+            <CalendarDays size={18} aria-hidden="true" />
+          </span>
+          <small>Total events</small>
+          <strong>{totalEvents}</strong>
+        </article>
+        <article>
+          <span className="event-summary-icon event-summary-icon--active">
+            <Radio size={18} aria-hidden="true" />
+          </span>
+          <small>Active on this page</small>
+          <strong>{activeEvents}</strong>
+        </article>
+        <article>
+          <span className="event-summary-icon event-summary-icon--draft">
+            <FileText size={18} aria-hidden="true" />
+          </span>
+          <small>Draft on this page</small>
+          <strong>{draftEvents}</strong>
+        </article>
+        <article>
+          <span className="event-summary-icon event-summary-icon--cancelled">
+            <XCircle size={18} aria-hidden="true" />
+          </span>
+          <small>Cancelled on this page</small>
+          <strong>{cancelledEvents}</strong>
+        </article>
+      </section>
+
+      <section className="event-admin-panel">
+        <div className="event-admin-panel__header">
+          <div>
+            <span>Event directory</span>
+            <h2>Event list</h2>
+          </div>
+        </div>
+        <SearchBar
+          onSearchChange={onSearchChange}
+          placeholder={["Title", " Org Name"]}
+          title="event"
+          filters={[
+            {
+              key: "capacity",
+              placeholder: "Capacity",
+              options: [
+                { label: "< 100", value: "$lte:100" },
+                { label: ">= 100", value: "$gte:100" },
+                { label: "> 500", value: "$gte:500" },
+                { label: "> 1000", value: "$gte:1000" },
+              ],
+            },
+            {
+              key: "status",
+              placeholder: "Status",
+              options: [
+                { label: "Draft", value: "draft" },
+                { label: "Published", value: "published" },
+                { label: "Upcoming", value: "upcoming" },
+                { label: "Ongoing", value: "ongoing" },
+                { label: "Ended", value: "ended" },
+                { label: "Cancelled", value: "cancelled" },
+              ],
+            },
+          ]}
+          onFilterChange={filter.handleFilterChange}
         />
-        <DashboardCard
-          title="Total Events"
-          value="100"
-          icon={
-            <img
-              width="35"
-              height="35"
-              src="https://img.icons8.com/nolan/64/today.png"
-              alt="events"
-            />
-          }
-        />
-        <DashboardCard
-          title="Status"
-          value="100"
-          icon={
-            <img
-              width="35"
-              height="35"
-              src="https://img.icons8.com/nolan/64/ok.png"
-              alt="status"
-            />
-          }
-        />
-      </div>
-      <SearchBar
-        onSearchChange={onSearchChange}
-        onCreate={canCreateEvent ? () => {
-          setPopupType("create");
-        } : undefined}
-        placeholder={["Title", " Org Name"]}
-        title="event"
-        filters={[
-          {
-            key: "capacity",
-            placeholder: "Capacity",
-            options: [
-              { label: "< 100", value: "$lte:100" },
-              { label: ">= 100", value: "$gte:100" },
-              { label: "> 500", value: "$gte:500" },
-              { label: "> 1000", value: "$gte:1000" },
-            ],
-          },
-          {
-            key: "status",
-            placeholder: "Status",
-            options: [
-              { label: "Draft", value: "draft" },
-              { label: "Published", value: "published" },
-              { label: "Upcoming", value: "upcoming" },
-              { label: "Ongoing", value: "ongoing" },
-              { label: "Ended", value: "ended" },
-              { label: "Cancelled", value: "cancelled" },
-            ],
-          },
-        ]}
-        onFilterChange={filter.handleFilterChange}
-      />
+      </section>
       {popupType === "update" && (
         <UpdateEventPopup
           id={selectedIds.length === 1 ? selectedIds[0] : ""}
@@ -388,20 +427,111 @@ export default function Event() {
 
       {loading ? (
         <AdminSkeleton variant="table" rows={6} />
+      ) : events.length === 0 ? (
+        <section className="event-admin-empty">
+          <span>
+            <CalendarDays size={28} aria-hidden="true" />
+          </span>
+          <h3>No events found</h3>
+          <p>Không có sự kiện nào khớp với tìm kiếm hoặc bộ lọc hiện tại.</p>
+        </section>
       ) : (
         <>
-          <CustomTable
-            rows={data.items}
-            columns={eventColumns}
-            order={table.sortOrder}
-            orderBy={table.sortBy}
-            onSort={table.handleSort}
-            selected={table.selected}
-            onSelectOne={table.handleSelectOne}
-            onSelectAll={(checked) =>
-              table.handleSelectAll(checked, data.items || [])
-            }
-          />
+          <div className="event-admin-table admin-table-shell">
+            <CustomTable
+              rows={events}
+              columns={eventColumns}
+              tableClassName="event-table-container"
+              order={table.sortOrder}
+              orderBy={table.sortBy}
+              onSort={table.handleSort}
+              selected={table.selected}
+              onSelectOne={table.handleSelectOne}
+              onSelectAll={(checked) => table.handleSelectAll(checked, events)}
+            />
+          </div>
+          <div className="event-admin-mobile-list" aria-label="Event mobile list">
+            {events.map((event) => {
+              const style =
+                EVENT_STATUS_STYLES[event.status] || EVENT_STATUS_STYLES.UPCOMING;
+              const sold = event.soldTickets || 0;
+              const total = event.capacity || 1;
+              const percentage = Math.min(Math.round((sold / total) * 100), 100);
+              return (
+                <article className="event-admin-mobile-card" key={event.id}>
+                  <img
+                    src={event.eventBanner || "/default-banner.png"}
+                    alt={`${event.title} banner`}
+                  />
+                  <div className="event-admin-mobile-card__body">
+                    <div className="event-admin-mobile-card__top">
+                      <div>
+                        <h3>{event.title}</h3>
+                        <span>{event.organization?.name || "N/A"}</span>
+                      </div>
+                      <span
+                        className={getEventStatusClass(event.status)}
+                        style={{
+                          background: style.bg,
+                          color: style.text,
+                          border: style.border,
+                        }}
+                      >
+                        {style.statusDot && <span className="status-dot"></span>}
+                        {event.status}
+                      </span>
+                    </div>
+                    <div className="event-admin-mobile-card__meta">
+                      <span>
+                        <Clock3 size={14} aria-hidden="true" />
+                        {formatEventDate(event.startDateTime)}
+                      </span>
+                      <span>
+                        <Ticket size={14} aria-hidden="true" />
+                        {percentage}% capacity
+                      </span>
+                    </div>
+                    <div className="event-admin-actions">
+                      {canEditEvent && (
+                        <button
+                          className="event-admin-action event-admin-action--edit"
+                          onClick={() => {
+                            setPopupType("update");
+                            setSelectedIds([event.id]);
+                          }}
+                        >
+                          <Pencil size={16} aria-hidden="true" />
+                          <span>Edit</span>
+                        </button>
+                      )}
+                      <button
+                        className="event-admin-action event-admin-action--view"
+                        onClick={() => {
+                          const basePath = isOrgWorkspace ? `/org/${slug}` : "/admin";
+                          navigate(`${basePath}/events/${encodeId(event.id)}`);
+                        }}
+                      >
+                        <Eye size={16} aria-hidden="true" />
+                        <span>View</span>
+                      </button>
+                      {canDeleteEvent && (
+                        <button
+                          className="event-admin-action event-admin-action--delete"
+                          onClick={() => {
+                            setPopupType("confirm");
+                            setSelectedIds([event.id]);
+                          }}
+                        >
+                          <Trash2 size={16} aria-hidden="true" />
+                          <span>Delete</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
           <Pagination
             totalCount={data.total || 0}
             page={pagination.page}

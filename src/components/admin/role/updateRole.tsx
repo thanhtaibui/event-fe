@@ -6,9 +6,12 @@ import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";
 import { useSwitchOrg } from "../../../hooks/admin/org/useSwitchOrg";
 import { useRoleForm } from "../../../hooks/admin/role/useRoleForm";
 import { UsePermission } from "../../../hooks/admin/permission/usePermission";
-import type { PermissionTree } from "../../../types/permission/permissionTree";
 import { useRoleById } from "../../../hooks/admin/role/useRoleId";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { PermissionMatrix } from "./PermissionMatrix";
+import { AdminModalError, AdminModalLoading } from "../layout/AdminModalState";
+
+const UPDATE_ROLE_FORM_ID = "update-role-form";
 
 export const UpdateRolePopup = ({
   id,
@@ -19,9 +22,20 @@ export const UpdateRolePopup = ({
   onClose: () => void;
   onSuccess: () => void;
 }) => {
-  const { data: switchOrgs } = useSwitchOrg();
-  const { data: apiPermissions } = UsePermission();
+  const {
+    data: apiPermissions,
+    loading: permissionLoading,
+    error: permissionError,
+    actorRole,
+    actorOrganizationId,
+    actorOrganizationLoading,
+    refetch: refetchPermissions,
+  } = UsePermission();
+  const isSuperAdminActor = actorRole === "SUPER_ADMIN";
+  const isOwnerActor = actorRole === "OWNER";
+  const { data: switchOrgs } = useSwitchOrg(isSuperAdminActor);
   const roleById = useRoleById(id);
+  const [detailReady, setDetailReady] = useState(false);
 
   // Sử dụng hook
   const {
@@ -37,7 +51,22 @@ export const UpdateRolePopup = ({
     handleSubmit,
     setForm,
     setSelectedPerms,
-  } = useRoleForm(onClose, onSuccess, roleById);
+  } = useRoleForm(onClose, onSuccess, roleById, {
+    actorRole,
+    actorOrganizationId,
+    actorOrganizationLoading,
+  });
+
+  useEffect(() => {
+    setDetailReady(false);
+    setSelectedPerms([]);
+    setForm({
+      role_name: "",
+      role_code: "",
+      orgId: "",
+      colorKey: "gray",
+    });
+  }, [id, setForm, setSelectedPerms]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -45,7 +74,7 @@ export const UpdateRolePopup = ({
         setForm({
           role_name: roleById.data.role_name || "",
           role_code: roleById.data.role_code || "",
-          orgId: roleById.data.org.id,
+          orgId: roleById.data.org?.id || "",
           colorKey: roleById.data.colorKey,
         });
         const allIds: string[] = [];
@@ -60,10 +89,24 @@ export const UpdateRolePopup = ({
         extractIds(roleById.data.permissions);
         // console.log("Full Permission IDs (Cha + Con):", allIds);
         setSelectedPerms(allIds);
+        setDetailReady(true);
       }
     };
     loadData();
   }, [roleById.data]);
+
+  useEffect(() => {
+    if (!isOwnerActor || !actorOrganizationId) return;
+
+    setForm((prev) =>
+      prev.orgId === actorOrganizationId
+        ? prev
+        : { ...prev, orgId: actorOrganizationId },
+    );
+  }, [actorOrganizationId, isOwnerActor, setForm]);
+
+  const isInitialLoading = roleById.loading || (!detailReady && !roleById.error);
+
   return createPortal(
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-box" onClick={(e) => e.stopPropagation()}>
@@ -85,8 +128,13 @@ export const UpdateRolePopup = ({
           </button>
         </div>
 
+        {roleById.error ? (
+          <AdminModalError onRetry={roleById.refetch} />
+        ) : isInitialLoading ? (
+          <AdminModalLoading />
+        ) : (
         <form
-          id="popup-form"
+          id={UPDATE_ROLE_FORM_ID}
           className="popup-form"
           onSubmit={(e) => {
             e.preventDefault();
@@ -119,35 +167,37 @@ export const UpdateRolePopup = ({
             />
           </div>
 
-          <div className="form-group">
-            <label className="required">Organization Scope</label>
-            <Select
-              className="react-select"
-              classNamePrefix="custom-select"
-              placeholder="Select organization..."
-              options={switchOrgs?.map((o: any) => ({
-                value: o.id,
-                label: o.name,
-                type: "org",
-              }))}
-              value={
-                switchOrgs
-                  ?.map((o: any) => ({
-                    value: o.id,
-                    label: o.name,
-                    type: "org",
-                  }))
-                  .find((o: any) => o.value === form.orgId) || null
-              }
-              onChange={(selected: any) =>
-                setForm({ ...form, orgId: selected?.value })
-              }
-              components={{
-                Option: CustomOption,
-                SingleValue: CustomSingleValue,
-              }}
-            />
-          </div>
+          {isSuperAdminActor && (
+            <div className="form-group">
+              <label className="required">Organization Scope</label>
+              <Select
+                className="react-select"
+                classNamePrefix="custom-select"
+                placeholder="Select organization..."
+                options={switchOrgs?.map((o: any) => ({
+                  value: o.id,
+                  label: o.name,
+                  type: "org",
+                }))}
+                value={
+                  switchOrgs
+                    ?.map((o: any) => ({
+                      value: o.id,
+                      label: o.name,
+                      type: "org",
+                    }))
+                    .find((o: any) => o.value === form.orgId) || null
+                }
+                onChange={(selected: any) =>
+                  setForm({ ...form, orgId: selected?.value || "" })
+                }
+                components={{
+                  Option: CustomOption,
+                  SingleValue: CustomSingleValue,
+                }}
+              />
+            </div>
+          )}
 
           <div className="form-group">
             <label className="required">Role Color</label>
@@ -170,93 +220,39 @@ export const UpdateRolePopup = ({
 
           <div className="form-permission">
             <label className="required">Permission Matrix</label>
-            <div className="permission-matrix-container">
-              {apiPermissions?.map((group: PermissionTree) => {
-                const groupPermIds =
-                  group.children?.map((child) => child.id) || [];
-                const isGroupActive = groupPermIds.some((id) =>
-                  selectedPerms.includes(id),
-                );
-                const isGroupAllSelected = groupPermIds.every((id) =>
-                  selectedPerms.includes(id),
-                );
-                const childIds = group.children?.map((c: any) => c.id) || [];
-                return (
-                  <div key={group.id} className="permission-group">
-                    <div
-                      className={`group-header ${isGroupActive ? "active" : ""}`}
-                    >
-                      <div
-                        className="header-left-popup"
-                        onClick={() => toggleGroup(group.id, childIds)}
-                      >
-                        <div
-                          className={`custom-checkbox ${isGroupAllSelected ? "checked" : isGroupActive ? "indeterminate" : ""}`}
-                        >
-                          {isGroupAllSelected ? "✓" : isGroupActive ? "-" : ""}
-                        </div>
-                        <span>{group.permission_name}</span>
-                      </div>
-
-                      <div
-                        className="toggle-icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleExpand(group.id);
-                        }}
-                      >
-                        <span
-                          style={{
-                            transform: expandedGroups.includes(group.id)
-                              ? "rotate(90deg)"
-                              : "rotate(0deg)",
-                            display: "inline-block",
-                            transition: "0.2s",
-                          }}
-                        >
-                          ▶
-                        </span>
-                      </div>
-                    </div>
-
-                    {expandedGroups.includes(group.id) && (
-                      <div className="group-children">
-                        {group.children?.map((child) => {
-                          const isChecked = selectedPerms.includes(child.id);
-                          return (
-                            <div
-                              key={child.id}
-                              className={`perm-item ${isChecked ? "checked" : ""}`}
-                              onClick={() =>
-                                togglePermission(group.id, child.id)
-                              }
-                            >
-                              <div
-                                className={`custom-checkbox ${isChecked ? "checked" : ""}`}
-                              >
-                                {isChecked && "✓"}
-                              </div>
-                              <span>{child.permission_name}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            <PermissionMatrix
+              permissions={apiPermissions}
+              selectedPerms={selectedPerms}
+              expandedGroups={expandedGroups}
+              loading={permissionLoading}
+              error={permissionError}
+              onRetry={refetchPermissions}
+              toggleExpand={toggleExpand}
+              togglePermission={togglePermission}
+              toggleGroup={toggleGroup}
+            />
           </div>
         </form>
+        )}
 
-        <div className="popup-footer">
-          <button type="button" onClick={onClose}>
-            Cancel
-          </button>
-          <button type="submit" form="popup-form" disabled={uiLoading}>
-            {uiLoading ? "Save Changes..." : "Save Changes"}
-          </button>
-        </div>
+        {detailReady && !roleById.error && (
+          <div className="popup-footer">
+            <button type="button" onClick={onClose}>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              form={UPDATE_ROLE_FORM_ID}
+              disabled={uiLoading || (isOwnerActor && actorOrganizationLoading)}
+            >
+              {uiLoading
+                ? "Save Changes..."
+                : isOwnerActor && actorOrganizationLoading
+                  ? "Loading org..."
+                  : "Save Changes"}
+            </button>
+          </div>
+        )}
       </div>
     </div>,
     document.body,

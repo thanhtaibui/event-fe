@@ -123,14 +123,17 @@ export default function NotificationMenu({
           {!loading &&
             items.map((item) => {
               const unread = !(item.isRead || item.read);
+              const itemKey =
+                item.id ||
+                `${getNotificationTitle(item)}-${getNotificationTime(item)}`;
               return (
                 <button
                   type="button"
                   className={`eventixNotification__item ${
                     unread ? "eventixNotification__item--unread" : ""
                   }`}
-                  key={item.id}
-                  onClick={() => handleItemClick(item)}
+                  key={itemKey}
+                  onClick={() => item.id && handleItemClick(item)}
                 >
                   <span className="eventixNotification__dot" />
                   <span className="eventixNotification__content">

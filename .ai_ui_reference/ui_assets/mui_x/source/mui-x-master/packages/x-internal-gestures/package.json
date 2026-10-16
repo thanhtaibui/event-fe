@@ -1,0 +1,56 @@
+{
+  "name": "@mui/x-internal-gestures",
+  "version": "9.14.0",
+  "author": "MUI Team",
+  "description": "The core engine of GestureEvents, a modern and robust multi-pointer gesture detection library for JavaScript.",
+  "license": "MIT",
+  "keywords": [
+    "multitouch",
+    "gesture",
+    "library",
+    "wheel",
+    "pan",
+    "pinch",
+    "move",
+    "rotate",
+    "press",
+    "tap",
+    "simultaneous",
+    "gestures",
+    "pointer",
+    "typescript"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "directory": "build"
+  },
+  "bugs": {
+    "url": "https://github.com/mui/mui-x/issues"
+  },
+  "homepage": "https://mui.com/x/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mui/mui-x.git",
+    "directory": "packages/x-internal-gestures"
+  },
+  "scripts": {
+    "typescript": "tsc -p tsconfig.json",
+    "build": "code-infra build --tsgo",
+    "prebuild": "rimraf build tsconfig.build.tsbuildinfo"
+  },
+  "dependencies": {
+    "@babel/runtime": "catalog:",
+    "@base-ui/utils": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "sideEffects": false,
+  "exports": {
+    "./*": "./src/*/index.ts"
+  },
+  "imports": {
+    "#formatErrorMessage": "./src/formatErrorMessage.ts"
+  }
+}

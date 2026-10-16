@@ -4,11 +4,15 @@ export interface Organization {
 
   name: string;
 
-  bio: string | null;
+  bio?: string | null;
+
+  description?: string | null;
+
+  logo?: string | null;
+
+  logoUrl?: string | null;
 
   slug: string;
-
-  isActive: boolean;
 
   isVerified?: boolean;
 
@@ -23,6 +27,15 @@ export interface Organization {
   totalMembers: number;
 
   totalEvents?: number;
+}
+
+export interface PublicOrganizationDto {
+  id: string;
+  name: string;
+  logo?: string | null;
+  description?: string | null;
+  createdAt: string | Date;
+  slug?: string;
 }
 export interface OwnerResponseDto {
   id: string;

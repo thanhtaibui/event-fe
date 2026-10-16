@@ -1,0 +1,7 @@
+if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+  echo "ERROR: untracked files present"; 
+  git status;
+  exit 1
+fi
+nub run check:semver
+nub run test

@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import "../../../styles/admin/popup/popup.css";
 import type { TicketType } from "../../../types/ticket-type/ticket-type";
 import { toast } from "react-toastify";
 import { useTicketTypeById } from "../../../hooks/admin/ticketType/useTicketTypeById";
 import { useUpdateTicketType } from "../../../hooks/admin/ticketType/useUpdateTicketType";
+import { AdminModalError, AdminModalLoading } from "../layout/AdminModalState";
+
+const UPDATE_TICKET_TYPE_FORM_ID = "update-ticket-type-form";
+
 interface UpdateTTProps {
   id: string;
   eventId: string;
@@ -19,13 +24,24 @@ export const UpdateTT: React.FC<UpdateTTProps> = ({
 }) => {
   const { updateTicketType } = useUpdateTicketType();
   const [uiLoading, setUiLoading] = useState(false);
-  const { data: ticketType } = useTicketTypeById(id);
+  const { data: ticketType, loading, error, refetch } = useTicketTypeById(id);
+  const [detailReady, setDetailReady] = useState(false);
   const [form, setForm] = useState<Partial<TicketType>>({
     name: "",
     price: 0,
     quantity: 0,
     eventId: eventId,
   });
+
+  useEffect(() => {
+    setDetailReady(false);
+    setForm({
+      name: "",
+      price: 0,
+      quantity: 0,
+      eventId: eventId,
+    });
+  }, [eventId, id]);
 
   useEffect(() => {
     if (ticketType) {
@@ -35,8 +51,11 @@ export const UpdateTT: React.FC<UpdateTTProps> = ({
         quantity: ticketType.quantity,
         eventId: eventId,
       });
+      setDetailReady(true);
     }
   }, [ticketType, eventId]);
+
+  const isInitialLoading = loading || (!detailReady && !error);
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN").format(price);
   };
@@ -76,7 +95,7 @@ export const UpdateTT: React.FC<UpdateTTProps> = ({
       setUiLoading(false);
     }
   };
-  return (
+  return createPortal(
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-box-mini" onClick={(e) => e.stopPropagation()}>
         <div className="popup-header">
@@ -97,8 +116,13 @@ export const UpdateTT: React.FC<UpdateTTProps> = ({
           </button>
         </div>
 
+        {error ? (
+          <AdminModalError minHeight={220} onRetry={refetch} />
+        ) : isInitialLoading ? (
+          <AdminModalLoading minHeight={220} />
+        ) : (
         <form
-          id="popup-form-mini"
+          id={UPDATE_TICKET_TYPE_FORM_ID}
           className="popup-form-mini"
           onSubmit={handleSubmit}
         >
@@ -133,15 +157,19 @@ export const UpdateTT: React.FC<UpdateTTProps> = ({
             />
           </div>
         </form>
-        <div className="popup-footer">
-          <button type="button" onClick={onClose}>
-            Cancel
-          </button>
-          <button type="submit" form="popup-form-mini" disabled={uiLoading}>
-            {uiLoading ? "Save Changes..." : "Save Changes"}
-          </button>
-        </div>
+        )}
+        {detailReady && !error && (
+          <div className="popup-footer">
+            <button type="button" onClick={onClose}>
+              Cancel
+            </button>
+            <button type="submit" form={UPDATE_TICKET_TYPE_FORM_ID} disabled={uiLoading}>
+              {uiLoading ? "Save Changes..." : "Save Changes"}
+            </button>
+          </div>
+        )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };

@@ -136,10 +136,6 @@
 .login-eyebrow {
   width: fit-content;
   margin: 0 0 16px;
-  padding: 7px 12px;
-.login-eyebrow {
-  width: fit-content;
-  margin: 0 0 16px;
   padding: 4px 12px;
   border: 1px solid #334155;
   border-radius: 999px;
@@ -260,8 +256,6 @@
   background: #ffffff;
   color: #0f172a;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-  box-shadow: none;
 }
 
 .login-ticket-visual__chip svg {
@@ -628,13 +622,15 @@
 }
 
 .login-field__control input::selection {
-  background: rgba(124, 58, 237, 0.42);
-  color: #ffffff;
+  background: var(--text-selection-bg, rgba(56, 189, 248, 0.72));
+  color: var(--text-selection-text, #082f49);
+  -webkit-text-fill-color: var(--text-selection-text, #082f49);
 }
 
 .login-theme--light .login-field__control input::selection {
-  background: rgba(124, 58, 237, 0.2);
-  color: #111827;
+  background: var(--text-selection-bg, rgba(14, 165, 233, 0.28));
+  color: var(--text-selection-text, #082f49);
+  -webkit-text-fill-color: var(--text-selection-text, #082f49);
 }
 
 .login-theme--light .login-field__control input::placeholder {
@@ -1499,5 +1495,224 @@
 
   .org-register-step:not(:last-child)::after {
     display: none;
+  }
+}
+
+/* Final auth contrast guard. */
+.login-theme--light .login-showcase {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.login-theme--dark .login-showcase {
+  background: #0b0f19 !important;
+  color: #f8fafc !important;
+}
+
+.login-theme--dark .login-showcase h1,
+.login-theme--dark .login-brand strong,
+.login-theme--dark .login-feature strong {
+  color: #f8fafc !important;
+}
+
+.login-theme--dark .login-showcase__copy > p:last-child,
+.login-theme--dark .login-brand small,
+.login-theme--dark .login-feature span {
+  color: #cbd5e1 !important;
+}
+
+.login-theme--light .login-field__control {
+  border-color: #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.login-theme--light .login-field__control input,
+.login-theme--light .login-field--filled .login-field__control input {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #5b21b6 !important;
+}
+
+.login-theme--light .login-field__control input::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+.login-theme--dark .login-field__control {
+  border-color: #334155 !important;
+  background: #111827 !important;
+  color: #f8fafc !important;
+}
+
+.login-theme--dark .login-field__control input,
+.login-theme--dark .login-field--filled .login-field__control input {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  caret-color: #c4b5fd !important;
+}
+
+.login-theme--dark .login-field__control input::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+.login-theme--light .login-remember {
+  color: #334155 !important;
+}
+
+.login-theme--light .login-remember input {
+  border-color: #94a3b8 !important;
+  background: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+}
+
+.login-theme--light .login-remember input:checked {
+  border-color: transparent !important;
+  background: linear-gradient(135deg, #5b21b6, #2563eb) !important;
+}
+
+.login-theme--dark .login-remember {
+  color: #e2e8f0 !important;
+}
+
+.login-theme--dark .login-remember input {
+  border-color: #64748b !important;
+  background: #0f172a !important;
+}
+
+.login-theme--dark .login-remember input:checked {
+  border-color: transparent !important;
+  background: linear-gradient(135deg, #5b21b6, #2563eb) !important;
+}
+
+/* G03 - Modern Event SaaS auth polish. */
+.login-shell {
+  --g03-brand: linear-gradient(135deg, #080b16 0%, #5b21b6 48%, #2563eb 100%);
+  --g03-ring: rgba(91, 33, 182, 0.2);
+}
+
+.login-theme--light {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(91, 33, 182, 0.11), transparent 32%),
+    radial-gradient(circle at 88% 8%, rgba(37, 99, 235, 0.1), transparent 28%),
+    #f8fafc !important;
+}
+
+.login-theme--dark {
+  background:
+    radial-gradient(circle at 18% 10%, rgba(91, 33, 182, 0.2), transparent 34%),
+    radial-gradient(circle at 86% 0%, rgba(37, 99, 235, 0.16), transparent 32%),
+    #080b16 !important;
+}
+
+.login-showcase,
+.login-panel {
+  border-radius: 28px !important;
+}
+
+.login-theme--light .login-showcase {
+  border: 1px solid rgba(226, 232, 240, 0.92) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(239, 246, 255, 0.88)),
+    radial-gradient(circle at 88% 85%, rgba(91, 33, 182, 0.16), transparent 34%) !important;
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.1) !important;
+}
+
+.login-theme--dark .login-showcase {
+  border: 1px solid rgba(148, 163, 184, 0.16) !important;
+  background:
+    linear-gradient(135deg, rgba(8, 11, 22, 0.94), rgba(17, 24, 39, 0.92)),
+    radial-gradient(circle at 86% 82%, rgba(91, 33, 182, 0.32), transparent 34%) !important;
+}
+
+.login-panel {
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.14) !important;
+}
+
+.login-theme--light .login-panel {
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+.login-theme--dark .login-panel {
+  background: rgba(8, 11, 22, 0.9) !important;
+}
+
+.login-panel__head h2 {
+  letter-spacing: -0.035em !important;
+}
+
+.login-panel__head h2 span,
+.login-showcase h1 span {
+  background: linear-gradient(135deg, #5b21b6, #2563eb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+.login-field__control {
+  min-height: 56px !important;
+  border-radius: 16px !important;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease !important;
+}
+
+.login-field__control:focus-within {
+  border-color: #5b21b6 !important;
+  box-shadow: 0 0 0 5px var(--g03-ring) !important;
+}
+
+.login-submit {
+  min-height: 58px !important;
+  border-radius: 16px !important;
+  background: var(--g03-brand) !important;
+  box-shadow: 0 18px 34px rgba(91, 33, 182, 0.28) !important;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease !important;
+}
+
+.login-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 42px rgba(37, 99, 235, 0.3) !important;
+}
+
+.login-submit:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.login-remember input {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 6px !important;
+}
+
+.login-socials button,
+.login-field__toggle {
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease !important;
+}
+
+.login-socials button:hover,
+.login-field__toggle:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 960px) {
+  .login-shell {
+    gap: 18px !important;
+    padding: 18px !important;
+  }
+
+  .login-showcase,
+  .login-panel {
+    border-radius: 22px !important;
   }
 }

@@ -1,33 +1,28 @@
-import { ArrowRight, BadgeCheck, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, CalendarDays, Check, SearchX, Ticket } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Organization } from "../../../types/organization/organization";
+
+type OrganizationCard = Organization & {
+  address?: string | null;
+  bannerUrl?: string | null;
+  coverUrl?: string | null;
+  image_url?: string | null;
+  industry?: string | null;
+  location?: string | null;
+  logoUrl?: string | null;
+  events?: any[];
+  events_count?: number;
+  stats?: {
+    totalEvents?: number;
+    [key: string]: any;
+  } | null;
+};
 
 interface OrgListGridProps {
   items: Organization[];
   loading?: boolean;
   total?: number;
-}
-
-function formatDate(value: string | Date) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Unknown date";
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  });
-}
-
-function OrgLogo({ org }: { org: Organization }) {
-  return (
-    <span className="org-list__logo org-list__logo--fallback">
-      {org.name.slice(0, 1).toUpperCase()}
-    </span>
-  );
-}
-
-function getStatusClass(status: string) {
-  return `org-list__status org-list__status--${status.toLowerCase()}`;
 }
 
 function isOrgVerified(org: Organization) {
@@ -44,111 +39,245 @@ function isOrgVerified(org: Organization) {
       candidate.isve ||
       candidate.verified ||
       candidate.verifiedBadge ||
-      candidate.verified_badge
+      candidate.verified_badge,
+  );
+}
+
+function getOrgIndustry(org: OrganizationCard) {
+  if (org.industry && org.industry.trim()) {
+    return org.industry.trim();
+  }
+  const text = `${org.name || ""} ${org.bio || ""} ${org.description || ""}`.toLowerCase();
+  if (text.includes("community")) return "Community";
+  if (text.includes("tech") || text.includes("software")) return "Technology";
+  if (text.includes("student") || text.includes("education") || text.includes("skills")) return "Education";
+  if (text.includes("art") || text.includes("music") || text.includes("culture")) return "Culture & Arts";
+  if (text.includes("charity") || text.includes("green") || text.includes("climate")) return "Non-Profit";
+  return "Community";
+}
+
+function getOrgEventsCount(org: OrganizationCard) {
+  if (typeof org.totalEvents === "number") {
+    return org.totalEvents;
+  }
+  if (typeof org.events_count === "number") {
+    return org.events_count;
+  }
+  if (Array.isArray(org.events)) {
+    return org.events.length;
+  }
+  if (typeof org.stats?.totalEvents === "number") {
+    return org.stats.totalEvents;
+  }
+  return 1;
+}
+
+function formatCreatedDate(value?: string | Date | null) {
+  if (!value) return "Recently";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Recently";
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+}
+
+function toSlug(value?: string | null) {
+  if (!value) return "";
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "d")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+function getOrganizationSlug(org: OrganizationCard) {
+  const candidate = org as OrganizationCard & {
+    orgSlug?: string;
+    organizationSlug?: string;
+    organization?: { slug?: string; name?: string };
+    org?: { slug?: string; name?: string };
+  };
+
+  const directSlug =
+    candidate.slug ||
+    candidate.orgSlug ||
+    candidate.organizationSlug ||
+    candidate.organization?.slug ||
+    candidate.org?.slug;
+
+  if (directSlug && typeof directSlug === "string" && directSlug.trim()) {
+    return directSlug.trim();
+  }
+
+  const name =
+    candidate.name ||
+    candidate.organization?.name ||
+    candidate.org?.name;
+
+  return toSlug(name) || candidate.id || "";
+}
+
+function OrganizationLogoItem({ org }: { org: OrganizationCard }) {
+  const [error, setError] = useState(false);
+  const logo = org.logo || org.logoUrl;
+  const initial = (org.name || "E").slice(0, 1).toUpperCase();
+
+  if (logo && !error) {
+    return (
+      <img
+        src={logo}
+        alt={`${org.name} logo`}
+        onError={() => setError(true)}
+      />
+    );
+  }
+
+  return <span>{initial}</span>;
+}
+
+function OrganizationRowCard({ org }: { org: OrganizationCard }) {
+  const verified = isOrgVerified(org);
+  const organizationSlug = getOrganizationSlug(org);
+  const organizationPath = `/app/organizations/${organizationSlug}`;
+  const industry = getOrgIndustry(org);
+  const eventsCount = getOrgEventsCount(org);
+  const description =
+    org.description ||
+    org.bio ||
+    "Connecting people through inspiring events and shared community goals.";
+
+  return (
+    <article className="org-row-card">
+      {/* LEFT: Organization logo/avatar */}
+      <div className="org-row-card__logo" aria-hidden="true">
+        <OrganizationLogoItem org={org} />
+      </div>
+
+      {/* MIDDLE: Organization name, Industry, Description, Created date + total events */}
+      <div className="org-row-card__content">
+        <div className="org-row-card__title-row">
+          <h3 className="org-row-card__name" title={org.name}>
+            {org.name}
+          </h3>
+          {verified && (
+            <span className="org-row-card__badge-verified" title="Verified organization">
+              <Check size={11} strokeWidth={3} aria-hidden="true" />
+              <span>Verified</span>
+            </span>
+          )}
+        </div>
+
+        {industry && (
+          <span className="org-row-card__industry">{industry}</span>
+        )}
+
+        <p className="org-row-card__bio">{description}</p>
+
+        <div className="org-row-card__meta-row">
+          <span className="org-row-card__meta-item">
+            <CalendarDays size={14} aria-hidden="true" />
+            <span>Created {formatCreatedDate(org.createdAt)}</span>
+          </span>
+          <span className="org-row-card__meta-item">
+            <Ticket size={14} aria-hidden="true" />
+            <span>
+              {eventsCount} {eventsCount === 1 ? "Event" : "Events"}
+            </span>
+          </span>
+        </div>
+      </div>
+
+      {/* RIGHT: View organization button */}
+      <div className="org-row-card__action">
+        <Link
+          className="org-row-card__btn"
+          to={organizationPath}
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+        >
+          <span>View organization</span>
+          <ArrowRight size={15} aria-hidden="true" />
+        </Link>
+      </div>
+    </article>
   );
 }
 
 function OrgListSkeleton() {
   return (
-    <div className="org-list__grid org-list__grid--skeleton" aria-hidden="true">
-      {Array.from({ length: 6 }).map((_, index) => (
-        <article className="org-list__card org-list__skeletonCard" key={index}>
-          <div className="org-list__skeletonTop">
-            <span className="org-list__skeletonBlock org-list__skeletonLogo" />
-            <span className="org-list__skeletonBlock org-list__skeletonBadge" />
+    <div className="org-row-list org-row-list--skeleton" aria-hidden="true">
+      {Array.from({ length: 5 }).map((_, index) => (
+        <div className="org-row-card org-row-card--skeleton" key={index}>
+          <span className="org-skeleton org-skeleton--logo" />
+          <div className="org-row-card__content">
+            <span className="org-skeleton org-skeleton--title" />
+            <span className="org-skeleton org-skeleton--industry" />
+            <span className="org-skeleton org-skeleton--text" />
+            <div className="org-row-card__meta-row">
+              <span className="org-skeleton org-skeleton--meta" />
+              <span className="org-skeleton org-skeleton--meta" />
+            </div>
           </div>
-          <span className="org-list__skeletonBlock org-list__skeletonTitle" />
-          <span className="org-list__skeletonBlock org-list__skeletonText" />
-          <span className="org-list__skeletonBlock org-list__skeletonText org-list__skeletonText--short" />
-          <span className="org-list__skeletonBlock org-list__skeletonOwner" />
-          <div className="org-list__skeletonFooter">
-            <span className="org-list__skeletonBlock org-list__skeletonPill" />
-            <span className="org-list__skeletonBlock org-list__skeletonDate" />
+          <div className="org-row-card__action">
+            <span className="org-skeleton org-skeleton--btn" />
           </div>
-          <span className="org-list__skeletonBlock org-list__skeletonButton" />
-        </article>
+        </div>
       ))}
     </div>
   );
 }
 
-export default function OrgListGrid({ items, loading = false, total = 0 }: OrgListGridProps) {
+export default function OrgListGrid({
+  items,
+  loading = false,
+  total,
+}: OrgListGridProps) {
+  const count = total ?? items.length;
+
   return (
-    <section className="org-list">
+    <section className="org-list" aria-labelledby="org-list-heading">
+      {/* 1. SECTION HEADER: Left Title, Right Count */}
       <div className="org-list__header">
-        <div>
-          <span className="org-list__kicker">Community network</span>
-          <h2>All Organizations</h2>
-          <p>
-            Showing {items.length} of {total || items.length} organizations
-          </p>
-        </div>
-        <div className="org-list__sort">
-          <label htmlFor="sort-by">Sort by:</label>
-          <select id="sort-by">
-            <option>Popular</option>
-            <option>Newest</option>
-            <option>Members</option>
-          </select>
-        </div>
+        <h2 className="org-list__title" id="org-list-heading">
+          Organizations on Eventix
+        </h2>
+        <span className="org-list__count">
+          Showing {count} {count === 1 ? "organization" : "organizations"}
+        </span>
       </div>
 
+      {/* 2. ROW LIST */}
       {loading && <OrgListSkeleton />}
 
       {!loading && items.length === 0 && (
-        <div className="org-list__state">No organizations found.</div>
+        <div className="org-list__empty">
+          <SearchX size={36} aria-hidden="true" />
+          <h3>No organizations found</h3>
+          <p>Try adjusting your search query.</p>
+          <Link className="org-list__emptyBtn" to="/register-organization">
+            <span>Register an organization</span>
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
       )}
 
-      {!loading && <div className="org-list__grid">
-        {items.map((org) => {
-          const verified = isOrgVerified(org);
-
-          return (
-            <article key={org.id} className="org-list__card">
-              <div className="org-list__card-head">
-                <div className="org-list__card-top">
-                  <OrgLogo org={org} />
-                  {verified && (
-                    <BadgeCheck className="org-list__verified" size={16} aria-label="Verified" />
-                  )}
-                </div>
-                <div className="org-list__title-row">
-                  <h3>{org.name}</h3>
-                </div>
-              </div>
-              <p className="org-list__description">
-                {org.bio || "This organization has not added a public bio yet."}
-              </p>
-              <div className="org-list__owner">
-                <MapPin size={15} aria-hidden="true" />
-                <span>{org.owner?.fullName || "Unknown owner"}</span>
-              </div>
-              <div className="org-list__metrics">
-                <span className={getStatusClass(org.status)}>{org.status}</span>
-                <span>{formatDate(org.createdAt)}</span>
-              </div>
-              <Link className="org-list__view-btn" to={`/app/organizations/${org.slug}`}>
-                View Organization
-                <ArrowRight size={16} aria-hidden="true" />
-              </Link>
-            </article>
-          );
-        })}
-      </div>}
-
-      {total > items.length && <div className="org-list__pagination">
-        <button aria-label="Previous page">
-          <ChevronLeft size={16} aria-hidden="true" />
-        </button>
-        <button className="active">1</button>
-        <button>2</button>
-        <button>3</button>
-        <span>...</span>
-        <button>21</button>
-        <button aria-label="Next page">
-          <ChevronRight size={16} aria-hidden="true" />
-        </button>
-      </div>}
+      {!loading && items.length > 0 && (
+        <div className="org-row-list">
+          {items.map((org, index) => (
+            <OrganizationRowCard
+              org={org as OrganizationCard}
+              key={org.id || org.slug || index}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

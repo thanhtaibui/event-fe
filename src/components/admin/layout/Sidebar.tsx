@@ -1,6 +1,6 @@
 import "../../../styles/admin/layout/layout.css";
 import { SidebarItem } from "./SlideBarItem";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import {
   addPermissionTreeCodes,
   getAllowedOrgWorkspaceSidebarItems,
@@ -141,13 +141,18 @@ export const Sidebar = ({ isCollapsed, onToggleSidebar }: SidebarProps) => {
           />
         )}
       </button>
-      <div className="logo">
+      <Link
+        to="/app"
+        className="logo"
+        style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}
+        title="Go to user site"
+      >
         <img src="/logo-event.png" alt="event logo" />
         <span className="logo__text">
           <strong>Eventix</strong>
           <small>Community OS</small>
         </span>
-      </div>
+      </Link>
       <nav className="sidebar-nav">
         <ul>
           {visibleItems.map((item) => (

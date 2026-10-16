@@ -1,0 +1,366 @@
+import * as React from 'react';
+import { createRenderer, act } from '@mui/internal-test-utils';
+import type { RefObject } from '@mui/x-internals/types';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useGridApiRef, DataGridPro } from '@mui/x-data-grid-pro';
+import type { GridApi, DataGridProProps } from '@mui/x-data-grid-pro';
+import { ptBR } from '@mui/x-data-grid-pro/locales';
+import { getRow, grid, gridVar } from 'test/utils/helperFn';
+import { isJSDOM } from 'test/utils/skipIf';
+import { describe, it, expect } from 'vitest';
+
+describe.skipIf(isJSDOM)('<DataGridPro /> - Layout', () => {
+  const { render } = createRenderer();
+
+  const baselineProps = {
+    rows: [
+      {
+        id: 0,
+        brand: 'Nike',
+      },
+      {
+        id: 1,
+        brand: 'Adidas',
+      },
+      {
+        id: 2,
+        brand: 'Puma',
+      },
+    ],
+    columns: [{ field: 'brand', width: 100 }],
+  };
+
+  // Adaptation of describeConformance()
+  describe('MUI component API', () => {
+    it(`attaches the ref`, () => {
+      const ref = React.createRef<HTMLDivElement>();
+      const { container } = render(
+        <div style={{ width: 300, height: 300 }}>
+          <DataGridPro {...baselineProps} ref={ref} />
+        </div>,
+      );
+      expect(ref.current).to.be.instanceof(window.HTMLDivElement);
+      expect(ref.current).to.equal(container.firstChild?.firstChild);
+    });
+
+    function randomStringValue() {
+      return `r${Math.random().toString(36).slice(2)}`;
+    }
+
+    it('applies the className to the root component', () => {
+      const className = randomStringValue();
+
+      const { container } = render(
+        <div style={{ width: 300, height: 300 }}>
+          <DataGridPro {...baselineProps} className={className} />
+        </div>,
+      );
+
+      expect(container.firstChild?.firstChild).to.have.class(className);
+      expect(container.firstChild?.firstChild).to.have.class('MuiDataGrid-root');
+    });
+
+    it('applies the style to the root component', () => {
+      render(
+        <div style={{ width: 300, height: 300 }}>
+          <DataGridPro
+            {...baselineProps}
+            style={{
+              mixBlendMode: 'darken',
+            }}
+          />
+        </div>,
+      );
+
+      expect(document.querySelector('.MuiDataGrid-root')).toHaveInlineStyle({
+        mixBlendMode: 'darken',
+      });
+    });
+  });
+
+  describe('columns width', () => {
+    it('should resize flex: 1 column when changing column visibility to avoid exceeding grid width (apiRef setColumnVisibility method call)', () => {
+      let apiRef: RefObject<GridApi | null>;
+
+      function TestCase(props: Omit<DataGridProProps, 'apiRef'>) {
+        apiRef = useGridApiRef();
+
+        return (
+          <div style={{ width: 300, height: 500 }}>
+            <DataGridPro {...props} apiRef={apiRef} />
+          </div>
+        );
+      }
+
+      render(
+        <TestCase
+          rows={[
+            {
+              id: 1,
+              first: 'Mike',
+              age: 11,
+            },
+            {
+              id: 2,
+              first: 'Jack',
+              age: 11,
+            },
+            {
+              id: 3,
+              first: 'Mike',
+              age: 20,
+            },
+          ]}
+          columns={[
+            { field: 'id', flex: 1 },
+            { field: 'first', width: 100 },
+            { field: 'age', width: 50 },
+          ]}
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                age: false,
+              },
+            },
+          }}
+        />,
+      );
+
+      let firstColumn = document.querySelector('[role="columnheader"][aria-colindex="1"]');
+      expect(firstColumn).toHaveInlineStyle({
+        width: '198px', // because of the 2px border
+      });
+
+      act(() => apiRef.current?.setColumnVisibility('age', true));
+      firstColumn = document.querySelector('[role="columnheader"][aria-colindex="1"]');
+      expect(firstColumn).toHaveInlineStyle({
+        width: '148px', // because of the 2px border
+      });
+    });
+  });
+
+  it('should work with `headerFilterHeight` prop', () => {
+    render(
+      <div style={{ display: 'flex', flexDirection: 'column', width: 300 }}>
+        <DataGridPro
+          {...baselineProps}
+          headerFilters
+          columnHeaderHeight={20}
+          headerFilterHeight={60}
+          rowHeight={20}
+        />
+      </div>,
+    );
+    expect(grid('main')!.clientHeight).to.equal(baselineProps.rows.length * 20 + 20 + 60);
+  });
+
+  it('should update the layout when toggling `headerFilters` prop', () => {
+    function TestCase(props: Pick<DataGridProProps, 'headerFilters'>) {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', width: 300 }}>
+          <DataGridPro
+            {...baselineProps}
+            columnHeaderHeight={20}
+            headerFilterHeight={60}
+            rowHeight={20}
+            {...props}
+          />
+        </div>
+      );
+    }
+
+    const { setProps } = render(<TestCase headerFilters />);
+
+    expect(grid('main')!.clientHeight).to.equal(baselineProps.rows.length * 20 + 20 + 60);
+
+    setProps({ headerFilters: false });
+
+    expect(grid('main')!.clientHeight).to.equal(baselineProps.rows.length * 20 + 20);
+
+    setProps({ headerFilters: true });
+
+    expect(grid('main')!.clientHeight).to.equal(baselineProps.rows.length * 20 + 20 + 60);
+  });
+
+  it('should update the virtual scroller layout when toggling `headerFilters` prop', () => {
+    function TestCase(props: Pick<DataGridProProps, 'headerFilters'>) {
+      return (
+        <div style={{ width: 300, height: 160 }}>
+          <DataGridPro
+            {...baselineProps}
+            columnHeaderHeight={20}
+            headerFilterHeight={60}
+            rowHeight={20}
+            {...props}
+          />
+        </div>
+      );
+    }
+
+    const { setProps } = render(<TestCase headerFilters />);
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('80px');
+
+    setProps({ headerFilters: false });
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('20px');
+    expect(grid('headerFilterRow')).to.equal(null);
+    expect(getRow(0).getBoundingClientRect().top).to.equal(
+      grid('columnHeaders')!.getBoundingClientRect().bottom,
+    );
+
+    setProps({ headerFilters: true });
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('80px');
+    expect(grid('headerFilterRow')).not.to.equal(null);
+    expect(getRow(0).getBoundingClientRect().top).to.equal(
+      grid('headerFilterRow')!.getBoundingClientRect().bottom,
+    );
+  });
+
+  it('should update the virtual scroller layout when enabling `headerFilters` prop', () => {
+    function TestCase(props: Pick<DataGridProProps, 'headerFilters'>) {
+      return (
+        <div style={{ width: 300, height: 160 }}>
+          <DataGridPro
+            {...baselineProps}
+            columnHeaderHeight={20}
+            headerFilterHeight={60}
+            rowHeight={20}
+            {...props}
+          />
+        </div>
+      );
+    }
+
+    const { setProps } = render(<TestCase headerFilters={false} />);
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('20px');
+
+    setProps({ headerFilters: true });
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('80px');
+    expect(getRow(0).getBoundingClientRect().top).to.equal(
+      grid('headerFilterRow')!.getBoundingClientRect().bottom,
+    );
+  });
+
+  it('should account for column groups when toggling `headerFilters` prop', () => {
+    function TestCase(props: Pick<DataGridProProps, 'headerFilters'>) {
+      return (
+        <div style={{ width: 300, height: 200 }}>
+          <DataGridPro
+            {...baselineProps}
+            columnGroupingModel={[{ groupId: 'group', children: [{ field: 'brand' }] }]}
+            columnHeaderHeight={20}
+            columnGroupHeaderHeight={30}
+            headerFilterHeight={60}
+            rowHeight={20}
+            {...props}
+          />
+        </div>
+      );
+    }
+
+    const { setProps } = render(<TestCase headerFilters />);
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('110px');
+
+    setProps({ headerFilters: false });
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('50px');
+  });
+
+  it('should update the layout when toggling `columnGroupingModel` prop', () => {
+    function TestCase(props: Pick<DataGridProProps, 'columnGroupingModel'>) {
+      return (
+        <div style={{ width: 300, height: 200 }}>
+          <DataGridPro
+            {...baselineProps}
+            headerFilters
+            columnHeaderHeight={20}
+            columnGroupHeaderHeight={30}
+            headerFilterHeight={60}
+            rowHeight={20}
+            {...props}
+          />
+        </div>
+      );
+    }
+
+    const { setProps } = render(<TestCase columnGroupingModel={undefined} />);
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('80px');
+
+    setProps({
+      columnGroupingModel: [{ groupId: 'group', children: [{ field: 'brand' }] }],
+    });
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('110px');
+    expect(getRow(0).getBoundingClientRect().top).to.equal(
+      grid('headerFilterRow')!.getBoundingClientRect().bottom,
+    );
+
+    setProps({ columnGroupingModel: undefined });
+
+    expect(gridVar('--DataGrid-headersTotalHeight')).to.equal('80px');
+  });
+
+  it('should support translations in the theme', () => {
+    render(
+      <ThemeProvider theme={createTheme({}, ptBR)}>
+        <div style={{ width: 300, height: 300 }}>
+          <DataGridPro {...baselineProps} />
+        </div>
+      </ThemeProvider>,
+    );
+    expect(document.querySelector('[aria-label="Ordenar"]')).not.to.equal(null);
+  });
+
+  it('should support the sx prop', () => {
+    const theme = createTheme({
+      palette: {
+        primary: {
+          main: 'rgb(0, 0, 255)',
+        },
+      },
+    });
+
+    render(
+      <ThemeProvider theme={theme}>
+        <div style={{ width: 300, height: 300 }}>
+          <DataGridPro columns={[]} rows={[]} sx={{ color: 'primary.main' }} />
+        </div>
+      </ThemeProvider>,
+    );
+
+    expect(grid('root')).toHaveComputedStyle({
+      color: 'rgb(0, 0, 255)',
+    });
+  });
+
+  it('should have ownerState in the theme style overrides', () => {
+    expect(() =>
+      render(
+        <ThemeProvider
+          theme={createTheme({
+            components: {
+              MuiDataGrid: {
+                styleOverrides: {
+                  root: ({ ownerState }) => ({
+                    // test that ownerState is not undefined
+                    ...(ownerState.columns && {}),
+                  }),
+                },
+              },
+            },
+          })}
+        >
+          <div style={{ width: 300, height: 300 }}>
+            <DataGridPro {...baselineProps} />
+          </div>
+        </ThemeProvider>,
+      ),
+    ).not.to.throw();
+  });
+});

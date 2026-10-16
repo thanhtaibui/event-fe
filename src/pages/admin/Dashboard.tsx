@@ -1,47 +1,118 @@
+import type { ReactNode } from "react";
 import "../../styles/admin/dashboard.css";
 import PieChart from "../../components/admin/dashboard/PieChart";
 import DashboardCard from "../../components/admin/dashboard/DashboardCard";
-// import LineChart from "../../components/dashboard/LineChart";
 import { useDashboardInfo } from "../../hooks/admin/useDashboard";
 import { useOrgDashboardInfo } from "../../hooks/org/useDashboard";
 import AdminSkeleton from "../../components/admin/skeleton/AdminSkeleton";
-import { useParams } from "react-router-dom";
-import { BarChart3, CalendarDays, MoveRight } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import {
+  ArrowUpRight,
+  BarChart3,
+  Bell,
+  Building2,
+  CalendarDays,
+  CircleDollarSign,
+  ClipboardList,
+  Inbox,
+  ListChecks,
+  Plus,
+  Ticket,
+  UsersRound,
+} from "lucide-react";
+
+type DashboardCardItem = {
+  key: string;
+  title: string;
+  value: string | number;
+};
+
+type DashboardListItem = Record<string, any>;
+
+const adminCardOrder = ["organizations", "events", "revenue", "tickets"];
+const orgCardOrder = ["events", "revenue", "tickets"];
+
+const cardIcons: Record<string, ReactNode> = {
+  organizations: <Building2 size={22} aria-hidden="true" />,
+  users: <UsersRound size={22} aria-hidden="true" />,
+  events: <CalendarDays size={22} aria-hidden="true" />,
+  reports: <ClipboardList size={22} aria-hidden="true" />,
+  memberships: <UsersRound size={22} aria-hidden="true" />,
+  revenue: <CircleDollarSign size={22} aria-hidden="true" />,
+  tickets: <Ticket size={22} aria-hidden="true" />,
+};
+
+function getOrderedCards(cards: DashboardCardItem[], isOrgWorkspace: boolean) {
+  const order = isOrgWorkspace ? orgCardOrder : adminCardOrder;
+  return order
+    .map((key) => cards.find((item) => item.key === key))
+    .filter(Boolean) as DashboardCardItem[];
+}
+
+function getDashboardList(data: any, keys: string[]) {
+  for (const key of keys) {
+    if (Array.isArray(data?.[key])) return data[key] as DashboardListItem[];
+    if (Array.isArray(data?.data?.[key])) return data.data[key] as DashboardListItem[];
+  }
+
+  return [];
+}
+
+function getItemTitle(item: DashboardListItem) {
+  return (
+    item.title ||
+    item.name ||
+    item.eventName ||
+    item.organizationName ||
+    item.message ||
+    item.code ||
+    item.id ||
+    "Activity"
+  );
+}
+
+function getItemMeta(item: DashboardListItem) {
+  return (
+    item.status ||
+    item.createdAt ||
+    item.updatedAt ||
+    item.date ||
+    item.type ||
+    item.email ||
+    ""
+  );
+}
+
+function hasUsefulChartData(items: any[]) {
+  return items.some((item) => Number(item?.value) > 0);
+}
+
 export default function Dashboard() {
   const { slug } = useParams();
   const isOrgWorkspace = Boolean(slug);
   const adminDashboard = useDashboardInfo(!isOrgWorkspace);
   const orgDashboard = useOrgDashboardInfo(slug, isOrgWorkspace);
   const { data, loading } = isOrgWorkspace ? orgDashboard : adminDashboard;
-  const cards = data?.cards ?? [];
-  const adminCardOrder = ["organizations", "events", "revenue", "tickets"];
-  const orgCardOrder = ["events", "revenue", "tickets"];
-  const visibleCards = isOrgWorkspace
-    ? orgCardOrder
-        .map((key) => cards.find((item: any) => item.key === key))
-        .filter(Boolean)
-    : adminCardOrder
-        .map((key) => cards.find((item: any) => item.key === key))
-        .filter(Boolean);
+  const cards = (data?.cards ?? []) as DashboardCardItem[];
+  const visibleCards = getOrderedCards(cards, isOrgWorkspace);
   const pieChart = data?.pieChart ?? [];
-  const revenueCard = visibleCards.find((item: any) => item.key === "revenue");
-  const ticketsCard = visibleCards.find((item: any) => item.key === "tickets");
-  const activityBars = [46, 68, 52, 78, 61, 88, 73];
-  const trendMap: Record<string, string> = {
-    organizations: "+14% so với tháng trước",
-    events: "+25% so với tháng trước",
-    revenue: "+18% so với tháng trước",
-    tickets: "-12% so với tháng trước",
-  };
-  const iconMap: Record<string, string> = {
-    organizations: "https://img.icons8.com/nolan/64/organization.png",
-    users: "https://img.icons8.com/nolan/64/gender-neutral-user.png",
-    events: "https://img.icons8.com/nolan/64/today.png",
-    reports: "https://img.icons8.com/nolan/64/report-card.png",
-    memberships: "https://img.icons8.com/nolan/64/conference-call.png",
-    revenue: "https://img.icons8.com/nolan/64/total-sales-1.png",
-    tickets: "https://img.icons8.com/nolan/64/ticket.png",
-  };
+  const hasPieChartData = hasUsefulChartData(pieChart);
+  const recentEvents = getDashboardList(data, ["recentEvents", "latestEvents"]);
+  const recentOrders = getDashboardList(data, ["recentOrders", "orders"]);
+  const notifications = getDashboardList(data, ["notifications", "recentNotifications"]);
+  const activityItems = getDashboardList(data, ["recentActivity", "activities", "activity"]);
+  const recentActivity = [
+    ...activityItems,
+    ...recentEvents,
+    ...recentOrders,
+    ...notifications,
+  ].slice(0, 6);
+  const basePath = isOrgWorkspace && slug ? `/org/${slug}` : "/admin";
+  const organizationRoute = isOrgWorkspace && slug
+    ? `/org/${slug}/profile`
+    : "/admin/organizations";
+  const primaryMetric = visibleCards[0];
+
   if (loading)
     return (
       <div>
@@ -54,105 +125,126 @@ export default function Dashboard() {
         isOrgWorkspace ? "dashboard--org" : "dashboard--admin"
       }`}
     >
-      <section className="dashboard-hero">
-        <div>
+      <section className="dashboard-hero" aria-label="Dashboard overview">
+        <div className="dashboard-hero__content">
           <span className="dashboard-eyebrow">
-            {isOrgWorkspace ? "Organization overview" : "Admin overview"}
+            Eventix Organizer Control Center
           </span>
-          <h1>Quản lý sự kiện dễ dàng hơn</h1>
+          <h1>
+            {isOrgWorkspace
+              ? "Manage this organization with a clear operating view."
+              : "Monitor platform health from one focused command center."}
+          </h1>
           <p>
-            Theo dõi doanh thu, sự kiện, người dùng và trạng thái vận hành trong
-            một màn hình gọn hơn.
+            Track real dashboard data, review operational signals, and jump to
+            the admin workflows that keep events moving.
           </p>
+
           <div className="dashboard-hero__actions">
-            <a className="dashboard-hero__primary" href="#dashboard-revenue">
-              <BarChart3 size={18} />
-              <span>Xem báo cáo</span>
-              <MoveRight size={17} />
-            </a>
-            <a className="dashboard-hero__secondary" href="#dashboard-events">
-              <CalendarDays size={18} />
-              <span>Quản lý sự kiện</span>
-            </a>
+            <Link className="dashboard-hero__primary" to={`${basePath}/events`}>
+              <Plus size={17} aria-hidden="true" />
+              Create Event
+            </Link>
+            <Link className="dashboard-hero__secondary" to={`${basePath}/events`}>
+              <ListChecks size={17} aria-hidden="true" />
+              Manage Events
+            </Link>
+            <Link className="dashboard-hero__secondary" to={organizationRoute}>
+              <Building2 size={17} aria-hidden="true" />
+              Manage Organization
+            </Link>
           </div>
         </div>
-        <div className="dashboard-hero__showcase" aria-hidden="true">
+
+        {primaryMetric && (
           <div className="dashboard-hero__metric">
-            <span>Tạo nên những sự kiện tuyệt vời</span>
+            <span>{primaryMetric.title}</span>
             <strong>
-              {typeof revenueCard?.value === "number"
-                ? revenueCard.value.toLocaleString()
-                : revenueCard?.value || "0"}
+              {typeof primaryMetric.value === "number"
+                ? primaryMetric.value.toLocaleString()
+                : primaryMetric.value}
             </strong>
-            <small>{ticketsCard?.value || 0} tickets sold</small>
+            <small>Live API data</small>
           </div>
-          <div className="dashboard-hero__gem" />
-          <div className="dashboard-hero__float dashboard-hero__float--one">
-            <BarChart3 size={22} />
-          </div>
-          <div className="dashboard-hero__float dashboard-hero__float--two">
-            <CalendarDays size={22} />
-          </div>
-        </div>
+        )}
       </section>
 
-      <div className="dashboard-cards" id="dashboard-events">
+      <section className="dashboard-cards" id="dashboard-events" aria-label="Dashboard KPI">
         {visibleCards.map((item: any) => (
           <DashboardCard
             key={item.key}
             title={item.title}
             value={item.value}
-            trend={trendMap[item.key]}
-            icon={
-              <img
-                width="35"
-                height="35"
-                src={iconMap[item.key]}
-                alt={item.key}
-              />
-            }
+            icon={cardIcons[item.key] || <BarChart3 size={22} aria-hidden="true" />}
           />
         ))}
-      </div>
+      </section>
 
-      <div className="dashboard-charts">
-        <div className="chart-box revenue-chart" id="dashboard-revenue">
+      <section className="dashboard-main-grid" aria-label="Dashboard analytics and activity">
+        <div className="chart-box dashboard-analytics" id="dashboard-analytics">
           <div className="chart-box__header">
             <div>
-              <span className="dashboard-eyebrow">Performance</span>
-              <h2>Xu hướng doanh thu</h2>
+              <span className="dashboard-eyebrow">Analytics</span>
+              <h2>Event status distribution</h2>
             </div>
-            <span className="chart-pill">
-              <CalendarDays size={15} />
-              7 ngày qua
-            </span>
+            {hasPieChartData && (
+              <span className="chart-pill">
+                <BarChart3 size={15} aria-hidden="true" />
+                Live data
+              </span>
+            )}
           </div>
-          <div className="revenue-chart__tooltip">
-            <span>Thứ S</span>
-            <strong>2.8M VND</strong>
-          </div>
-          <div className="bar-chart" aria-label="Revenue trend chart">
-            {activityBars.map((height, index) => (
-              <div className="bar-chart__item" key={index}>
-                <span style={{ height: `${height}%` }} />
-                <small>{["M", "T", "W", "T", "F", "S", "S"][index]}</small>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        <div className="chart-box">
-          <div className="chart-box-inset">
+          {hasPieChartData ? (
             <PieChart
               title="Event status"
               data={pieChart.map((item: any) => ({
                 label: item.label,
                 value: item.value,
+                color: item.color,
               }))}
             />
-          </div>
+          ) : (
+            <div className="dashboard-empty">
+              <Inbox size={34} aria-hidden="true" />
+              <h3>No data available</h3>
+              <p>Data will appear when available.</p>
+            </div>
+          )}
         </div>
-      </div>
+
+        <aside className="chart-box dashboard-activity">
+          <div className="chart-box__header">
+            <div>
+              <span className="dashboard-eyebrow">Recent activity</span>
+              <h2>Latest operations</h2>
+            </div>
+            <Bell size={18} aria-hidden="true" />
+          </div>
+
+          <div className="dashboard-activity__list">
+            {recentActivity.length > 0 ? (
+              recentActivity.map((item, index) => (
+                <div className="dashboard-activity__item" key={item.id || index}>
+                  <span>
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </span>
+                  <div>
+                    <strong>{getItemTitle(item)}</strong>
+                    {getItemMeta(item) && <small>{getItemMeta(item)}</small>}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="dashboard-empty dashboard-empty--compact">
+                <Inbox size={30} aria-hidden="true" />
+                <h3>No data available</h3>
+                <p>Data will appear when available.</p>
+              </div>
+            )}
+          </div>
+        </aside>
+      </section>
     </div>
   );
 }

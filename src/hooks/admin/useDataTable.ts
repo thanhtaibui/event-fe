@@ -32,6 +32,7 @@ export function useDataTable<T extends { id: string; isActive?: boolean }>({
     items: [],
     total: 0,
   });
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const filterParams = Object.entries(filter).reduce((acc, [key, value]) => {
     if (!value) return acc;
 
@@ -56,6 +57,7 @@ export function useDataTable<T extends { id: string; isActive?: boolean }>({
         items: data.items,
         total: data.total,
       });
+      setHasLoadedOnce(true);
     }
   }, [data]);
 
@@ -78,7 +80,7 @@ export function useDataTable<T extends { id: string; isActive?: boolean }>({
 
   return {
     data: localData,
-    loading,
+    loading: loading && !hasLoadedOnce,
 
     search: {
       handleSearchChange,

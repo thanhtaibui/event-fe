@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
+import BookingCartDrawer from "../../components/user/booking/BookingCartDrawer";
 import EventixHeader from "../../components/user/EventixHeader";
 import UserFooter from "../../components/user/UserFooter";
 
@@ -36,6 +37,7 @@ export default function UserLayout() {
         <Outlet />
       </main>
       <UserFooter />
+      <BookingCartDrawer />
     </div>
   );
 }

@@ -1,0 +1,598 @@
+import type { NumberValue } from '@mui/x-charts-vendor/d3-scale';
+import { createSelector, createSelectorMemoized } from '@base-ui/utils/store';
+import { selectorChartDrawingArea } from '../../corePlugins/useChartDimensions';
+import { selectorChartSeriesProcessed } from '../../corePlugins/useChartSeries';
+import { computeAxisValue } from './computeAxisValue';
+import type { ExtremumFilter, UseChartCartesianAxisSignature } from './useChartCartesianAxis.types';
+import type { ChartState } from '../../models/chart';
+import {
+  createContinuousScaleGetAxisFilter,
+  createDiscreteScaleGetAxisFilter,
+  createGetAxisFilters,
+} from './createAxisFilterMapper';
+import type { ZoomData } from './zoom.types';
+import { createZoomLookup } from './createZoomLookup';
+import { isBandScaleConfig, isPointScaleConfig } from '../../../../models/axis';
+import type {
+  AxisId,
+  ChartsAxisProps,
+  ContinuousScaleName,
+  D3Scale,
+  DefaultedAxis,
+  ScaleName,
+} from '../../../../models/axis';
+import {
+  selectorChartRawXAxis,
+  selectorChartRawYAxis,
+  selectorChartCartesianAxesGap,
+} from './useChartCartesianAxisLayout.selectors';
+import {
+  selectorChartXAxisAutoSizes,
+  selectorChartYAxisAutoSizes,
+} from './useChartAxisAutoSize.selectors';
+import { getDefaultTickNumber } from '../../../ticks';
+import { getNormalizedAxisScale, getRange } from './getAxisScale';
+import { isOrdinalScale } from '../../../scaleGuards';
+import { zoomScaleRange } from './zoom';
+import { getAxisExtrema } from './getAxisExtrema';
+import type { CartesianChartSeriesType } from '../../../../models/seriesType/config';
+import { calculateFinalDomain, computeAxisDomainsMap } from './domain';
+import type { SeriesId } from '../../../../models/seriesType/common';
+import { Flatbush } from '../../../Flatbush';
+import { selectorChartSeriesConfig } from '../../corePlugins/useChartSeriesConfig';
+import type { ChartSeriesConfig } from '../../corePlugins/useChartSeriesConfig';
+import {
+  selectorChartXAxisExtrema,
+  selectorChartYAxisExtrema,
+} from './useChartAxisExtrema.selectors';
+import { selectorChartZAxis } from '../useChartZAxis';
+import getMarkerSize from '../../../../ScatterChart/seriesConfig/getMarkerSize';
+import type { ScatterSizeGetter } from '../../../../ScatterChart/seriesConfig/getMarkerSize';
+
+export const createZoomMap = (zoom: readonly ZoomData[]) => {
+  const zoomItemMap = new Map<AxisId, ZoomData>();
+  zoom.forEach((zoomItem) => {
+    zoomItemMap.set(zoomItem.axisId, zoomItem);
+  });
+  return zoomItemMap;
+};
+
+const selectorChartZoomState = (state: ChartState<[], [UseChartCartesianAxisSignature]>) =>
+  state.zoom;
+
+/**
+ * Following selectors are not exported because they exist in the MIT chart only to ba able to reuse the Zoom state from the pro.
+ */
+
+export const selectorChartZoomIsInteracting = createSelector(
+  selectorChartZoomState,
+  (zoom) => zoom?.isInteracting,
+);
+
+export const selectorChartZoomMap = createSelectorMemoized(
+  selectorChartZoomState,
+  function selectorChartZoomMap(zoom) {
+    return zoom?.zoomData && createZoomMap(zoom?.zoomData);
+  },
+);
+
+export const selectorChartAxisZoomData = createSelector(
+  selectorChartZoomMap,
+  (zoomMap, axisId: AxisId) => zoomMap?.get(axisId),
+);
+
+export const selectorChartZoomOptionsLookup = createSelectorMemoized(
+  selectorChartRawXAxis,
+  selectorChartRawYAxis,
+  function selectorChartZoomOptionsLookup(xAxis, yAxis) {
+    return {
+      ...createZoomLookup('x')(xAxis),
+      ...createZoomLookup('y')(yAxis),
+    };
+  },
+);
+
+export const selectorChartAxisZoomOptionsLookup = createSelector(
+  selectorChartZoomOptionsLookup,
+  (axisLookup, axisId: AxisId) => axisLookup[axisId],
+);
+
+export const selectorDefaultXAxisTickNumber = createSelector(
+  selectorChartDrawingArea,
+  function selectorDefaultXAxisTickNumber(drawingArea) {
+    return getDefaultTickNumber(drawingArea.width);
+  },
+);
+
+export const selectorDefaultYAxisTickNumber = createSelector(
+  selectorChartDrawingArea,
+  function selectorDefaultYAxisTickNumber(drawingArea) {
+    return getDefaultTickNumber(drawingArea.height);
+  },
+);
+
+export const selectorChartXAxisWithDomains = createSelectorMemoized(
+  selectorChartRawXAxis,
+  selectorChartSeriesProcessed,
+  selectorDefaultXAxisTickNumber,
+  selectorChartXAxisExtrema,
+  function selectorChartXAxisWithDomains(axes, formattedSeries, defaultTickNumber, extremaMap) {
+    const domains = computeAxisDomainsMap(
+      axes,
+      formattedSeries,
+      defaultTickNumber,
+      extremaMap,
+      'x',
+    );
+    return { axes, domains };
+  },
+);
+
+export const selectorChartYAxisWithDomains = createSelectorMemoized(
+  selectorChartRawYAxis,
+  selectorChartSeriesProcessed,
+  selectorDefaultYAxisTickNumber,
+  selectorChartYAxisExtrema,
+  function selectorChartYAxisWithDomains(axes, formattedSeries, defaultTickNumber, extremaMap) {
+    const domains = computeAxisDomainsMap(
+      axes,
+      formattedSeries,
+      defaultTickNumber,
+      extremaMap,
+      'y',
+    );
+    return { axes, domains };
+  },
+);
+
+export const selectorChartZoomAxisFilters = createSelectorMemoized(
+  selectorChartZoomMap,
+  selectorChartZoomOptionsLookup,
+  selectorChartXAxisWithDomains,
+  selectorChartYAxisWithDomains,
+
+  function selectorChartZoomAxisFilters(
+    zoomMap,
+    zoomOptions,
+    { axes: xAxis, domains: xDomains },
+    { axes: yAxis, domains: yDomains },
+  ) {
+    if (!zoomMap || !zoomOptions) {
+      return undefined;
+    }
+
+    let hasFilter = false;
+    const filters: Record<AxisId, ExtremumFilter> = {};
+    const axes = [...(xAxis ?? []), ...(yAxis ?? [])];
+
+    for (let i = 0; i < axes.length; i += 1) {
+      const axis = axes[i];
+
+      if (!zoomOptions[axis.id] || zoomOptions[axis.id].filterMode !== 'discard') {
+        continue;
+      }
+
+      const zoom = zoomMap.get(axis.id);
+      if (zoom === undefined || (zoom.start <= 0 && zoom.end >= 100)) {
+        // No zoom, or zoom with all data visible
+        continue;
+      }
+
+      const axisDirection = i < (xAxis?.length ?? 0) ? 'x' : 'y';
+
+      if (axis.scaleType === 'band' || axis.scaleType === 'point') {
+        filters[axis.id] = createDiscreteScaleGetAxisFilter(
+          axis.data,
+          zoom.start,
+          zoom.end,
+          axisDirection,
+        );
+      } else {
+        const { domain } = axisDirection === 'x' ? xDomains[axis.id] : yDomains[axis.id];
+        filters[axis.id] = createContinuousScaleGetAxisFilter(
+          // For continuous scales, the domain is always a two-value array.
+          domain as readonly [NumberValue, NumberValue],
+          zoom.start,
+          zoom.end,
+          axisDirection,
+          axis.data,
+        );
+      }
+
+      hasFilter = true;
+    }
+
+    if (!hasFilter) {
+      return undefined;
+    }
+
+    return createGetAxisFilters(filters);
+  },
+);
+
+export const selectorChartFilteredXDomains = createSelectorMemoized(
+  selectorChartSeriesProcessed,
+  selectorChartSeriesConfig,
+  selectorChartZoomMap,
+  selectorChartZoomOptionsLookup,
+  selectorChartZoomAxisFilters,
+  selectorChartXAxisWithDomains,
+
+  function selectorChartFilteredXDomains(
+    formattedSeries,
+    seriesConfig,
+    zoomMap,
+    zoomOptions,
+    getFilters,
+    { axes, domains },
+  ) {
+    const filteredDomains: Record<AxisId, ReadonlyArray<string | NumberValue>> = {};
+
+    axes?.forEach((axis, axisIndex) => {
+      const domain = domains[axis.id].domain;
+
+      if (isBandScaleConfig(axis) || isPointScaleConfig(axis)) {
+        filteredDomains[axis.id] = domain;
+        return;
+      }
+
+      const zoom = zoomMap?.get(axis.id);
+      const zoomOption = zoomOptions?.[axis.id];
+      const filter = zoom === undefined && !zoomOption ? getFilters : undefined; // Do not apply filtering if zoom is already defined.
+
+      if (!filter) {
+        filteredDomains[axis.id] = domain;
+        return;
+      }
+
+      const rawTickNumber = domains[axis.id].tickNumber!;
+      const axisExtrema = getAxisExtrema(
+        axis,
+        'x',
+        seriesConfig as ChartSeriesConfig<CartesianChartSeriesType>,
+        axisIndex,
+        formattedSeries,
+        filter,
+      );
+
+      filteredDomains[axis.id] = calculateFinalDomain(
+        axis as Readonly<DefaultedAxis<ContinuousScaleName, any, Readonly<ChartsAxisProps>>>,
+        'x',
+        axisIndex,
+        formattedSeries,
+        axisExtrema,
+        rawTickNumber,
+      );
+    });
+
+    return filteredDomains;
+  },
+);
+
+export const selectorChartFilteredYDomains = createSelectorMemoized(
+  selectorChartSeriesProcessed,
+  selectorChartSeriesConfig,
+  selectorChartZoomMap,
+  selectorChartZoomOptionsLookup,
+  selectorChartZoomAxisFilters,
+  selectorChartYAxisWithDomains,
+  function selectorChartFilteredYDomains(
+    formattedSeries,
+    seriesConfig,
+    zoomMap,
+    zoomOptions,
+    getFilters,
+    { axes, domains },
+  ) {
+    const filteredDomains: Record<AxisId, ReadonlyArray<string | NumberValue>> = {};
+
+    axes?.forEach((axis, axisIndex) => {
+      const domain = domains[axis.id].domain;
+
+      if (isBandScaleConfig(axis) || isPointScaleConfig(axis)) {
+        filteredDomains[axis.id] = domain;
+        return;
+      }
+
+      const zoom = zoomMap?.get(axis.id);
+      const zoomOption = zoomOptions?.[axis.id];
+      const filter = zoom === undefined && !zoomOption ? getFilters : undefined; // Do not apply filtering if zoom is already defined.
+
+      if (!filter) {
+        filteredDomains[axis.id] = domain;
+        return;
+      }
+
+      const rawTickNumber = domains[axis.id].tickNumber!;
+      const axisExtrema = getAxisExtrema(
+        axis,
+        'y',
+        seriesConfig as ChartSeriesConfig<CartesianChartSeriesType>,
+        axisIndex,
+        formattedSeries,
+        filter,
+      );
+
+      filteredDomains[axis.id] = calculateFinalDomain(
+        axis as Readonly<DefaultedAxis<ContinuousScaleName, any, Readonly<ChartsAxisProps>>>,
+        'y',
+        axisIndex,
+        formattedSeries,
+        axisExtrema,
+        rawTickNumber,
+      );
+    });
+
+    return filteredDomains;
+  },
+);
+
+export const selectorChartNormalizedXScales = createSelectorMemoized(
+  selectorChartRawXAxis,
+  selectorChartFilteredXDomains,
+  function selectorChartNormalizedXScales(axes, filteredDomains) {
+    const scales: Record<AxisId, D3Scale> = {};
+
+    axes?.forEach((eachAxis) => {
+      const axis = eachAxis as Readonly<DefaultedAxis<ScaleName, any, Readonly<ChartsAxisProps>>>;
+      const domain = filteredDomains[axis.id]!;
+
+      scales[axis.id] = getNormalizedAxisScale(axis, domain);
+    });
+
+    return scales;
+  },
+);
+
+export const selectorChartNormalizedYScales = createSelectorMemoized(
+  selectorChartRawYAxis,
+  selectorChartFilteredYDomains,
+  function selectorChartNormalizedYScales(axes, filteredDomains) {
+    const scales: Record<AxisId, D3Scale> = {};
+
+    axes?.forEach((eachAxis) => {
+      const axis = eachAxis as Readonly<DefaultedAxis<ScaleName, any, Readonly<ChartsAxisProps>>>;
+      const domain = filteredDomains[axis.id]!;
+
+      scales[axis.id] = getNormalizedAxisScale(axis, domain);
+    });
+
+    return scales;
+  },
+);
+
+export const selectorChartXScales = createSelectorMemoized(
+  selectorChartRawXAxis,
+  selectorChartNormalizedXScales,
+  selectorChartDrawingArea,
+  selectorChartZoomMap,
+  function selectorChartXScales(axes, normalizedScales, drawingArea, zoomMap) {
+    const scales: Record<AxisId, D3Scale> = {};
+
+    axes?.forEach((eachAxis) => {
+      const axis = eachAxis as Readonly<DefaultedAxis<ScaleName, any, Readonly<ChartsAxisProps>>>;
+      const zoom = zoomMap?.get(axis.id);
+
+      const zoomRange: [number, number] = zoom ? [zoom.start, zoom.end] : [0, 100];
+      const range = getRange(drawingArea, 'x', axis);
+
+      const scale = normalizedScales[axis.id].copy();
+      const zoomedRange = zoomScaleRange(range, zoomRange);
+
+      scale.range(zoomedRange);
+
+      scales[axis.id] = scale;
+    });
+
+    return scales;
+  },
+);
+
+export const selectorChartYScales = createSelectorMemoized(
+  selectorChartRawYAxis,
+  selectorChartNormalizedYScales,
+  selectorChartDrawingArea,
+  selectorChartZoomMap,
+  function selectorChartYScales(axes, normalizedScales, drawingArea, zoomMap) {
+    const scales: Record<AxisId, D3Scale> = {};
+
+    axes?.forEach((eachAxis) => {
+      const axis = eachAxis as Readonly<DefaultedAxis<ScaleName, any, Readonly<ChartsAxisProps>>>;
+      const zoom = zoomMap?.get(axis.id);
+
+      const zoomRange: [number, number] = zoom ? [zoom.start, zoom.end] : [0, 100];
+      const range = getRange(drawingArea, 'y', axis);
+
+      const scale = normalizedScales[axis.id].copy();
+
+      const scaleRange = isOrdinalScale(scale) ? range.reverse() : range;
+      const zoomedRange = zoomScaleRange(scaleRange, zoomRange);
+
+      scale.range(zoomedRange);
+
+      scales[axis.id] = scale;
+    });
+
+    return scales;
+  },
+);
+
+/**
+ * The only interesting selectors that merge axis data and zoom if provided.
+ */
+
+export const selectorChartXAxis = createSelectorMemoized(
+  selectorChartDrawingArea,
+  selectorChartSeriesProcessed,
+  selectorChartSeriesConfig,
+  selectorChartZoomMap,
+  selectorChartXAxisWithDomains,
+  selectorChartXScales,
+  selectorChartXAxisAutoSizes,
+  selectorChartCartesianAxesGap,
+
+  function selectorChartXAxis(
+    drawingArea,
+    formattedSeries,
+    seriesConfig,
+    zoomMap,
+    { axes, domains },
+    scales,
+    autoSizes,
+    axesGap,
+  ) {
+    return computeAxisValue({
+      scales,
+      drawingArea,
+      formattedSeries,
+      axis: axes,
+      seriesConfig,
+      axisDirection: 'x',
+      zoomMap,
+      domains,
+      autoSizes,
+      axesGap,
+    });
+  },
+);
+
+export const selectorChartYAxis = createSelectorMemoized(
+  selectorChartDrawingArea,
+  selectorChartSeriesProcessed,
+  selectorChartSeriesConfig,
+  selectorChartZoomMap,
+  selectorChartYAxisWithDomains,
+  selectorChartYScales,
+  selectorChartYAxisAutoSizes,
+  selectorChartCartesianAxesGap,
+
+  function selectorChartYAxis(
+    drawingArea,
+    formattedSeries,
+    seriesConfig,
+    zoomMap,
+    { axes, domains },
+    scales,
+    autoSizes,
+    axesGap,
+  ) {
+    return computeAxisValue({
+      scales,
+      drawingArea,
+      formattedSeries,
+      axis: axes,
+      seriesConfig,
+      axisDirection: 'y',
+      zoomMap,
+      domains,
+      autoSizes,
+      axesGap,
+    });
+  },
+);
+
+export const selectorChartAxis = createSelector(
+  selectorChartXAxis,
+  selectorChartYAxis,
+  (xAxes, yAxes, axisId: AxisId) => xAxes?.axis[axisId] ?? yAxes?.axis[axisId],
+);
+
+export const selectorChartRawAxis = createSelector(
+  selectorChartRawXAxis,
+  selectorChartRawYAxis,
+  (xAxes, yAxes, axisId: AxisId) => {
+    const axis = xAxes?.find((a) => a.id === axisId) ?? yAxes?.find((a) => a.id === axisId) ?? null;
+
+    if (!axis) {
+      return undefined;
+    }
+
+    return axis;
+  },
+);
+
+export const selectorChartDefaultXAxisId = createSelector(
+  selectorChartRawXAxis,
+  (xAxes) => xAxes![0].id,
+);
+
+export const selectorChartDefaultYAxisId = createSelector(
+  selectorChartRawYAxis,
+  (yAxes) => yAxes![0].id,
+);
+
+export type ScatterFlatbushEntry = {
+  flatbush: Flatbush;
+  /** Per-point marker radius, in pixels. */
+  getItemRadius: number | ((dataIndex: number) => number);
+  /** Largest radius across all points in this series, in pixels. */
+  maxItemRadius: number;
+};
+
+const EMPTY_MAP = new Map<SeriesId, ScatterFlatbushEntry>();
+export const selectorChartSeriesEmptyFlatbushMap = () => EMPTY_MAP;
+
+export const selectorChartSeriesFlatbushMap = createSelectorMemoized(
+  selectorChartSeriesProcessed,
+  selectorChartNormalizedXScales,
+  selectorChartNormalizedYScales,
+  selectorChartDefaultXAxisId,
+  selectorChartDefaultYAxisId,
+  selectorChartZAxis,
+  function selectChartSeriesFlatbushMap(
+    allSeries,
+    xAxesScaleMap,
+    yAxesScaleMap,
+    defaultXAxisId,
+    defaultYAxisId,
+    zAxisState,
+  ) {
+    // FIXME: Do we want to support non-scatter series here?
+    const validSeries = allSeries.scatter;
+    const flatbushMap = new Map<SeriesId, ScatterFlatbushEntry>();
+
+    if (!validSeries) {
+      return flatbushMap;
+    }
+
+    const zAxes = zAxisState?.axis ?? {};
+    const zAxisIds = zAxisState?.axisIds ?? [];
+
+    validSeries.seriesOrder.forEach((seriesId) => {
+      const series = validSeries.series[seriesId];
+      const { data, xAxisId = defaultXAxisId, yAxisId = defaultYAxisId } = series;
+
+      if (data.length === 0) {
+        return;
+      }
+
+      const flatbush = new Flatbush(data.length);
+
+      const sizeAxis = zAxes[series.sizeAxisId ?? zAxisIds[0]];
+
+      const isFixedSize = !sizeAxis || !sizeAxis.sizeScale;
+      const getItemRadius = isFixedSize
+        ? (series.markerSize ?? 0)
+        : getMarkerSize(series, sizeAxis);
+
+      let maxItemRadius = isFixedSize ? (getItemRadius as number) : 0;
+
+      const originalXScale = xAxesScaleMap[xAxisId];
+      const originalYScale = yAxesScaleMap[yAxisId];
+
+      for (let i = 0; i < data.length; i += 1) {
+        if (!isFixedSize) {
+          maxItemRadius = Math.max(maxItemRadius, (getItemRadius as ScatterSizeGetter)(i));
+        }
+        // Add the points using a [0, 1] range so that we don't need to recreate the Flatbush structure when zooming.
+        // This doesn't happen in practice, though, because currently the scales depend on the drawing area.
+        flatbush.add(originalXScale(data[i].x)!, originalYScale(data[i].y)!);
+      }
+
+      flatbush.finish();
+      flatbushMap.set(seriesId, { flatbush, getItemRadius, maxItemRadius });
+    });
+
+    return flatbushMap;
+  },
+);

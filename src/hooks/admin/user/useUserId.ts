@@ -1,21 +1,41 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { userService } from "../../../services/admin/user.service";
 
 export const useUserById = (id: string) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const fetchUserById = async () => {
+  const [error, setError] = useState<unknown>(null);
+  const requestRef = useRef(0);
+
+  const fetchUserById = useCallback(async () => {
+    const requestId = requestRef.current + 1;
+    requestRef.current = requestId;
+
+    if (!id) {
+      setData(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
     try {
+      setData(null);
+      setError(null);
       setLoading(true);
       const res = await userService.getUserById(id);
-      setData(res.data);
+      if (requestRef.current === requestId) setData(res.data);
+    } catch (err) {
+      if (requestRef.current === requestId) {
+        setData(null);
+        setError(err);
+      }
     } finally {
-      setLoading(false);
+      if (requestRef.current === requestId) setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchUserById();
-  }, [id]);
-  return { data, loading };
+  }, [fetchUserById]);
+  return { data, loading, error, refetch: fetchUserById };
 }

@@ -1,0 +1,231 @@
+/* G04 Phase 2 - Premium Event SaaS design foundation.
+   This file only defines shared tokens and safe global aliases. */
+
+:root {
+  /* Color system */
+  --pf-primary: #5b21b6;
+  --pf-primary-hover: #4c1d95;
+  --pf-primary-soft: rgba(91, 33, 182, 0.1);
+  --pf-primary-border: rgba(91, 33, 182, 0.22);
+  --pf-secondary: #2563eb;
+  --pf-secondary-hover: #1d4ed8;
+  --pf-secondary-soft: rgba(37, 99, 235, 0.1);
+
+  --pf-bg: #f8fafc;
+  --pf-bg-subtle: #f1f5f9;
+  --pf-surface: #ffffff;
+  --pf-surface-muted: #f8fafc;
+  --pf-surface-elevated: #ffffff;
+  --pf-overlay: rgba(15, 23, 42, 0.62);
+
+  --pf-text: #0f172a;
+  --pf-text-subtle: #334155;
+  --pf-text-muted: #64748b;
+  --pf-text-inverse: #ffffff;
+
+  --pf-border: #e2e8f0;
+  --pf-border-strong: #cbd5e1;
+  --pf-border-soft: rgba(148, 163, 184, 0.22);
+
+  --pf-success: #16a34a;
+  --pf-success-soft: rgba(22, 163, 74, 0.1);
+  --pf-warning: #f59e0b;
+  --pf-warning-soft: rgba(245, 158, 11, 0.12);
+  --pf-error: #ef4444;
+  --pf-error-soft: rgba(239, 68, 68, 0.1);
+
+  --pf-gradient-primary: linear-gradient(135deg, #080b16 0%, #5b21b6 48%, #2563eb 100%);
+  --pf-gradient-action: linear-gradient(135deg, #5b21b6 0%, #2563eb 100%);
+  --pf-gradient-surface: linear-gradient(135deg, #ffffff 0%, #f8f7ff 54%, #eef6ff 100%);
+
+  /* Spacing scale */
+  --pf-space-xs: 4px;
+  --pf-space-sm: 8px;
+  --pf-space-md: 16px;
+  --pf-space-lg: 24px;
+  --pf-space-xl: 32px;
+  --pf-space-2xl: 48px;
+  --pf-space-3xl: 64px;
+
+  /* Radius scale */
+  --pf-radius-small: 8px;
+  --pf-radius-medium: 12px;
+  --pf-radius-large: 20px;
+  --pf-radius-xl: 28px;
+  --pf-radius-pill: 999px;
+
+  /* Shadow scale */
+  --pf-shadow-card: 0 14px 34px rgba(15, 23, 42, 0.08);
+  --pf-shadow-elevated: 0 24px 70px rgba(15, 23, 42, 0.14);
+  --pf-shadow-modal: 0 32px 90px rgba(15, 23, 42, 0.22);
+  --pf-shadow-focus: 0 0 0 4px rgba(91, 33, 182, 0.16);
+  --pf-shadow-action: 0 18px 34px rgba(91, 33, 182, 0.24);
+  --text-selection-bg: rgba(14, 165, 233, 0.28);
+  --text-selection-text: #082f49;
+
+  /* Typography system */
+  --pf-font-heading: "Be Vietnam Pro", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --pf-font-body: "Be Vietnam Pro", "Inter", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --pf-heading-hero: clamp(2.75rem, 5vw, 5rem);
+  --pf-heading-page: clamp(2rem, 3vw, 3.25rem);
+  --pf-heading-section: clamp(1.4rem, 2vw, 2rem);
+  --pf-subtitle: clamp(1rem, 1.2vw, 1.125rem);
+  --pf-body: 1rem;
+  --pf-caption: 0.8125rem;
+  --pf-line-tight: 1.06;
+  --pf-line-heading: 1.16;
+  --pf-line-body: 1.6;
+  --pf-weight-heading: 720;
+  --pf-weight-title: 680;
+  --pf-weight-ui: 600;
+  --pf-weight-body: 400;
+  --pf-letter-tight: -0.035em;
+
+  /* Component contracts */
+  --pf-control-height: 46px;
+  --pf-control-height-lg: 54px;
+  --pf-control-padding-x: 16px;
+  --pf-container: 1200px;
+  --pf-container-wide: 1440px;
+  --pf-page-gutter: clamp(16px, 4vw, 40px);
+  --pf-transition-fast: 150ms ease;
+  --pf-transition: 220ms ease;
+
+  /* Backward-compatible aliases for existing CSS. */
+  --font-heading: var(--pf-font-heading);
+  --font-body: var(--pf-font-body);
+  --color-bg: var(--pf-bg);
+  --color-bg-soft: var(--pf-bg-subtle);
+  --color-surface: var(--pf-surface);
+  --color-surface-2: var(--pf-surface-muted);
+  --color-text: var(--pf-text-subtle);
+  --color-text-strong: var(--pf-text);
+  --color-text-muted: var(--pf-text-muted);
+  --color-primary: var(--pf-primary);
+  --color-primary-2: var(--pf-primary-hover);
+  --color-primary-3: var(--pf-secondary);
+  --color-accent: var(--pf-primary);
+  --color-accent-2: var(--pf-secondary);
+  --color-accent-bg: var(--pf-primary-soft);
+  --color-accent-border: var(--pf-primary-border);
+  --color-danger: var(--pf-error);
+  --border-color: var(--pf-border);
+  --gradient-primary: var(--pf-gradient-primary);
+  --gradient-accent: var(--pf-gradient-action);
+  --gradient: var(--pf-gradient-action);
+  --text: var(--pf-text-subtle);
+  --text-h: var(--pf-text);
+  --bg: var(--pf-surface);
+  --bg-button: var(--pf-primary);
+  --accent: var(--pf-primary);
+  --accent-2: var(--pf-secondary);
+  --accent-bg: var(--pf-primary-soft);
+  --accent-border: var(--pf-primary-border);
+  --radius-sm: var(--pf-radius-small);
+  --radius-md: var(--pf-radius-medium);
+  --radius-lg: var(--pf-radius-large);
+  --radius-xl: var(--pf-radius-large);
+  --radius-2xl: var(--pf-radius-xl);
+  --shadow-soft: var(--pf-shadow-card);
+  --shadow: var(--pf-shadow-elevated);
+  --shadow-dashboard: var(--pf-shadow-card);
+  --button-shadow: var(--pf-shadow-action);
+  --type-display: var(--pf-heading-hero);
+  --type-title: var(--pf-heading-page);
+  --type-section: var(--pf-heading-section);
+  --type-body: var(--pf-body);
+  --type-caption: var(--pf-caption);
+}
+
+.light-mode,
+.user-layout.light-mode,
+.layout-container.light-mode,
+.login-theme--light {
+  color-scheme: light;
+  --pf-bg: #f8fafc;
+  --pf-bg-subtle: #f1f5f9;
+  --pf-surface: #ffffff;
+  --pf-surface-muted: #f8fafc;
+  --pf-surface-elevated: #ffffff;
+  --pf-text: #0f172a;
+  --pf-text-subtle: #334155;
+  --pf-text-muted: #64748b;
+  --pf-border: #e2e8f0;
+  --pf-border-strong: #cbd5e1;
+  --pf-border-soft: rgba(148, 163, 184, 0.22);
+  --pf-shadow-card: 0 14px 34px rgba(15, 23, 42, 0.08);
+  --pf-shadow-elevated: 0 24px 70px rgba(15, 23, 42, 0.14);
+  --pf-shadow-modal: 0 32px 90px rgba(15, 23, 42, 0.22);
+  --select-bg: var(--pf-surface);
+  --select-text: var(--pf-text);
+  --select-border: var(--pf-border);
+  --skeleton-base: #e5e7eb;
+  --skeleton-highlight: #f8fafc;
+  --text-selection-bg: rgba(14, 165, 233, 0.28);
+  --text-selection-text: #082f49;
+}
+
+.dark-mode,
+.user-layout.dark-mode,
+.layout-container.dark-mode,
+.login-theme--dark {
+  color-scheme: dark;
+  --pf-primary: #8b5cf6;
+  --pf-primary-hover: #a78bfa;
+  --pf-primary-soft: rgba(139, 92, 246, 0.16);
+  --pf-primary-border: rgba(167, 139, 250, 0.28);
+  --pf-secondary: #60a5fa;
+  --pf-secondary-soft: rgba(96, 165, 250, 0.14);
+  --pf-bg: #080b16;
+  --pf-bg-subtle: #0b1020;
+  --pf-surface: #0f172a;
+  --pf-surface-muted: #111827;
+  --pf-surface-elevated: #111827;
+  --pf-overlay: rgba(0, 0, 0, 0.72);
+  --pf-text: #f8fafc;
+  --pf-text-subtle: #e2e8f0;
+  --pf-text-muted: #94a3b8;
+  --pf-border: rgba(148, 163, 184, 0.22);
+  --pf-border-strong: rgba(203, 213, 225, 0.3);
+  --pf-border-soft: rgba(148, 163, 184, 0.16);
+  --pf-gradient-surface: linear-gradient(135deg, #0f172a 0%, #111827 58%, #080b16 100%);
+  --pf-shadow-card: 0 18px 44px rgba(0, 0, 0, 0.22);
+  --pf-shadow-elevated: 0 28px 80px rgba(0, 0, 0, 0.32);
+  --pf-shadow-modal: 0 38px 100px rgba(0, 0, 0, 0.42);
+  --pf-shadow-focus: 0 0 0 4px rgba(139, 92, 246, 0.24);
+  --select-bg: var(--pf-surface);
+  --select-text: var(--pf-text);
+  --select-border: var(--pf-border);
+  --skeleton-base: #111827;
+  --skeleton-highlight: #1f2937;
+  --text-selection-bg: rgba(56, 189, 248, 0.72);
+  --text-selection-text: #082f49;
+}
+
+html {
+  background: var(--pf-bg);
+}
+
+body {
+  background: var(--pf-bg);
+  color: var(--pf-text-subtle);
+  font-family: var(--pf-font-body);
+}
+
+::selection {
+  background: var(--text-selection-bg);
+  color: var(--text-selection-text);
+}
+
+:where(a, button, input, select, textarea, [role="button"]):focus-visible {
+  outline: none;
+  box-shadow: var(--pf-shadow-focus);
+}
+
+:where(button, [role="button"], input, select, textarea) {
+  accent-color: var(--pf-primary);
+}
+
+:where(button, [role="button"], input, select, textarea):disabled {
+  cursor: not-allowed;
+}

@@ -1,0 +1,305 @@
+'use client';
+import * as React from 'react';
+import type { RefObject } from '@mui/x-internals/types';
+import {
+  useGridEvent as addEventHandler,
+  useGridApiMethod,
+  GRID_ROOT_GROUP_ID,
+  useGridEvent,
+  gridRowTreeSelector,
+} from '@mui/x-data-grid-pro';
+import type {
+  GridEventLookup,
+  GridValidRowModel,
+  GridUpdateRowParams,
+  GridRowModelReplace,
+  GridRowModelUpdate,
+} from '@mui/x-data-grid-pro';
+import {
+  useGridDataSourceBasePro,
+  useGridRegisterStrategyProcessor,
+  useGridRegisterPipeProcessor,
+  gridPivotInitialColumnsSelector,
+  runIf,
+  gridPivotActiveSelector,
+  GridStrategyGroup,
+  DataSourceRowsUpdateStrategy,
+  getGroupKeys,
+} from '@mui/x-data-grid-pro/internals';
+import type { GridPipeProcessor } from '@mui/x-data-grid-pro/internals';
+import type { GridPrivateApiPremium } from '../../../models/gridApiPremium';
+import type { DataGridPremiumProcessedProps } from '../../../models/dataGridPremiumProps';
+import { gridPivotModelSelector } from '../pivoting/gridPivotingSelectors';
+import type {
+  GridDataSourcePremiumPrivateApi,
+  GridGetRowsParamsPremium,
+  GridGetRowsResponsePremium,
+} from './models';
+import { getPropsOverrides, fetchParents } from './utils';
+import { gridRowGroupingSanitizedModelSelector } from '../rowGrouping/gridRowGroupingSelector';
+import { gridAggregationModelSelector } from '../aggregation/gridAggregationSelectors';
+
+function getKeyPremium(params: GridGetRowsParamsPremium) {
+  return JSON.stringify([
+    params.filterModel,
+    params.sortModel,
+    params.groupKeys,
+    params.groupFields,
+    params.start,
+    params.end,
+    params.pivotModel ? {} : params.aggregationModel,
+    params.pivotModel,
+  ]);
+}
+
+const options = {
+  cacheOptions: {
+    getKey: getKeyPremium,
+  },
+};
+
+const getStrategies = (
+  props: Pick<DataGridPremiumProcessedProps, 'treeData' | 'lazyLoading' | 'disableRowGrouping'>,
+  groupingModelSize: number,
+) => {
+  const previousStrategies = new Set([
+    DataSourceRowsUpdateStrategy.Default,
+    DataSourceRowsUpdateStrategy.GroupedData,
+    DataSourceRowsUpdateStrategy.LazyLoadedGroupedData,
+  ]);
+  let currentStrategy = DataSourceRowsUpdateStrategy.Default;
+  if (props.treeData || (!props.disableRowGrouping && groupingModelSize > 0)) {
+    currentStrategy = props.lazyLoading
+      ? DataSourceRowsUpdateStrategy.LazyLoadedGroupedData
+      : DataSourceRowsUpdateStrategy.GroupedData;
+  }
+  previousStrategies.delete(currentStrategy);
+  return { currentStrategy, previousStrategies: Array.from(previousStrategies) };
+};
+
+export const useGridDataSourcePremium = (
+  apiRef: RefObject<GridPrivateApiPremium>,
+  props: DataGridPremiumProcessedProps,
+) => {
+  const aggregationModel = gridAggregationModelSelector(apiRef);
+  const groupingModelSize = gridRowGroupingSanitizedModelSelector(apiRef).length;
+  const setStrategyAvailability = React.useCallback(() => {
+    const { currentStrategy, previousStrategies } = getStrategies(
+      {
+        treeData: props.treeData,
+        lazyLoading: props.lazyLoading,
+        disableRowGrouping: props.disableRowGrouping,
+      },
+      groupingModelSize,
+    );
+
+    previousStrategies.forEach((strategy) => {
+      apiRef.current.setStrategyAvailability(GridStrategyGroup.DataSource, strategy, () => false);
+    });
+
+    apiRef.current.setStrategyAvailability(
+      GridStrategyGroup.DataSource,
+      currentStrategy,
+      props.dataSource ? () => true : () => false,
+    );
+  }, [
+    apiRef,
+    props.dataSource,
+    props.lazyLoading,
+    props.treeData,
+    props.disableRowGrouping,
+    groupingModelSize,
+  ]);
+
+  const handleEditRowWithAggregation = React.useCallback(
+    (params: GridUpdateRowParams, rowUpdate: GridRowModelUpdate | GridRowModelReplace) => {
+      const rowTree = gridRowTreeSelector(apiRef);
+      const groupKeys = getGroupKeys(rowTree, params.rowId) as string[];
+      apiRef.current.updateNestedRows([rowUpdate], groupKeys);
+      // To refresh the aggregation values of all parent rows and the footer row, recursively re-fetch all parent levels
+      fetchParents(rowTree, params.rowId, apiRef.current.dataSource.fetchRows);
+    },
+    [apiRef],
+  );
+
+  const {
+    api,
+    debouncedFetchRows,
+    flatTreeStrategyProcessor,
+    groupedDataStrategyProcessor,
+    nestedDataStrategyProcessor,
+    events,
+    stopPolling,
+  } = useGridDataSourceBasePro<GridPrivateApiPremium>(apiRef, props, {
+    ...(!props.disableAggregation && Object.keys(aggregationModel).length > 0
+      ? { handleEditRow: handleEditRowWithAggregation }
+      : {}),
+    ...options,
+  });
+  const aggregateRowRef = React.useRef<GridValidRowModel>({});
+
+  const initialColumns = gridPivotInitialColumnsSelector(apiRef);
+  const pivotActive = gridPivotActiveSelector(apiRef);
+  const pivotModel = gridPivotModelSelector(apiRef);
+
+  const processDataSourceRows = React.useCallback<GridPipeProcessor<'processDataSourceRows'>>(
+    (
+      {
+        params,
+        response,
+      }: {
+        params: GridGetRowsParamsPremium;
+        response: GridGetRowsResponsePremium;
+      },
+      applyRowHydration: boolean,
+    ) => {
+      if (response.aggregateRow) {
+        aggregateRowRef.current = response.aggregateRow;
+      }
+      if (Object.keys(params.aggregationModel || {}).length > 0) {
+        if (applyRowHydration) {
+          apiRef.current.requestPipeProcessorsApplication('hydrateRows');
+        }
+        apiRef.current.applyAggregation();
+      }
+
+      if (response.pivotColumns) {
+        const pivotingColDef = props.pivotingColDef;
+        if (!pivotingColDef || typeof pivotingColDef !== 'function') {
+          throw new Error(
+            `MUI X: No \`pivotingColDef()\` prop provided with to the Data Grid, but response contains \`pivotColumns\`.
+
+You need a callback to return at least a field column prop for each generated pivot column.
+
+See [server-side pivoting](https://mui.com/x/react-data-grid/server-side-data/pivoting/) documentation for more details.`,
+          );
+        }
+
+        // Update the grid state with new columns and column grouping model
+        const partialPropsOverrides = getPropsOverrides(
+          response.pivotColumns,
+          pivotingColDef,
+          pivotModel,
+          initialColumns,
+          apiRef,
+        );
+
+        apiRef.current.setState((state) => {
+          return {
+            ...state,
+            pivoting: {
+              ...state.pivoting,
+              propsOverrides: {
+                ...state.pivoting.propsOverrides!,
+                ...partialPropsOverrides,
+              },
+            },
+          };
+        });
+      }
+
+      return {
+        params,
+        response,
+      };
+    },
+    [apiRef, props.pivotingColDef, initialColumns, pivotModel],
+  );
+
+  const resolveGroupAggregation = React.useCallback<
+    GridDataSourcePremiumPrivateApi['resolveGroupAggregation']
+  >(
+    (groupId, field) => {
+      if (groupId === GRID_ROOT_GROUP_ID) {
+        return props.dataSource?.getAggregatedValue?.(aggregateRowRef.current, field);
+      }
+      const row = apiRef.current.getRow(groupId);
+      return props.dataSource?.getAggregatedValue?.(row, field);
+    },
+    [apiRef, props.dataSource],
+  );
+
+  const handleRowGroupingModelChange = React.useCallback(() => {
+    // Clear the rows on every grouping model change to match the pre-fix behavior on
+    // non-standard strategies (e.g. lazy loading) where `setRows([])` is required to
+    // reset the existing grouping state. `dataSourceKeepPreviousData` is intentionally
+    // not honored here: changing the grouping model implies the `GroupedData` strategy
+    // is (about to be) active, and skipping the synchronous clear would render rows in
+    // stale sort order (https://github.com/mui/mui-x/pull/21619).
+    apiRef.current.setRows([]);
+    // The event listener is wired regardless of the active strategy
+    // (see `runIf(!pivotActive && !!props.dataSource, ...)` below), so we have to gate the
+    // `setLoading(true)` here. `fetchRows` only clears the loading flag when a standard
+    // strategy is active, and we don't want to leave the overlay stuck on lazy-loading or
+    // other non-standard strategies. Order matters too: `setRows([])` above rebuilds
+    // `state.rows` from `props.loading`, so the `setLoading(true)` call must come after
+    // it to survive the rebuild.
+    const currentStrategy = apiRef.current.getActiveStrategy(GridStrategyGroup.DataSource);
+    const isStandardStrategyActive =
+      currentStrategy === DataSourceRowsUpdateStrategy.Default ||
+      currentStrategy === DataSourceRowsUpdateStrategy.GroupedData;
+    if (isStandardStrategyActive) {
+      apiRef.current.setLoading(true);
+    }
+    stopPolling();
+    debouncedFetchRows();
+  }, [apiRef, debouncedFetchRows, stopPolling]);
+
+  const privateApi: GridDataSourcePremiumPrivateApi = {
+    ...api.private,
+    resolveGroupAggregation,
+  };
+
+  useGridApiMethod(apiRef, api.public, 'public');
+  useGridApiMethod(apiRef, privateApi, 'private');
+
+  useGridRegisterStrategyProcessor(
+    apiRef,
+    flatTreeStrategyProcessor.strategyName,
+    flatTreeStrategyProcessor.group,
+    flatTreeStrategyProcessor.processor,
+  );
+  useGridRegisterStrategyProcessor(
+    apiRef,
+    groupedDataStrategyProcessor.strategyName,
+    groupedDataStrategyProcessor.group,
+    groupedDataStrategyProcessor.processor,
+  );
+  useGridRegisterStrategyProcessor(
+    apiRef,
+    nestedDataStrategyProcessor.strategyName,
+    nestedDataStrategyProcessor.group,
+    nestedDataStrategyProcessor.processor,
+  );
+
+  useGridRegisterPipeProcessor(apiRef, 'processDataSourceRows', processDataSourceRows);
+
+  Object.entries(events).forEach(([event, handler]) => {
+    addEventHandler(apiRef, event as keyof GridEventLookup, handler);
+  });
+
+  useGridEvent(
+    apiRef,
+    'rowGroupingModelChange',
+    runIf(!pivotActive && !!props.dataSource, handleRowGroupingModelChange),
+  );
+  useGridEvent(
+    apiRef,
+    'aggregationModelChange',
+    runIf(!pivotActive, () => debouncedFetchRows()),
+  );
+  useGridEvent(
+    apiRef,
+    'pivotModeChange',
+    runIf(!pivotActive, () => debouncedFetchRows()),
+  );
+  useGridEvent(
+    apiRef,
+    'pivotModelChange',
+    runIf(pivotActive, () => debouncedFetchRows()),
+  );
+
+  React.useEffect(() => {
+    setStrategyAvailability();
+  }, [setStrategyAvailability]);
+};

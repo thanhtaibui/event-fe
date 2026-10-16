@@ -1,0 +1,11 @@
+
+# Package manager
+node_modules
+
+# Generated
+tsconfig.tsbuildinfo
+dist
+archives
+
+# Monorepo
+.turbo

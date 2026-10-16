@@ -10,7 +10,7 @@ import type { Role } from "../../types/role/role";
 import "../../styles/admin/table/btn-action.css";
 import "../../styles/admin/table/table.css";
 // import { useState } from "react";
-import { ROLE_COLOR_PALETTE } from "../../styles/status-styles";
+import { getRoleBadgeStyle } from "../../styles/status-styles";
 import { CreateRolePopup } from "../../components/admin/role/createRole";
 import ConfirmDialog from "../../components/admin/layout/DialogConfirm";
 import { usePageActions } from "../../hooks/admin/usePageActions";
@@ -18,8 +18,10 @@ import { UpdateRolePopup } from "../../components/admin/role/updateRole";
 import { useDelete } from "../../hooks/admin/role/useDelete";
 import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { roleService } from "../../services/admin/role.service";
 import { jwtDecode } from "jwt-decode";
+import { UsePermission } from "../../hooks/admin/permission/usePermission";
 import {
   ADMIN_PERMISSION_CODES,
   canAccessAdminAction,
@@ -32,6 +34,79 @@ import {
 import { getAccessToken } from "../../constants/authStorage";
 import { useOrgsByUser } from "../../hooks/admin/org/useOrgsByUser";
 import type { JwtPayloadCustom } from "../../types/JwtPayloadCustom";
+import type { PermissionTree } from "../../types/permission/permissionTree";
+
+type PermissionTooltipState = {
+  id: string;
+  top: number;
+  left: number;
+  names: string[];
+};
+
+type CanonicalPermissionGroup = {
+  childCount: number;
+  children: PermissionTree[];
+};
+
+function normalizePermissionSummaryKey(value?: string) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[_\s-]+/g, "");
+}
+
+function collectPermissionTreeChildren(items: PermissionTree[] = []): PermissionTree[] {
+  return items.flatMap((item) => [
+    item,
+    ...collectPermissionTreeChildren(item.children || []),
+  ]);
+}
+
+function buildCanonicalPermissionGroups(permissions: PermissionTree[]) {
+  const groups = new Map<string, CanonicalPermissionGroup>();
+
+  permissions.forEach((group) => {
+    const children = collectPermissionTreeChildren(group.children || []);
+    const entry = {
+      childCount: children.length,
+      children,
+    };
+
+    [
+      normalizePermissionSummaryKey(group.id),
+      normalizePermissionSummaryKey(group.permission_name),
+    ]
+      .filter(Boolean)
+      .forEach((key) => groups.set(key, entry));
+  });
+
+  return groups;
+}
+
+function getPermissionMatchKeys(permission: {
+  permission_code?: string;
+  permission_name?: string;
+  id?: string;
+}) {
+  return [
+    normalizePermissionSummaryKey(permission.id),
+    normalizePermissionSummaryKey(permission.permission_code),
+    normalizePermissionSummaryKey(permission.permission_name),
+  ].filter(Boolean);
+}
+
+function countSelectedCanonicalChildren(
+  selectedChildren: Role["permissions"],
+  canonicalChildren: PermissionTree[],
+) {
+  const selectedKeys = new Set(
+    selectedChildren.flatMap((child) => getPermissionMatchKeys(child)),
+  );
+
+  return canonicalChildren.filter((child) =>
+    getPermissionMatchKeys(child).some((key) => selectedKeys.has(key)),
+  ).length;
+}
 
 export default function Role() {
   const { slug } = useParams();
@@ -77,8 +152,41 @@ export default function Role() {
   const [permissionLoadingIds, setPermissionLoadingIds] = useState<string[]>(
     []
   );
+  const [permissionTooltip, setPermissionTooltip] =
+    useState<PermissionTooltipState | null>(null);
+  const { data: canonicalPermissions } = UsePermission();
+  const canonicalPermissionGroups = useMemo(
+    () => buildCanonicalPermissionGroups(canonicalPermissions),
+    [canonicalPermissions],
+  );
   const onSearchChange = (val: string) => {
     search.handleSearchChange(val);
+  };
+
+  const showPermissionTooltip = (
+    event: React.MouseEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>,
+    id: string,
+    names: string[],
+  ) => {
+    if (names.length === 0) return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const tooltipWidth = Math.min(360, window.innerWidth * 0.72);
+    const left = Math.min(
+      Math.max(rect.left, 12),
+      Math.max(window.innerWidth - tooltipWidth - 12, 12),
+    );
+
+    setPermissionTooltip({
+      id,
+      names,
+      top: rect.bottom + 8,
+      left,
+    });
+  };
+
+  const hidePermissionTooltip = (id: string) => {
+    setPermissionTooltip((current) => (current?.id === id ? null : current));
   };
 
   const { data, loading, search, table, pagination, refetch } =
@@ -156,17 +264,12 @@ export default function Role() {
       id: "role_name",
       label: "Role Name",
       render: (r) => {
-        const styteRole =
-          ROLE_COLOR_PALETTE[r.colorKey as keyof typeof ROLE_COLOR_PALETTE] ||
-          ROLE_COLOR_PALETTE.gray;
         return (
           <span
             className="role-badge"
             style={{
+              ...getRoleBadgeStyle(r.colorKey),
               userSelect: "none",
-              background: styteRole.bg,
-              color: styteRole.text,
-              border: styteRole.border,
             }}
           >
             {r.role_name}
@@ -207,22 +310,77 @@ export default function Role() {
         }
         return (
           <div className="permission-grid">
-            {permissions.map((p, i) => (
-              <div key={i} className="permission-card">
-                <div className="permission-title">{p.permission_name}</div>
-                <div className="permission-tags">
-                  {p.isAll ? (
-                    <span className="permission-tag all-tag">ALL</span>
-                  ) : (
-                    p.children?.map((c, j) => (
-                      <span key={j} className="permission-tag">
-                        {c.permission_name}
-                      </span>
-                    ))
-                  )}
+            {permissions.map((p, i) => {
+              const childPermissions = p.children || [];
+              const canonicalGroup =
+                getPermissionMatchKeys(p)
+                  .map((key) => canonicalPermissionGroups.get(key))
+                  .find(Boolean) || null;
+              const selectedChildCount = canonicalGroup
+                ? countSelectedCanonicalChildren(
+                  childPermissions,
+                  canonicalGroup.children,
+                )
+                : childPermissions.length;
+              const isAllSelected = canonicalGroup
+                ? canonicalGroup.childCount > 0 &&
+                  selectedChildCount === canonicalGroup.childCount
+                : Boolean(p.isAll);
+              const permissionTooltipId = `${row.id}-${p.permission_name}-${i}`;
+              const childPermissionNames = childPermissions.map(
+                (child) => child.permission_name,
+              );
+              const detailLabel = isAllSelected
+                ? `${p.permission_name}: All permissions`
+                : selectedChildCount > 0
+                  ? `${p.permission_name}: ${childPermissions
+                    .map((c) => c.permission_name)
+                    .join(", ")}`
+                  : p.permission_name;
+
+              return (
+                <div
+                  key={i}
+                  className="permission-card"
+                  tabIndex={0}
+                  aria-label={detailLabel}
+                  onMouseEnter={(event) =>
+                    !isAllSelected &&
+                    showPermissionTooltip(
+                      event,
+                      permissionTooltipId,
+                      childPermissionNames,
+                    )
+                  }
+                  onMouseLeave={() => hidePermissionTooltip(permissionTooltipId)}
+                  onFocus={(event) =>
+                    !isAllSelected &&
+                    showPermissionTooltip(
+                      event,
+                      permissionTooltipId,
+                      childPermissionNames,
+                    )
+                  }
+                  onBlur={() => hidePermissionTooltip(permissionTooltipId)}
+                >
+                  <div className="permission-title">{p.permission_name}</div>
+                  <div className="permission-tags">
+                    {isAllSelected ? (
+                      <span className="permission-tag all-tag">ALL</span>
+                    ) : (
+                      selectedChildCount > 0 && (
+                        <span
+                          className="permission-tag permission-tag--more"
+                          title={detailLabel}
+                        >
+                          +{selectedChildCount}
+                        </span>
+                      )
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         );
       },
@@ -277,6 +435,22 @@ export default function Role() {
 
   return (
     <div className="admin-page report">
+      {permissionTooltip &&
+        createPortal(
+          <div
+            className="permission-floating-details"
+            role="tooltip"
+            style={{
+              top: permissionTooltip.top,
+              left: permissionTooltip.left,
+            }}
+          >
+            {permissionTooltip.names.map((name, index) => (
+              <span key={`${name}-${index}`}>{name}</span>
+            ))}
+          </div>,
+          document.body,
+        )}
       <ConfirmDialog
         open={popupType === "confirm"}
         onConfirm={() => onFinalDelete()}
@@ -315,18 +489,21 @@ export default function Role() {
         <AdminSkeleton variant="table" rows={7} />
       ) : (
         <>
-          <CustomTable
-            rows={data.items}
-            columns={reportColumns}
-            order={table.sortOrder}
-            orderBy={table.sortBy}
-            onSort={table.handleSort}
-            selected={table.selected}
-            onSelectOne={table.handleSelectOne}
-            onSelectAll={(checked) =>
-              table.handleSelectAll(checked, data.items || [])
-            }
-          />
+          <div className="admin-table-shell">
+            <CustomTable
+              rows={data.items}
+              columns={reportColumns}
+              order={table.sortOrder}
+              orderBy={table.sortBy}
+              onSort={table.handleSort}
+              selected={table.selected}
+              tableClassName="role-table-container"
+              onSelectOne={table.handleSelectOne}
+              onSelectAll={(checked) =>
+                table.handleSelectAll(checked, data.items || [])
+              }
+            />
+          </div>
           <Pagination
             totalCount={data.total || 0}
             page={pagination.page}

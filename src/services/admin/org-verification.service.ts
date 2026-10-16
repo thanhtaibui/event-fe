@@ -6,8 +6,8 @@ import type {
 import type { Query } from "../../types/query";
 
 export const orgVerificationService = {
-  create: async (payload: CreateOrgVerificationPayload) => {
-    const res = await api.post("/org-verification", payload);
+  create: async (payload: CreateOrgVerificationPayload, config?: any) => {
+    const res = await api.post("/org-verification", payload, config);
     return res.data;
   },
   getAll: async (query?: Query) => {

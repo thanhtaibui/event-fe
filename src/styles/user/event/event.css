@@ -3777,6 +3777,244 @@
   }
 }
 
+/* Keep user event search placeholders regular across late-loaded page CSS. */
+.event-page :where(.event-filter, .event-discovery__searchField) input::placeholder,
+.user-layout :where(.event-page .event-filter, .event-page .event-discovery__searchField) input::placeholder,
+.user-layout.dark-mode :where(.event-page .event-filter, .event-page .event-discovery__searchField) input::placeholder {
+  font-weight: 400 !important;
+  font-style: normal !important;
+}
+
+/* G03 final guard - keep polish after legacy overrides. */
+.event-page .event-hero {
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 30px !important;
+  background:
+    radial-gradient(circle at 76% 22%, rgba(91, 33, 182, 0.28), transparent 28%),
+    radial-gradient(circle at 96% 18%, rgba(37, 99, 235, 0.22), transparent 26%),
+    linear-gradient(135deg, #ffffff 0%, #f8f7ff 52%, #eef6ff 100%) !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.12) !important;
+}
+
+.event-page .event-filter,
+.event-page .category-tabs,
+.event-page .event-card,
+.event-page .event-card:first-child,
+.event-page .event-card--spotlight,
+.event-page .trending-panel {
+  border-color: rgba(148, 163, 184, 0.22) !important;
+  border-radius: 24px !important;
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 16px 44px rgba(15, 23, 42, 0.08) !important;
+}
+
+.event-page .event-filter__submit,
+.event-page .event-card__detailLink,
+.event-page .category-tabs__pill--active {
+  background: linear-gradient(135deg, #080b16 0%, #5b21b6 48%, #2563eb 100%) !important;
+  color: #ffffff !important;
+}
+
+.event-page .event-card__media,
+.event-page .event-card__image,
+.event-page .event-card__cover {
+  aspect-ratio: 16 / 9 !important;
+}
+
+.user-layout.dark-mode .event-page .event-hero {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background:
+    radial-gradient(circle at 82% 24%, rgba(91, 33, 182, 0.42), transparent 30%),
+    radial-gradient(circle at 96% 20%, rgba(37, 99, 235, 0.24), transparent 28%),
+    linear-gradient(135deg, #080b16 0%, #130b2d 50%, #0f172a 100%) !important;
+}
+
+.user-layout.dark-mode .event-page .event-filter,
+.user-layout.dark-mode .event-page .category-tabs,
+.user-layout.dark-mode .event-page .event-card,
+.user-layout.dark-mode .event-page .event-card:first-child,
+.user-layout.dark-mode .event-page .event-card--spotlight,
+.user-layout.dark-mode .event-page .trending-panel {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  box-shadow: none !important;
+}
+
+/* G03 - Event marketplace polish, scoped to listing page. */
+.event-page {
+  --g03-brand: linear-gradient(135deg, #080b16 0%, #5b21b6 48%, #2563eb 100%);
+  --g03-surface: rgba(255, 255, 255, 0.94);
+  --g03-border: rgba(148, 163, 184, 0.22);
+  --g03-shadow: 0 24px 70px rgba(15, 23, 42, 0.12);
+}
+
+.user-layout.light-mode .event-page {
+  background:
+    radial-gradient(circle at 8% 3%, rgba(91, 33, 182, 0.1), transparent 28%),
+    linear-gradient(180deg, #f8fafc 0%, #ffffff 42%, #f8fafc 100%) !important;
+}
+
+.event-page .event-hero {
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 30px !important;
+  background:
+    radial-gradient(circle at 76% 22%, rgba(91, 33, 182, 0.28), transparent 28%),
+    radial-gradient(circle at 96% 18%, rgba(37, 99, 235, 0.22), transparent 26%),
+    linear-gradient(135deg, #ffffff 0%, #f8f7ff 52%, #eef6ff 100%) !important;
+  box-shadow: var(--g03-shadow) !important;
+}
+
+.dark-mode .event-page .event-hero,
+.user-layout.dark-mode .event-page .event-hero {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background:
+    radial-gradient(circle at 82% 24%, rgba(91, 33, 182, 0.42), transparent 30%),
+    radial-gradient(circle at 96% 20%, rgba(37, 99, 235, 0.24), transparent 28%),
+    linear-gradient(135deg, #080b16 0%, #130b2d 50%, #0f172a 100%) !important;
+}
+
+.event-page .event-hero__eyebrow,
+.event-page .event-section-heading__eyebrow {
+  border: 1px solid rgba(91, 33, 182, 0.18) !important;
+  background: rgba(91, 33, 182, 0.08) !important;
+  color: #5b21b6 !important;
+}
+
+.event-page .event-hero h1 {
+  letter-spacing: -0.045em !important;
+}
+
+.event-page .event-filter {
+  border: 1px solid rgba(226, 232, 240, 0.94) !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1) !important;
+  backdrop-filter: blur(18px);
+}
+
+.user-layout.dark-mode .event-page .event-filter {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(15, 23, 42, 0.88) !important;
+}
+
+.event-page .event-filter__submit,
+.event-page .event-card__detailLink {
+  background: var(--g03-brand) !important;
+  box-shadow: 0 14px 28px rgba(91, 33, 182, 0.22) !important;
+}
+
+.event-page .category-tabs {
+  padding: 8px !important;
+  border: 1px solid rgba(226, 232, 240, 0.84) !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08) !important;
+}
+
+.event-page .category-tabs__pill {
+  border-radius: 16px !important;
+  color: #475569 !important;
+}
+
+.event-page .category-tabs__pill:hover {
+  background: rgba(91, 33, 182, 0.08) !important;
+  color: #5b21b6 !important;
+}
+
+.event-page .category-tabs__pill--active,
+.event-page .category-tabs__pill--active:hover {
+  background: var(--g03-brand) !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 24px rgba(91, 33, 182, 0.2) !important;
+}
+
+.event-page .event-card,
+.event-page .event-card:first-child,
+.event-page .event-card--spotlight,
+.event-page .trending-panel {
+  border: 1px solid var(--g03-border) !important;
+  border-radius: 24px !important;
+  background: var(--g03-surface) !important;
+  box-shadow: 0 16px 44px rgba(15, 23, 42, 0.08) !important;
+}
+
+.event-page .event-card:hover,
+.event-page .trending-panel:hover {
+  border-color: rgba(91, 33, 182, 0.28) !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 26px 70px rgba(15, 23, 42, 0.14) !important;
+}
+
+.event-page .event-card__media,
+.event-page .event-card__image,
+.event-page .event-card__cover {
+  aspect-ratio: 16 / 9 !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+}
+
+.event-page .event-card__media img,
+.event-page .event-card__image img,
+.event-page .event-card__cover img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.event-page .event-card__body h3,
+.event-page .trending-item h3 {
+  color: #0f172a !important;
+  letter-spacing: -0.02em !important;
+}
+
+.event-page .event-card__tag {
+  border: 1px solid rgba(255, 255, 255, 0.48) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #4c1d95 !important;
+}
+
+.event-page .trending-item {
+  border-radius: 18px !important;
+}
+
+.event-page .trending-item:hover {
+  background: rgba(91, 33, 182, 0.07) !important;
+}
+
+.event-page .trending-item__rank {
+  background: rgba(91, 33, 182, 0.1) !important;
+  color: #5b21b6 !important;
+}
+
+.user-layout.dark-mode .event-page .category-tabs,
+.user-layout.dark-mode .event-page .event-card,
+.user-layout.dark-mode .event-page .event-card:first-child,
+.user-layout.dark-mode .event-page .event-card--spotlight,
+.user-layout.dark-mode .event-page .trending-panel {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(15, 23, 42, 0.88) !important;
+  box-shadow: none !important;
+}
+
+.user-layout.dark-mode .event-page .event-card__body h3,
+.user-layout.dark-mode .event-page .trending-item h3 {
+  color: #f8fafc !important;
+}
+
+@media (max-width: 768px) {
+  .event-page .event-hero,
+  .event-page .event-card,
+  .event-page .event-card:first-child,
+  .event-page .event-card--spotlight,
+  .event-page .trending-panel {
+    border-radius: 20px !important;
+  }
+
+  .event-page .event-filter {
+    border-radius: 18px !important;
+  }
+}
+
 /* Theme consistency fix: filters, cards and skeletons must follow light/dark tokens. */
 .user-layout.light-mode .event-page {
   --eventix-event-bg: #f8f9fc;

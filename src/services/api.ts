@@ -7,7 +7,7 @@ import {
 } from "../constants/authStorage";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://event-be-js4i.onrender.com";
+  import.meta.env.VITE_API_BASE_URL || "https://event-be-sg.onrender.com";
 
 // 1. Khởi tạo Axios Instance với cấu hình chuẩn dự án
 const api = axios.create({
@@ -25,6 +25,7 @@ let failedQueue: any[] = [];
 
 const isAuthPage = () => ["/login", "/register"].includes(window.location.pathname);
 const shouldSkipGlobalToast = (config?: any) => Boolean(config?.skipGlobalToast);
+const shouldSkipAuthorization = (config?: any) => Boolean(config?.skipAuth);
 
 // Hàm xử lý và giải phóng hàng đợi request đang chờ token mới
 const processQueue = (token: string | null) => {
@@ -51,11 +52,11 @@ api.interceptors.request.use(
       "/auth/refresh",
     ];
     const requestUrl = config.url || "";
-    const shouldSkipAuthorization = authFreeEndpoints.some((endpoint) =>
+    const shouldSkipAuthHeader = shouldSkipAuthorization(config) || authFreeEndpoints.some((endpoint) =>
       requestUrl.includes(endpoint),
     );
 
-    if (token && config.headers && !shouldSkipAuthorization) {
+    if (token && config.headers && !shouldSkipAuthHeader) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

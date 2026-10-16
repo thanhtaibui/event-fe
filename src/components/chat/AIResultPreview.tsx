@@ -1,4 +1,6 @@
-import { Download, Maximize2, RotateCcw } from "lucide-react";
+import { Check, Copy, Download, Maximize2, RotateCcw } from "lucide-react";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 type AIResultPreviewProps = {
   imageUrl: string;
@@ -11,6 +13,8 @@ export function AIResultPreview({
   onExpand,
   onUseAsInput,
 }: AIResultPreviewProps) {
+  const [copiedImage, setCopiedImage] = useState(false);
+
   const handleDownload = async () => {
     const filename =
       imageUrl
@@ -45,6 +49,39 @@ export function AIResultPreview({
     }
   };
 
+  const handleCopyImage = async () => {
+    try {
+      if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") {
+        throw new Error("Clipboard image copy is not supported");
+      }
+
+      const response = await fetch(imageUrl);
+      if (!response.ok) throw new Error("Cannot fetch image");
+
+      const blob = await response.blob();
+      const imageType = blob.type && blob.type.startsWith("image/") ? blob.type : "image/png";
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [imageType]: blob,
+        }),
+      ]);
+
+      setCopiedImage(true);
+      toast.success("Đã copy ảnh");
+      window.setTimeout(() => setCopiedImage(false), 1400);
+    } catch (error) {
+      console.error("Copy image failed", error);
+      try {
+        await navigator.clipboard.writeText(imageUrl);
+        setCopiedImage(true);
+        toast.success("Đã copy link ảnh");
+        window.setTimeout(() => setCopiedImage(false), 1400);
+      } catch {
+        toast.error("Không thể copy ảnh.");
+      }
+    }
+  };
+
   return (
     <div className="ai-result-preview">
       <button
@@ -63,6 +100,10 @@ export function AIResultPreview({
         <button type="button" onClick={handleDownload}>
           <Download size={15} />
           Tải ảnh
+        </button>
+        <button type="button" onClick={handleCopyImage}>
+          {copiedImage ? <Check size={15} /> : <Copy size={15} />}
+          {copiedImage ? "Đã copy" : "Copy ảnh"}
         </button>
         <button type="button" onClick={() => onUseAsInput(imageUrl)}>
           <RotateCcw size={15} />

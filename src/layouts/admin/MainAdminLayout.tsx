@@ -59,6 +59,12 @@ export const MainAdminLayout = () => {
       } ${isCollapsed ? "collapsed" : ""}`}
     >
       <Sidebar isCollapsed={isCollapsed} onToggleSidebar={toggleSidebar} />
+      <button
+        type="button"
+        className="admin-sidebar-backdrop"
+        aria-label="Close sidebar"
+        onClick={toggleSidebar}
+      />
 
       <div className="main-wrapper">
         <Header theme={theme} onToggleTheme={toggleTheme} />

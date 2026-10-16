@@ -1,27 +1,44 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { eventService } from "../../../services/admin/event.service";
 
 export const useEventById = (id: string) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const fetchEventById = async () => {
-    try {
-      setLoading(true);
-      const res = await eventService.getEventById(id);
-      // console.log("Event data:", res.data);
-      setData(res.data);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const [error, setError] = useState<unknown>(null);
+  const requestRef = useRef(0);
 
-  useEffect(() => {
+  const fetchEventById = useCallback(async () => {
+    const requestId = requestRef.current + 1;
+    requestRef.current = requestId;
+
     if (!id || id === "----") {
       setData(null);
+      setError(null);
       setLoading(false);
       return;
     }
-    fetchEventById();
+
+    try {
+      setData(null);
+      setError(null);
+      setLoading(true);
+      const res = await eventService.getEventById(id);
+      if (requestRef.current === requestId) {
+        const eventData = res?.data?.id ? res.data : (res?.id ? res : (res?.data ?? res));
+        setData(eventData);
+      }
+    } catch (err) {
+      if (requestRef.current === requestId) {
+        setData(null);
+        setError(err);
+      }
+    } finally {
+      if (requestRef.current === requestId) setLoading(false);
+    }
   }, [id]);
-  return { data, loading, refetch: fetchEventById };
+
+  useEffect(() => {
+    fetchEventById();
+  }, [fetchEventById]);
+  return { data, loading, error, refetch: fetchEventById };
 }

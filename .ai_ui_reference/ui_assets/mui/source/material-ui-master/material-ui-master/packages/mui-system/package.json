@@ -1,0 +1,84 @@
+{
+  "name": "@mui/system",
+  "version": "9.4.0",
+  "author": "MUI Team",
+  "description": "MUI System is a set of CSS utilities to help you build custom designs more efficiently. It makes it possible to rapidly lay out custom designs.",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "react-component",
+    "mui",
+    "system"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mui/material-ui.git",
+    "directory": "packages/mui-system"
+  },
+  "bugs": {
+    "url": "https://github.com/mui/material-ui/issues"
+  },
+  "homepage": "https://mui.com/system/getting-started/",
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/mui-org"
+  },
+  "scripts": {
+    "build": "code-infra build --tsgo --flat",
+    "release": "pnpm build && pnpm publish",
+    "test": "pnpm --workspace-root test:unit --project \"*:@mui/system\"",
+    "typescript": "tsc -p tsconfig.json",
+    "attw": "attw --pack ./build --entrypoints \".\" \"Box\" \"styled\" \"useTheme\""
+  },
+  "dependencies": {
+    "@babel/runtime": "^8.0.0",
+    "@mui/private-theming": "workspace:^",
+    "@mui/styled-engine": "workspace:^",
+    "@mui/types": "workspace:^",
+    "@mui/utils": "workspace:^",
+    "clsx": "^2.1.1",
+    "csstype": "^3.2.3",
+    "prop-types": "^15.8.1"
+  },
+  "devDependencies": {
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
+    "@mui/system": "workspace:*",
+    "@types/prop-types": "15.7.15",
+    "@types/react": "19.3.0",
+    "@types/sinon": "22.0.0",
+    "react": "19.3.0",
+    "sinon": "22.1.0",
+    "styled-components": "6.5.3"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@types/react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "@emotion/react": {
+      "optional": true
+    },
+    "@emotion/styled": {
+      "optional": true
+    }
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "directory": "build"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./RtlProvider": "./src/RtlProvider/index.tsx",
+    "./*": "./src/*/index.ts"
+  }
+}

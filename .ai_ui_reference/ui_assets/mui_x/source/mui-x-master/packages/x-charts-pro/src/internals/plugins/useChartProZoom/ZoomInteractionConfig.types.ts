@@ -1,0 +1,172 @@
+import type { KeyboardKey, PointerMode } from '@mui/x-internal-gestures/core';
+
+export type ZoomInteractionConfig = {
+  /**
+   * Defines the interactions that trigger zooming.
+   * - `wheel`: Zooms in or out when the mouse wheel is scrolled.
+   * - `pinch`: Zooms in or out when a pinch gesture is detected.
+   * - `tapAndDrag`: Zooms in or out by tapping twice and then dragging vertically. Dragging up zooms in, dragging down zooms out.
+   * - `brush`: Zooms into a selected area by clicking and dragging to create a selection area. (Conflicts with `drag` pan interaction)
+   * - `doubleTapReset`: Resets the zoom level to the original state when double-tapping.
+   * - `keyboard`: Zooms in with `+`, out with `-`, and resets with `0`, while the chart is focused.
+   *
+   * @default ['wheel', 'pinch', 'keyboard']
+   */
+  zoom?: readonly (ZoomInteraction | ZoomInteraction['type'])[];
+  /**
+   * Defines the interactions that trigger panning.
+   * - `drag`: Pans the chart when dragged with the mouse.
+   * - `pressAndDrag`: Pans the chart by pressing and holding, then dragging. Useful for avoiding conflicts with selection gestures.
+   * - `wheel`: Pans the chart when the mouse wheel is scrolled (horizontal by default).
+   * - `keyboard`: Pans the chart with `Shift` + arrow keys, while the chart is focused.
+   *
+   * @default ['drag', 'wheel', 'keyboard']
+   */
+  pan?: readonly (PanInteraction | PanInteraction['type'])[];
+};
+
+type Entry<T extends AnyInteraction> = {
+  [K in T['type']]?: Omit<T, 'pointerMode'> & {
+    mouse: { requiredKeys?: KeyboardKey[] };
+    touch: { requiredKeys?: KeyboardKey[] };
+    pointerMode?: PointerMode[];
+    allowedDirection?: 'x' | 'y' | 'xy';
+  };
+};
+export type DefaultizedZoomInteractionConfig = {
+  zoom: Entry<ZoomInteraction>;
+  pan: Entry<PanInteraction>;
+};
+
+type ZoomInteraction =
+  | WheelInteraction
+  | PinchInteraction
+  | TapAndDragInteraction
+  | DoubleTapResetInteraction
+  | BrushInteraction
+  | KeyboardInteraction;
+type PanInteraction =
+  DragInteraction | PressAndDragInteraction | WheelPanInteraction | KeyboardInteraction;
+
+export type ZoomInteractionName = ZoomInteraction['type'];
+export type PanInteractionName = PanInteraction['type'];
+type InteractionMode = Exclude<PointerMode, 'pen'>;
+
+type AllKeysProp = {
+  /**
+   * The keys that must be pressed to trigger the interaction.
+   */
+  requiredKeys?: KeyboardKey[];
+};
+
+type AllModeProp = {
+  /**
+   * Defines which type of pointer can trigger the interaction.
+   * - `mouse`: Only mouse interactions will trigger the interaction.
+   * - `touch`: Only touch interactions will trigger the interaction.
+   * - undefined: All interactions will trigger the interaction.
+   */
+  pointerMode?: InteractionMode;
+};
+
+type NoKeysProp = {
+  /**
+   * This interaction does not support key combinations.
+   */
+  requiredKeys?: any[];
+};
+
+type NoModeProp = {
+  /**
+   * This gesture only works on a specific pointer mode. Mode has no effect.
+   */
+  pointerMode?: any;
+};
+
+type Unpack<T> = {
+  [K in keyof T]: T[K] extends object ? Unpack<T[K]> : T[K];
+};
+
+type WheelInteraction = Unpack<
+  {
+    type: 'wheel';
+  } & NoModeProp &
+    AllKeysProp
+>;
+
+type PinchInteraction = Unpack<
+  {
+    type: 'pinch';
+  } & NoModeProp &
+    NoKeysProp
+>;
+
+type DragInteraction = Unpack<
+  {
+    type: 'drag';
+  } & AllModeProp &
+    AllKeysProp
+>;
+
+type TapAndDragInteraction = Unpack<
+  {
+    type: 'tapAndDrag';
+  } & AllModeProp &
+    AllKeysProp
+>;
+
+type PressAndDragInteraction = Unpack<
+  {
+    type: 'pressAndDrag';
+  } & AllModeProp &
+    AllKeysProp
+>;
+
+type WheelPanInteraction = Unpack<
+  {
+    type: 'wheel';
+    /**
+     * Defines which axes are affected by pan on wheel.
+     * - `'x'`: Only pan horizontally
+     * - `'y'`: Only pan vertically
+     * - `'xy'`: Pan both axes
+     * @default 'x'
+     */
+    allowedDirection?: 'x' | 'y' | 'xy';
+  } & NoModeProp &
+    AllKeysProp
+>;
+
+type DoubleTapResetInteraction = Unpack<
+  {
+    type: 'doubleTapReset';
+  } & AllModeProp &
+    AllKeysProp
+>;
+
+type BrushInteraction = Unpack<
+  {
+    type: 'brush';
+  } & AllModeProp &
+    AllKeysProp
+>;
+
+type KeyboardInteraction = Unpack<
+  {
+    type: 'keyboard';
+  } & NoModeProp &
+    NoKeysProp
+>;
+
+export type AnyInteraction = {
+  type: string;
+  pointerMode?: InteractionMode;
+  requiredKeys?: KeyboardKey[];
+  allowedDirection?: 'x' | 'y' | 'xy';
+};
+export type AnyEntry = Omit<AnyInteraction, 'pointerMode'> & {
+  mouse: { requiredKeys?: KeyboardKey[] };
+  touch: { requiredKeys?: KeyboardKey[] };
+  pointerMode?: PointerMode[];
+  allowedDirection?: 'x' | 'y' | 'xy';
+};

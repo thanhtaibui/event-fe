@@ -1,0 +1,183 @@
+import { getSchedulerLocalization } from '../utils/getSchedulerLocalization';
+import type {
+  SchedulerLocalization,
+  SchedulerDialogTranslations,
+  SchedulerEventTranslations,
+  SchedulerCalendarTranslations,
+  SchedulerTimelineTranslations,
+} from '../utils/getSchedulerLocalization';
+
+const plPLDialog: SchedulerDialogTranslations = {
+  // EventDialog
+  colorPickerLabel: 'Kolor wydarzenia',
+  // colorSectionLabel: 'Color',
+  dateTimeSectionLabel: 'Data i godzina',
+  resourceColorSectionLabel: 'Zasób i kolor',
+  allDayLabel: 'Cały dzień',
+  closeButtonAriaLabel: 'Zamknij',
+  closeButtonLabel: 'Zamknij',
+  // editEventButtonAriaLabel: 'Edit event',
+  // deleteEventButtonAriaLabel: 'Delete event',
+  // eventActionsToolbarAriaLabel: 'Event actions',
+  deleteEvent: 'Usuń wydarzenie',
+  // editEvent: 'Edit event',
+  // showEventDetails: 'Show details',
+  // eventContextMenuAriaLabel: 'Event actions',
+  descriptionLabel: 'Opis',
+  endDateLabel: 'Data zakończenia',
+  endTimeLabel: 'Godzina zakończenia',
+  eventTitleAriaLabel: 'Tytuł wydarzenia',
+  generalTabLabel: 'Ogólne',
+  labelNoResource: 'Brak zasobu',
+  labelInvalidResource: 'Nieprawidłowy zasób',
+  recurrenceLabel: 'Powtarzanie',
+  recurrenceNoRepeat: 'Nie powtarzaj',
+  recurrenceCustomRepeat: 'Niestandardowa reguła powtarzania',
+  recurrenceDailyPresetLabel: 'Powtarza się codziennie',
+  recurrenceDailyFrequencyLabel: 'dni',
+  recurrenceEndsLabel: 'Koniec',
+  recurrenceEndsAfterLabel: 'Po',
+  recurrenceEndsNeverLabel: 'Nigdy',
+  recurrenceEndsUntilLabel: 'Do',
+  recurrenceEndsTimesLabel: 'razy',
+  recurrenceEveryLabel: 'Co',
+  recurrenceRepeatLabel: 'Powtarzaj',
+  recurrenceTabLabel: 'Powtarzanie',
+  // recurrenceTimezoneLabel: timezone => `Timezone: ${timezone}`,
+  // recurrenceLabelTimezoneSuffix: timezone => `(${timezone})`,
+  recurrenceMainSelectCustomLabel: 'Powtarzanie',
+  recurrenceWeeklyFrequencyLabel: 'tygodnie',
+  recurrenceWeeklyPresetLabel: ({ weekday }) => {
+    const map = {
+      monday: 'w poniedziałek',
+      tuesday: 'we wtorek',
+      wednesday: 'w środę',
+      thursday: 'w czwartek',
+      friday: 'w piątek',
+      saturday: 'w sobotę',
+      sunday: 'w niedzielę',
+    };
+    return `Powtarza się co tydzień ${map[weekday]}`;
+  },
+  recurrenceMonthlyFrequencyLabel: 'miesiące',
+  recurrenceMonthlyDayOfMonthLabel: (dayNumber) => `Dzień ${dayNumber}`,
+  recurrenceMonthlyLastWeekAriaLabel: ({ weekdayName }) =>
+    `${weekdayName} w ostatnim tygodniu miesiąca`,
+  recurrenceMonthlyLastWeekLabel: ({ weekdayName }) => `${weekdayName}, ostatni tydzień`,
+  recurrenceMonthlyPresetLabel: (dayNumber) => `Powtarza się co miesiąc w dniu ${dayNumber}`,
+  recurrenceMonthlyWeekNumberAriaLabel: ({ ord, weekdayName }) =>
+    `${weekdayName}, tydzień ${ord} miesiąca`,
+  recurrenceMonthlyWeekNumberLabel: ({ ord, weekdayName }) => `${weekdayName}, tydzień ${ord}`,
+  recurrenceWeeklyMonthlySpecificInputsLabel: 'W',
+  recurrenceYearlyFrequencyLabel: 'lata',
+  recurrenceYearlyPresetLabel: (date) => `Powtarza się co roku w ${date}`,
+  noResourceAriaLabel: 'Brak określonego zasobu',
+  selectColorAriaLabel: (color) => `Wybierz ${color} jako kolor wydarzenia`,
+  resourceLabel: 'Zasób',
+  // invalidDateError: 'Enter a valid date.',
+  // invalidTimeError: 'Enter a valid time.',
+  requiredResourceError: 'Należy wybrać zasób.',
+  saveChanges: 'Zapisz',
+  startDateAfterEndDateError: 'Data zakończenia nie może być wcześniejsza niż data rozpoczęcia.',
+  startDateLabel: 'Data rozpoczęcia',
+  startTimeAfterEndTimeError: 'Godzina zakończenia musi być późniejsza niż godzina rozpoczęcia.',
+  startTimeLabel: 'Godzina rozpoczęcia',
+
+  // RecurringScopeDialog
+  all: 'Wszystkie wydarzenia',
+  cancel: 'Anuluj',
+  confirm: 'Potwierdź',
+  onlyThis: 'Tylko to wydarzenie',
+  radioGroupAriaLabel: 'Zakres edycji wydarzeń cyklicznych',
+  thisAndFollowing: 'To i kolejne wydarzenia',
+  title: 'Zastosuj tę zmianę do:',
+};
+
+const plPLEvent: SchedulerEventTranslations = {
+  // Event accessible name
+  // eventAriaLabelTimeRange: (start, end) => `${start} to ${end}`,
+  // eventAriaLabelDateRange: (start, end) => `From ${start} to ${end}`,
+  // eventAriaLabelAllDay: 'All day',
+  // eventAriaLabelRecurring: 'Recurring',
+  resourceAriaLabel: (resourceName) => `Zasób: ${resourceName}`,
+  // eventAriaLabel: ({
+  //   title,
+  //   when,
+  //   date,
+  //   resource,
+  //   recurring
+  // }) => [title, when, date, resource, recurring].filter(Boolean).join(', '),
+};
+
+const plPLCalendar: SchedulerCalendarTranslations = {
+  // ResourcesTree
+  resourcesLabel: 'Zasoby',
+
+  // ViewSwitcher
+  agenda: 'Agenda',
+  day: 'Dzień',
+  month: 'Miesiąc',
+  other: 'Inne',
+  today: 'Dzisiaj',
+  week: 'Tydzień',
+  time: 'Czas',
+  days: 'Dni',
+  months: 'Miesiące',
+  weeks: 'Tygodnie',
+  years: 'Lata',
+
+  // DateNavigator
+  closeSidePanel: 'Zamknij panel boczny',
+  openSidePanel: 'Otwórz panel boczny',
+
+  // SidePanelDrawer (small screens)
+  // openMenu: 'Open menu',
+
+  // Preferences menu
+  amPm12h: '12-godzinny (1:00PM)',
+  hour24h: '24-godzinny (13:00)',
+  preferencesMenu: 'Ustawienia',
+  showWeekends: 'Pokaż weekendy',
+  showEmptyDaysInAgenda: 'Pokaż puste dni',
+  showWeekNumber: 'Pokaż numer tygodnia',
+  timeFormat: 'Format czasu',
+  viewSpecificOptions: (view) => `Opcje widoku ${view}`,
+  startWeekOn: 'Początek tygodnia',
+  weekdaySunday: 'Niedziela',
+  weekdayMonday: 'Poniedziałek',
+  weekdaySaturday: 'Sobota',
+
+  // WeekView
+  allDay: 'Cały dzień',
+  hiddenEvents: (hiddenEventsCount) => `${hiddenEventsCount} więcej..`,
+  nextTimeSpan: (timeSpan) => `Następny ${timeSpan}`,
+  previousTimeSpan: (timeSpan) => `Poprzedni ${timeSpan}`,
+  weekAbbreviation: 'T',
+  weekNumberAriaLabel: (weekNumber) => `Tydzień ${weekNumber}`,
+
+  // EventItem
+  eventItemMultiDayLabel: (endDate) => `Kończy się ${endDate}`,
+
+  // MiniCalendar
+  miniCalendarLabel: 'Kalendarz',
+  miniCalendarGoToPreviousMonth: 'Pokaż poprzedni miesiąc w kalendarzu',
+  miniCalendarGoToNextMonth: 'Pokaż następny miesiąc w kalendarzu',
+
+  // Main calendar region
+  calendarContentAriaLabel: 'Zawartość kalendarza',
+
+  // Timeline title sub grid
+  timelineResourceTitleHeader: 'Tytuł zasobu',
+};
+
+const plPLTimeline: SchedulerTimelineTranslations = {
+  // Timeline title sub grid
+  timelineResourceTitleHeader: 'Tytuł zasobu',
+};
+
+export const plPL: SchedulerLocalization = getSchedulerLocalization({
+  dialog: plPLDialog,
+  event: plPLEvent,
+  calendar: plPLCalendar,
+  timeline: plPLTimeline,
+});

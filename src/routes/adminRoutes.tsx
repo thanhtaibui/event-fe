@@ -22,12 +22,13 @@ import {
   ADMIN_PERMISSION_CODES,
   addPermissionTreeCodes,
   getEffectiveOrgPermissionCodes,
+  getFirstAllowedOrgWorkspacePath,
   getJwtPermissionCodes,
   getMembershipRoleId,
   getMembershipRoleName,
   getMembershipSlug,
   hasOrgWorkspacePermissionCodes,
-  hasPermission,
+  hasAnyPermission,
   isSuperAdmin as checkSuperAdmin,
   normalizeUserMemberships,
 } from "../config/adminPermissionConfig";
@@ -142,21 +143,35 @@ function OrgWorkspaceGuard() {
     currentUserId,
   );
   rolePermissionCodes?.forEach((code) => orgPermissionCodes.add(code));
+  const basePath = `/org/${slug || ""}`;
   const orgRoutePermission = getOrgRoutePermission(location.pathname, slug || "");
+  const hasOrgRoutePermission =
+    !orgRoutePermission || hasAnyPermission(orgPermissionCodes, orgRoutePermission);
 
   if (
     orgRoutePermission &&
     rolePermissionLoading &&
-    !hasPermission(orgPermissionCodes, orgRoutePermission)
+    !hasOrgRoutePermission
   ) {
     return <AdminSkeleton variant="dashboard" cards={3} />;
   }
 
   if (
     orgRoutePermission &&
-    !hasPermission(orgPermissionCodes, orgRoutePermission)
+    !hasOrgRoutePermission
   ) {
     return <AccessBlocked scope="org" />;
+  }
+
+  if (location.pathname === basePath || location.pathname === `${basePath}/`) {
+    const firstAllowedPath = getFirstAllowedOrgWorkspacePath(
+      orgPermissionCodes,
+      basePath,
+    );
+
+    if (!firstAllowedPath) return <AccessBlocked scope="org" />;
+
+    return <Navigate to={firstAllowedPath} replace />;
   }
 
   return <Outlet />;
@@ -166,15 +181,19 @@ function getOrgRoutePermission(pathname: string, slug: string) {
   const basePath = `/org/${slug}`;
   const modulePath = pathname.replace(basePath, "").split("/").filter(Boolean)[0];
 
-  if (!modulePath || modulePath === "dashboard" || modulePath === "profile") {
+  if (!modulePath || modulePath === "profile") {
     return null;
   }
 
-  const routePermissions: Record<string, string> = {
-    events: ADMIN_PERMISSION_CODES.EVENT,
-    reports: ADMIN_PERMISSION_CODES.REPORT,
-    roles: ADMIN_PERMISSION_CODES.ROLE,
-    membership: ADMIN_PERMISSION_CODES.MEMBERSHIP,
+  const routePermissions: Record<string, string[]> = {
+    dashboard: [
+      ADMIN_PERMISSION_CODES.DASHBOARD,
+      ADMIN_PERMISSION_CODES.DASHBOARD_VIEW,
+    ],
+    events: [ADMIN_PERMISSION_CODES.EVENT],
+    reports: [ADMIN_PERMISSION_CODES.REPORT],
+    roles: [ADMIN_PERMISSION_CODES.ROLE],
+    membership: [ADMIN_PERMISSION_CODES.ORGANIZATION_MEMBER_MANAGE],
   };
 
   return routePermissions[modulePath] || null;

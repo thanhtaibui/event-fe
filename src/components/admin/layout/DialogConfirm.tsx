@@ -6,17 +6,33 @@ type Props = {
   onConfirm: () => void | Promise<void>;
   onClose: () => void;
   loading?: boolean;
+  title?: string;
+  message?: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
 };
+
+function getAdminPopupThemeClass() {
+  if (typeof window === "undefined") return "admin-popup-theme--light";
+  return localStorage.getItem("eventix-theme") === "dark"
+    ? "admin-popup-theme--dark"
+    : "admin-popup-theme--light";
+}
 
 export default function ConfirmDialog({
   open,
   onConfirm,
   onClose,
   loading = false,
+  title = "Are you sure you want to continue?",
+  message,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
 }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const submittingRef = useRef(false);
   const isBusy = loading || submitting;
+  const popupThemeClass = getAdminPopupThemeClass();
 
   useEffect(() => {
     if (!open) {
@@ -40,7 +56,11 @@ export default function ConfirmDialog({
 
   return (
     <div className="dialog" onClick={(e) => e.stopPropagation()}>
-      <Dialog open={open} className="confirm-dialog" onClose={isBusy ? undefined : onClose}>
+      <Dialog
+        open={open}
+        className={`confirm-dialog ${popupThemeClass}`}
+        onClose={isBusy ? undefined : onClose}
+      >
         <div className="confirm-dialog-icon">
           <img
             width="30"
@@ -50,14 +70,19 @@ export default function ConfirmDialog({
           />
         </div>
 
-        <DialogTitle>Are you sure you want to continue?</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
+        {message && (
+          <div className="MuiDialogContent-root confirm-dialog-message">
+            {message}
+          </div>
+        )}
 
         <DialogActions>
           <button className="btn-confirm" onClick={handleConfirm} disabled={isBusy}>
-            {isBusy ? "Processing..." : "Confirm"}
+            {isBusy ? "Processing..." : confirmLabel}
           </button>
           <button className="btn-cancel" onClick={onClose} disabled={isBusy}>
-            Cancel
+            {cancelLabel}
           </button>
         </DialogActions>
 

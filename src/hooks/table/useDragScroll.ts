@@ -9,7 +9,12 @@ const useDragScroll = (ref: React.RefObject<HTMLElement | null>) => {
     let startX = 0;
     let scrollLeft = 0;
 
+    const isInteractiveTarget = (target: EventTarget | null) =>
+      target instanceof HTMLElement &&
+      Boolean(target.closest("button, a, input, select, textarea, [role='button']"));
+
     const onMouseDown = (e: MouseEvent) => {
+      if (isInteractiveTarget(e.target)) return;
       isDown = true;
       startX = e.pageX - el.offsetLeft;
       scrollLeft = el.scrollLeft;

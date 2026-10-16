@@ -3,11 +3,14 @@ import { getAccessToken } from "../constants/authStorage";
 import type { User, UserMembership, UserPermission } from "../types/user/user";
 
 export const ADMIN_PERMISSION_CODES = {
+  DASHBOARD: "DASHBOARD",
+  DASHBOARD_VIEW: "DASHBOARD_VIEW",
   USER: "USER",
   ROLE: "ROLE",
   EVENT: "EVENT",
   REPORT: "REPORT",
   MEMBERSHIP: "MEMBERSHIP",
+  ORGANIZATION_MEMBER_MANAGE: "ORGANIZATION_MEMBER_MANAGE",
   VIEW_REPORT: "VIEW_REPORT",
   EXPORT_REPORT: "EXPORT_REPORT",
   DOWNLOAD_REPORT: "DOWNLOAD_REPORT",
@@ -17,6 +20,8 @@ export const ADMIN_PERMISSION_CODES = {
   CREATE_ROLE: "CREATE_ROLE",
   UPDATE_ROLE: "UPDATE_ROLE",
   CREATE_EVENT: "CREATE_EVENT",
+  EVENT_UPDATE: "EVENT_UPDATE",
+  EVENT_MANAGE: "EVENT_MANAGE",
   DELETE_EVENT: "DELETE_EVENT",
 } as const;
 
@@ -39,7 +44,20 @@ export type AdminSidebarPermission = {
   superOnly?: boolean;
   icon: string;
   activeIcon: string;
-  children: Partial<Record<"view" | "create" | "update" | "delete" | "export" | "download", AdminPermissionCode>>;
+  children: Partial<
+    Record<
+      | "view"
+      | "create"
+      | "update"
+      | "delete"
+      | "export"
+      | "download"
+      | "manage"
+      | "invite"
+      | "assign",
+      AdminPermissionCode
+    >
+  >;
 };
 
 export const ADMIN_SIDEBAR_PERMISSIONS: AdminSidebarPermission[] = [
@@ -104,6 +122,8 @@ export const ADMIN_SIDEBAR_PERMISSIONS: AdminSidebarPermission[] = [
     activeIcon: "https://img.icons8.com/nolan/64/event-accepted.png",
     children: {
       create: ADMIN_PERMISSION_CODES.CREATE_EVENT,
+      update: ADMIN_PERMISSION_CODES.EVENT_UPDATE,
+      manage: ADMIN_PERMISSION_CODES.EVENT_MANAGE,
       delete: ADMIN_PERMISSION_CODES.DELETE_EVENT,
     },
   },
@@ -124,10 +144,14 @@ export const ADMIN_SIDEBAR_PERMISSIONS: AdminSidebarPermission[] = [
     key: "membership",
     label: "Membership",
     path: "/admin/membership",
-    permissionCode: ADMIN_PERMISSION_CODES.MEMBERSHIP,
+    permissionCode: ADMIN_PERMISSION_CODES.ORGANIZATION_MEMBER_MANAGE,
     icon: "https://img.icons8.com/nolan/96/B0B0B0/2E2E2E/conference-call.png",
     activeIcon: "https://img.icons8.com/nolan/64/conference-call.png",
-    children: {},
+    children: {
+      manage: ADMIN_PERMISSION_CODES.ORGANIZATION_MEMBER_MANAGE,
+      invite: ADMIN_PERMISSION_CODES.ORGANIZATION_MEMBER_MANAGE,
+      assign: ADMIN_PERMISSION_CODES.ORGANIZATION_MEMBER_MANAGE,
+    },
   },
 ];
 
@@ -173,6 +197,7 @@ function normalizeCode(value: string) {
 function flattenPermissionCodes(permissions: UserPermission[] = []): string[] {
   return permissions.flatMap((permission) => [
     permission.permission_code || "",
+    permission.code || "",
     ...flattenPermissionCodes(permission.children || []),
   ]);
 }
@@ -265,10 +290,12 @@ export function addPermissionTreeCodes(
 
 export function hasOrgWorkspacePermissionCodes(codes: Set<string>) {
   return [
+    ADMIN_PERMISSION_CODES.DASHBOARD,
+    ADMIN_PERMISSION_CODES.DASHBOARD_VIEW,
     ADMIN_PERMISSION_CODES.EVENT,
     ADMIN_PERMISSION_CODES.REPORT,
     ADMIN_PERMISSION_CODES.ROLE,
-    ADMIN_PERMISSION_CODES.MEMBERSHIP,
+    ADMIN_PERMISSION_CODES.ORGANIZATION_MEMBER_MANAGE,
   ].some((code) => codes.has(code));
 }
 
@@ -298,6 +325,8 @@ export function getEffectiveOrgPermissionCodes(
   currentUserId?: string,
 ) {
   const membershipCodes = getPermissionCodesFromMembership(membership);
+  getJwtPermissionCodes().forEach((code) => membershipCodes.add(code));
+
   if (isOrgOwnerForUser(membership, currentUserId)) {
     return getOrgWorkspaceFullPermissionCodes();
   }
@@ -339,6 +368,15 @@ export function getMembershipSlug(membership: UserMembership) {
     membership.slug ||
     membership.orgSlug ||
     membership.organizationSlug ||
+    ""
+  );
+}
+
+export function getMembershipOrganizationId(membership?: UserMembership | null) {
+  return (
+    membership?.organization?.id ||
+    membership?.organizationId ||
+    membership?.orgId ||
     ""
   );
 }
@@ -401,6 +439,10 @@ export function hasPermission(codes: Set<string>, permissionCode: string) {
   return isSuperAdmin(codes) || codes.has(normalizeCode(permissionCode));
 }
 
+export function hasAnyPermission(codes: Set<string>, permissionCodes: string[]) {
+  return isSuperAdmin(codes) || permissionCodes.some((code) => codes.has(normalizeCode(code)));
+}
+
 export function getAllowedSidebarItems(codes: Set<string>) {
   if (isSuperAdmin(codes)) return getSystemAdminSidebarItems();
 
@@ -411,13 +453,23 @@ export function getAllowedSidebarItems(codes: Set<string>) {
 
 export function getAllowedOrgWorkspaceSidebarItems(codes: Set<string>) {
   return ORG_WORKSPACE_SIDEBAR_PERMISSIONS.filter((item) => {
-    if (item.key === "dashboard") return true;
+    if (item.key === "dashboard") {
+      return hasAnyPermission(codes, [
+        ADMIN_PERMISSION_CODES.DASHBOARD,
+        ADMIN_PERMISSION_CODES.DASHBOARD_VIEW,
+      ]);
+    }
     return Boolean(item.permissionCode && hasPermission(codes, item.permissionCode));
   });
 }
 
 export function getFirstAllowedAdminPath(codes: Set<string>) {
   return getAllowedSidebarItems(codes)[0]?.path || "/admin/dashboard";
+}
+
+export function getFirstAllowedOrgWorkspacePath(codes: Set<string>, basePath: string) {
+  const firstItem = getAllowedOrgWorkspaceSidebarItems(codes)[0];
+  return firstItem ? firstItem.path.replace("/admin", basePath) : "";
 }
 
 export function canAccessAdminAction(

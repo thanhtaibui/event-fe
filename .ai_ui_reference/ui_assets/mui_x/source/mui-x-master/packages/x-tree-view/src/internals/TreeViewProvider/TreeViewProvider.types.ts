@@ -1,0 +1,50 @@
+import type * as React from 'react';
+import type { disposeSymbol } from '@mui/x-internals/disposable';
+import type {
+  TreeItemWrapper,
+  TreeViewItemPluginResponse,
+  TreeViewPublicAPI,
+  TreeViewAnyStore,
+} from '../models';
+import type { TreeItemProps } from '../../TreeItem/TreeItem.types';
+import type {
+  TreeViewClasses,
+  TreeViewStyleContextSlotProps,
+  TreeViewStyleContextSlots,
+} from './TreeViewStyleContext';
+import type { UseTreeViewBuildContextParameters } from './useTreeViewBuildContext';
+
+export type TreeViewItemPluginsRunner = (
+  props: TreeItemProps,
+) => Required<TreeViewItemPluginResponse>;
+
+export type TreeViewStoreInContext<TStore extends TreeViewAnyStore> = Omit<
+  TStore,
+  | 'setState'
+  | 'update'
+  | 'set'
+  | 'updateStateFromParameters'
+  | 'disposables'
+  | typeof disposeSymbol
+  | 'mountEffect'
+  | 'registerStoreEffect'
+  | 'itemPluginManager'
+  | 'parameters'
+>;
+
+export interface TreeViewContextValue<TStore extends TreeViewAnyStore> {
+  publicAPI: TreeViewPublicAPI<TStore>;
+  store: TreeViewStoreInContext<TStore>;
+  rootRef: React.RefObject<HTMLUListElement | null>;
+  wrapItem: TreeItemWrapper<TStore>;
+  runItemPlugins: TreeViewItemPluginsRunner;
+}
+
+export interface TreeViewProviderProps<
+  TStore extends TreeViewAnyStore,
+> extends UseTreeViewBuildContextParameters<TStore> {
+  children: React.ReactNode;
+  classes: Partial<TreeViewClasses> | undefined;
+  slots: TreeViewStyleContextSlots | undefined;
+  slotProps: TreeViewStyleContextSlotProps | undefined;
+}

@@ -45,16 +45,11 @@ export default function Item({
         loading={deleteLoading}
       />
       <div className="inventory-panel__header">
-        <h3 className="inventory-panel__title">Manage</h3>
+        <div>
+          <span className="inventory-panel__eyebrow">Items</span>
+          <h3 className="inventory-panel__title">Inventory list</h3>
+        </div>
 
-        <button className="inventory-panel__search">
-          <img
-            width="24"
-            height="24"
-            src="https://img.icons8.com/nolan/64/search.png"
-            alt="search"
-          />
-        </button>
       </div>
 
       <div className="inventory-table">
@@ -63,9 +58,14 @@ export default function Item({
           <div className="inventory-table__price-col">Price</div>
         </div>
         {items?.map((item: any) => (
-          <div className="inventory-table__row" key={item.id}>
+          <div
+            className={`inventory-table__row ${
+              selectedItemId === item.id ? "is-selected" : ""
+            }`}
+            key={item.id}
+          >
             <div
-              className={`inventory-table__item-col ${selectedItemId === item.id ? "selected" : ""}`}
+              className="inventory-table__item-col"
               onDoubleClick={() => {
                 onSelectItem(item);
               }}
@@ -77,6 +77,9 @@ export default function Item({
 
                 <div className="inventory-item__content">
                   <div className="inventory-item__name">{item?.name}</div>
+                  <span className="inventory-item__status">
+                    {item?.status || "Active"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -89,8 +92,8 @@ export default function Item({
             </div>
             <div className="icon-delete">
               <img
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 src="https://img.icons8.com/nolan/64/cancel.png"
                 alt="cancel"
                 onClick={() => {
@@ -101,9 +104,6 @@ export default function Item({
             </div>
           </div>
         ))}
-      </div>
-      <div className="inventory-panel__footer">
-        <button className="inventory-export-btn">Export CSV</button>
       </div>
     </section>
   );

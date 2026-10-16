@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  NOTIFICATIONS_CHANGED_EVENT,
   notificationService,
   unwrapNotifications,
   unwrapUnreadCount,
@@ -34,6 +35,15 @@ export function useNotifications(enabled = true) {
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    window.addEventListener(NOTIFICATIONS_CHANGED_EVENT, fetchNotifications);
+    return () => {
+      window.removeEventListener(NOTIFICATIONS_CHANGED_EVENT, fetchNotifications);
+    };
+  }, [enabled, fetchNotifications]);
 
   const markAsRead = useCallback(
     async (id: string) => {

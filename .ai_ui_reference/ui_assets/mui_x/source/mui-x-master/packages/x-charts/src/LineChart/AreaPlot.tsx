@@ -1,0 +1,141 @@
+'use client';
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import { styled } from '@mui/material/styles';
+import clsx from 'clsx';
+import { AreaElement } from './AreaElement';
+import type { AreaElementProps, AreaElementSlotProps, AreaElementSlots } from './AreaElement';
+import type { LineItemClickIdentifier } from '../models/seriesType/line';
+import type { ChartsActivationEvent } from '../models/events';
+import { useSkipAnimation } from '../hooks/useSkipAnimation';
+import { useXAxes, useYAxes } from '../hooks/useAxis';
+import { useInternalIsZoomInteracting } from '../internals/plugins/featurePlugins/useChartCartesianAxis/useInternalIsZoomInteracting';
+import { useAreaPlotData } from './useAreaPlotData';
+import { LINE_ACTIVATION_PRIORITY, useLineItemClickHandler } from './useLineItemClickHandler';
+import { ANIMATION_DURATION_MS, ANIMATION_TIMING_FUNCTION } from '../internals/animation/animation';
+import { lineClasses, useUtilityClasses } from './lineClasses';
+
+export interface AreaPlotSlots extends AreaElementSlots {}
+
+export interface AreaPlotSlotProps extends AreaElementSlotProps {}
+
+export interface AreaPlotProps
+  extends
+    React.SVGAttributes<SVGSVGElement>,
+    Pick<AreaElementProps, 'slots' | 'slotProps' | 'skipAnimation'> {
+  /**
+   * Callback fired when a line area item is clicked.
+   * @param {ChartsActivationEvent<SVGElement>} event The event source of the callback.
+   * @param {LineItemClickIdentifier} lineItemIdentifier The line item identifier.
+   */
+  onItemClick?: (
+    event: ChartsActivationEvent<SVGElement>,
+    lineItemIdentifier: LineItemClickIdentifier,
+  ) => void;
+}
+
+const AreaPlotRoot = styled('g', {
+  name: 'MuiAreaPlot',
+  slot: 'Root',
+})({
+  [`& .${lineClasses.area}`]: {
+    transitionProperty: 'opacity, fill',
+    transitionDuration: `${ANIMATION_DURATION_MS}ms`,
+    transitionTimingFunction: ANIMATION_TIMING_FUNCTION,
+  },
+});
+
+const useAggregatedData = () => {
+  const { xAxis: xAxes } = useXAxes();
+  const { yAxis: yAxes } = useYAxes();
+
+  return useAreaPlotData(xAxes, yAxes);
+};
+
+/**
+ * Demos:
+ *
+ * - [Lines](https://mui.com/x/react-charts/lines/)
+ * - [Areas demonstration](https://mui.com/x/react-charts/areas-demo/)
+ * - [Stacking](https://mui.com/x/react-charts/stacking/)
+ *
+ * API:
+ *
+ * - [AreaPlot API](https://mui.com/x/api/charts/area-plot/)
+ */
+function AreaPlot(props: AreaPlotProps) {
+  const {
+    slots,
+    slotProps,
+    onItemClick,
+    skipAnimation: inSkipAnimation,
+    className,
+    ...other
+  } = props;
+  const isZoomInteracting = useInternalIsZoomInteracting();
+  const skipAnimation = useSkipAnimation(isZoomInteracting || inSkipAnimation);
+
+  const completedData = useAggregatedData();
+  const classes = useUtilityClasses();
+
+  // The area is drawn only for series that enable it, so a series without an area declines and
+  // activation falls through to the line.
+  const isAreaRendered = ({ seriesId }: LineItemClickIdentifier) =>
+    completedData.some((series) => series.seriesId === seriesId && !!series.area);
+  const onAreaItemClick = useLineItemClickHandler(
+    onItemClick,
+    LINE_ACTIVATION_PRIORITY.area,
+    isAreaRendered,
+  );
+
+  return (
+    <AreaPlotRoot className={clsx(classes.areaPlot, className)} {...other}>
+      {completedData.map(
+        ({ d, seriesId, color, area, gradientId }) =>
+          !!area && (
+            <AreaElement
+              key={seriesId}
+              seriesId={seriesId}
+              d={d}
+              color={color}
+              gradientId={gradientId}
+              slots={slots}
+              slotProps={slotProps}
+              onClick={onAreaItemClick && ((event) => onAreaItemClick(event, seriesId))}
+              skipAnimation={skipAnimation}
+            />
+          ),
+      )}
+    </AreaPlotRoot>
+  );
+}
+
+AreaPlot.propTypes /* remove-proptypes */ = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // | To update them edit the TypeScript types and run "pnpm proptypes"  |
+  // ----------------------------------------------------------------------
+  /**
+   * Callback fired when a line area item is clicked.
+   * @param {ChartsActivationEvent<SVGElement>} event The event source of the callback.
+   * @param {LineItemClickIdentifier} lineItemIdentifier The line item identifier.
+   */
+  onItemClick: PropTypes.func,
+  /**
+   * If `true`, animations are skipped.
+   * @default false
+   */
+  skipAnimation: PropTypes.bool,
+  /**
+   * The props used for each component slot.
+   * @default {}
+   */
+  slotProps: PropTypes.object,
+  /**
+   * Overridable component slots.
+   * @default {}
+   */
+  slots: PropTypes.object,
+} as any;
+
+export { AreaPlot };

@@ -1,0 +1,37 @@
+import { DateField } from '@mui/x-date-pickers/DateField';
+import type { PickerValue } from '@mui/x-date-pickers/internals';
+import {
+  createPickerRenderer,
+  expectFieldValue,
+  adapterToUse,
+  describeValue,
+  getFieldInputRoot,
+} from 'test/utils/pickers';
+import { describe } from 'vitest';
+
+describe('<DateField /> - Describe Value', () => {
+  const { render } = createPickerRenderer();
+
+  describeValue<PickerValue, 'field'>(DateField, () => ({
+    render,
+    componentFamily: 'field',
+    values: [adapterToUse.date('2018-01-01'), adapterToUse.date('2018-01-02')],
+    emptyValue: null,
+    assertRenderedValue: (expectedValue: any) => {
+      const fieldRoot = getFieldInputRoot();
+
+      const expectedValueStr = expectedValue
+        ? adapterToUse.format(expectedValue, 'keyboardDate')
+        : 'MM/DD/YYYY';
+
+      expectFieldValue(fieldRoot, expectedValueStr);
+    },
+    setNewValue: async (value, { selectSection, pressKey }) => {
+      const newValue = adapterToUse.addDays(value!, 1);
+      await selectSection('day');
+      await pressKey('ArrowUp');
+
+      return newValue;
+    },
+  }));
+});

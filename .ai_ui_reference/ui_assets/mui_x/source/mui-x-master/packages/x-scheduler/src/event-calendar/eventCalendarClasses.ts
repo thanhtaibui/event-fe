@@ -1,0 +1,616 @@
+import generateUtilityClass from '@mui/utils/generateUtilityClass';
+import generateUtilityClasses from '@mui/utils/generateUtilityClasses';
+import composeClasses from '@mui/utils/composeClasses';
+import type { EventDialogClasses } from '../internals/components/event-dialog/eventDialogClasses';
+import {
+  eventDialogClassKeys,
+  eventDialogSlots,
+} from '../internals/components/event-dialog/eventDialogClasses';
+import type { EventContextMenuClasses } from '../internals/components/event-context-menu/eventContextMenuClasses';
+import {
+  eventContextMenuClassKeys,
+  eventContextMenuSlots,
+} from '../internals/components/event-context-menu/eventContextMenuClasses';
+import type { ErrorContainerClasses } from '../internals/components/error-container/errorContainerClasses';
+import {
+  errorContainerClassKeys,
+  errorContainerSlots,
+} from '../internals/components/error-container/errorContainerClasses';
+import type { EventSkeletonClasses } from '../internals/components/event-skeleton/eventSkeletonClasses';
+import {
+  eventSkeletonClassKeys,
+  eventSkeletonSlots,
+} from '../internals/components/event-skeleton/eventSkeletonClasses';
+
+export interface EventCalendarClasses
+  extends EventDialogClasses, EventContextMenuClasses, ErrorContainerClasses, EventSkeletonClasses {
+  /** Styles applied to the root element. */
+  root: string;
+  /** Styles applied to the side panel element. */
+  sidePanel: string;
+  /** Styles applied to the main panel element. */
+  mainPanel: string;
+  /** Styles applied to the content section element. */
+  content: string;
+  /** Styles applied to the mini calendar root element. */
+  miniCalendar: string;
+  /** Styles applied to the mini calendar header element. */
+  miniCalendarHeader: string;
+  /** Styles applied to the mini calendar header navigation container. */
+  miniCalendarNavigation: string;
+  /** Styles applied to the mini calendar month label. */
+  miniCalendarMonthLabel: string;
+  /** Styles applied to the mini calendar weekday header row. */
+  miniCalendarWeekdayHeader: string;
+  /** Styles applied to individual mini calendar weekday header cells. */
+  miniCalendarWeekdayCell: string;
+  /** Styles applied to the mini calendar grid (body). */
+  miniCalendarGrid: string;
+  /** Styles applied to mini calendar week rows. */
+  miniCalendarWeekRow: string;
+  /** Styles applied to mini calendar day cells. */
+  miniCalendarDayCell: string;
+  /** Styles applied to mini calendar day buttons. */
+  miniCalendarDayButton: string;
+  /** Styles applied to the header toolbar element. */
+  headerToolbar: string;
+  /** Styles applied to the header toolbar actions element. */
+  headerToolbarActions: string;
+  /** Styles applied to the header toolbar left side element. */
+  headerToolbarLeftElement: string;
+  /** Styles applied to the header toolbar label element. */
+  headerToolbarLabel: string;
+  /** Styles applied to the header toolbar date navigator buttons container element. */
+  headerToolbarDateNavigator: string;
+  /** Styles applied to the view switcher element. */
+  viewSwitcher: string;
+  /** Styles applied to the preferences menu element. */
+  preferencesMenu: string;
+  /** Styles applied to the resources tree root element. */
+  resourcesTree: string;
+  /** Styles applied to the resources tree section label element. */
+  resourcesTreeLabel: string;
+  /** Styles applied to resources tree item elements. */
+  resourcesTreeItem: string;
+  /** Styles applied to resources tree item label elements. */
+  resourcesTreeItemLabel: string;
+  /** Styles applied to resources tree item checkbox elements. */
+  resourcesTreeItemCheckbox: string;
+  /** Styles applied to the agenda view element. */
+  agendaView: string;
+  /** Styles applied to agenda view row elements. */
+  agendaViewRow: string;
+  /** Styles applied to agenda view day header cell elements. */
+  agendaViewDayHeaderCell: string;
+  /** Styles applied to agenda view day number cell elements. */
+  agendaViewDayNumberCell: string;
+  /** Styles applied to agenda view week day cell elements. */
+  agendaViewWeekDayCell: string;
+  /** Styles applied to agenda view week day name label elements. */
+  agendaViewWeekDayNameLabel: string;
+  /** Styles applied to agenda view year and month label elements. */
+  agendaViewYearAndMonthLabel: string;
+  /** Styles applied to the agenda view events list element. */
+  agendaViewEventsList: string;
+  /** Styles applied to agenda view week number label elements. */
+  agendaViewWeekNumberLabel: string;
+  /** Styles applied to agenda view week number row elements. */
+  agendaViewWeekNumberRow: string;
+  /** Styles applied to the month view root element. */
+  monthView: string;
+  /** Styles applied to the month view grid element. */
+  monthViewGrid: string;
+  /** Styles applied to the month view header element. */
+  monthViewHeader: string;
+  /** Styles applied to month view header cell elements. */
+  monthViewHeaderCell: string;
+  /** Styles applied to the month view week header cell element. */
+  monthViewWeekHeaderCell: string;
+  /** Styles applied to the month view body element. */
+  monthViewBody: string;
+  /** Styles applied to month view row elements. */
+  monthViewRow: string;
+  /** Styles applied to month view week number cell elements. */
+  monthViewWeekNumberCell: string;
+  /** Styles applied to month view cell elements. */
+  monthViewCell: string;
+  /** Styles applied to month view cell number elements. */
+  monthViewCellNumber: string;
+  /** Styles applied to month view cell number button elements. */
+  monthViewCellNumberButton: string;
+  /** Styles applied to month view cell events container elements. */
+  monthViewCellEvents: string;
+  /** Styles applied to month view more events button elements. */
+  monthViewMoreEvents: string;
+  /** Styles applied to month view placeholder event container elements. */
+  monthViewPlaceholderContainer: string;
+  /** Styles applied to the day time grid container element. */
+  dayTimeGridContainer: string;
+  /** Styles applied to the day time grid element. */
+  dayTimeGrid: string;
+  /** Styles applied to the day time grid header element. */
+  dayTimeGridHeader: string;
+  /** Styles applied to day time grid header cell elements. */
+  dayTimeGridHeaderCell: string;
+  /** Styles applied to the day time grid all day events grid element. */
+  dayTimeGridAllDayEventsGrid: string;
+  /** Styles applied to the day time grid all day events row element. */
+  dayTimeGridAllDayEventsRow: string;
+  /** Styles applied to day time grid all day events cell elements. */
+  dayTimeGridAllDayEventsCell: string;
+  /** Styles applied to the day time grid all day events header cell element. */
+  dayTimeGridAllDayEventsHeaderCell: string;
+  /** Styles applied to day time grid header content elements. */
+  dayTimeGridHeaderContent: string;
+  /** Styles applied to day time grid header button elements. */
+  dayTimeGridHeaderButton: string;
+  /** Styles applied to day time grid header day name elements. */
+  dayTimeGridHeaderDayName: string;
+  /** Styles applied to day time grid header day number elements. */
+  dayTimeGridHeaderDayNumber: string;
+  /** Styles applied to the day time grid body element. */
+  dayTimeGridBody: string;
+  /** Styles applied to the day time grid scrollable content element. */
+  dayTimeGridScrollableContent: string;
+  /** Styles applied to the day time grid time axis element. */
+  dayTimeGridTimeAxis: string;
+  /** Styles applied to day time grid time axis cell elements. */
+  dayTimeGridTimeAxisCell: string;
+  /** Styles applied to day time grid time axis text elements. */
+  dayTimeGridTimeAxisText: string;
+  /** Styles applied to the day time grid grid element. */
+  dayTimeGridGrid: string;
+  /** Styles applied to day time grid column elements. */
+  dayTimeGridColumn: string;
+  /** Styles applied to day time grid column interactive layer elements. */
+  dayTimeGridColumnInteractiveLayer: string;
+  /** Styles applied to the day time grid current time indicator element. */
+  dayTimeGridCurrentTimeIndicator: string;
+  /** Styles applied to the day time grid current time indicator circle element. */
+  dayTimeGridCurrentTimeIndicatorCircle: string;
+  /** Styles applied to the day time grid current time label element. */
+  dayTimeGridCurrentTimeLabel: string;
+  /** Styles applied to day time grid all day events cell events container elements. */
+  dayTimeGridAllDayEventsCellEvents: string;
+  /** Styles applied to day time grid all day event container elements. */
+  dayTimeGridAllDayEventContainer: string;
+  /** Styles applied to the day time grid scrollable placeholder element. */
+  dayTimeGridScrollablePlaceholder: string;
+  /** Styles applied to day grid event elements. */
+  dayGridEvent: string;
+  /** Styles applied to day grid event placeholder elements. */
+  dayGridEventPlaceholder: string;
+  /** Styles applied to day grid event title elements. */
+  dayGridEventTitle: string;
+  /** Styles applied to day grid event time elements. */
+  dayGridEventTime: string;
+  /** Styles applied to day grid event recurring icon elements. */
+  dayGridEventRecurringIcon: string;
+  /** Styles applied to day grid event resize handler elements. */
+  dayGridEventResizeHandler: string;
+  /** Styles applied to day grid event card wrapper elements. */
+  dayGridEventCardWrapper: string;
+  /** Styles applied to day grid event card content elements. */
+  dayGridEventCardContent: string;
+  /** Styles applied to day grid event lines clamp elements. */
+  dayGridEventLinesClamp: string;
+  /** Styles applied to event color indicator elements. */
+  eventColorIndicator: string;
+  /** Styles applied to time grid event elements. */
+  timeGridEvent: string;
+  /** Styles applied to time grid event placeholder elements. */
+  timeGridEventPlaceholder: string;
+  /** Styles applied to time grid event skeleton elements. */
+  timeGridEventSkeleton: string;
+  /** Styles applied to time grid event title elements. */
+  timeGridEventTitle: string;
+  /** Styles applied to time grid event time elements. */
+  timeGridEventTime: string;
+  /** Styles applied to time grid event recurring icon elements. */
+  timeGridEventRecurringIcon: string;
+  /** Styles applied to time grid event resize handler elements. */
+  timeGridEventResizeHandler: string;
+  /** Styles applied to event item card elements. */
+  eventItemCard: string;
+  /** Styles applied to event item card wrapper elements. */
+  eventItemCardWrapper: string;
+  /** Styles applied to event item title elements. */
+  eventItemTitle: string;
+  /** Styles applied to event item time elements. */
+  eventItemTime: string;
+  /** Styles applied to event item recurring icon elements. */
+  eventItemRecurringIcon: string;
+  /** Styles applied to event item resource legend color elements. */
+  resourceLegendColor: string;
+  /** Styles applied to event item card content elements. */
+  eventItemCardContent: string;
+  /** Styles applied to event item lines clamp elements. */
+  eventItemLinesClamp: string;
+  /** Styles applied to the more events popover header element. */
+  moreEventsPopoverHeader: string;
+  /** Styles applied to the more events popover title element. */
+  moreEventsPopoverTitle: string;
+  /** Styles applied to the more events popover body element. */
+  moreEventsPopoverBody: string;
+  /** Styles applied to the event drag preview element. */
+  eventDragPreview: string;
+  /** Styles applied to the standalone event element. */
+  standaloneEvent: string;
+  /** Styles applied to the agenda view event list item elements. */
+  agendaViewEventListItem: string;
+  /** Styles applied to the side panel collapse element. */
+  sidePanelCollapse: string;
+  /** Styles applied to the side panel divider element. */
+  sidePanelDivider: string;
+  /** Styles applied to the header toolbar side panel toggle button element. */
+  headerToolbarSidePanelToggle: string;
+  /** Styles applied to the header toolbar previous button element. */
+  headerToolbarPreviousButton: string;
+  /** Styles applied to the header toolbar today button element. */
+  headerToolbarTodayButton: string;
+  /** Styles applied to the header toolbar next button element. */
+  headerToolbarNextButton: string;
+  /** Styles applied to the header toolbar week number element. */
+  headerToolbarWeekNumber: string;
+  /** Styles applied to the preferences menu button element. */
+  preferencesMenuButton: string;
+  /** Styles applied to the preferences menu list element. */
+  preferencesMenuList: string;
+  /** Styles applied to the preferences menu list item icon elements. */
+  preferencesMenuListItemIcon: string;
+  /** Styles applied to the preferences menu list subheader elements. */
+  preferencesMenuListSubheader: string;
+  /** Styles applied to the preferences menu item elements. */
+  preferencesMenuItem: string;
+  /** Styles applied to the preferences menu divider elements. */
+  preferencesMenuDivider: string;
+  /** Styles applied to the preferences menu list item text elements. */
+  preferencesMenuListItemText: string;
+  /** Styles applied to the view switcher button element. */
+  viewSwitcherButton: string;
+  /** Styles applied to the view switcher menu element. */
+  viewSwitcherMenu: string;
+  /** Styles applied to the mini calendar previous button element. */
+  miniCalendarPreviousButton: string;
+  /** Styles applied to the mini calendar next button element. */
+  miniCalendarNextButton: string;
+  /** Styles applied to the more events popover element. */
+  moreEventsPopover: string;
+  /** Styles applied to the header toolbar compact menu button element (compact layout). */
+  headerToolbarCompactMenuButton: string;
+  /** Styles applied to the header toolbar compact today button element (compact layout). */
+  headerToolbarCompactTodayButton: string;
+  /** Styles applied to the side panel drawer paper (popup) element (compact layout). */
+  sidePanelDrawer: string;
+  /** Styles applied to the side panel drawer backdrop element. */
+  sidePanelDrawerBackdrop: string;
+  /** Styles applied to the side panel drawer root (modal) element. */
+  sidePanelDrawerViewport: string;
+  /** Styles applied to the side panel drawer header element. */
+  sidePanelDrawerHeader: string;
+  /** Styles applied to the side panel drawer title element. */
+  sidePanelDrawerTitle: string;
+  /** Styles applied to the side panel drawer close button element. */
+  sidePanelDrawerCloseButton: string;
+  /** Styles applied to the side panel drawer view list element. */
+  sidePanelDrawerViewList: string;
+  /** Styles applied to side panel drawer view list item elements. */
+  sidePanelDrawerViewItem: string;
+  /** Styles applied to the side panel drawer preferences button element. */
+  sidePanelDrawerPreferencesButton: string;
+  /** Styles applied to the side panel drawer preferences entry list element. */
+  sidePanelDrawerPreferences: string;
+  /** Styles applied to the side panel drawer collapsible preferences options list element. */
+  sidePanelDrawerPreferencesList: string;
+}
+
+export type EventCalendarClassKey = keyof EventCalendarClasses;
+
+export function getEventCalendarUtilityClass(slot: string) {
+  return generateUtilityClass('MuiEventCalendar', slot);
+}
+
+export const eventCalendarClasses: EventCalendarClasses = generateUtilityClasses(
+  'MuiEventCalendar',
+  [
+    'root',
+    'sidePanel',
+    'mainPanel',
+    'content',
+    'miniCalendar',
+    'miniCalendarHeader',
+    'miniCalendarNavigation',
+    'miniCalendarMonthLabel',
+    'miniCalendarWeekdayHeader',
+    'miniCalendarWeekdayCell',
+    'miniCalendarGrid',
+    'miniCalendarWeekRow',
+    'miniCalendarDayCell',
+    'miniCalendarDayButton',
+    'headerToolbar',
+    'headerToolbarActions',
+    'headerToolbarLeftElement',
+    'headerToolbarLabel',
+    'headerToolbarDateNavigator',
+    'viewSwitcher',
+    'preferencesMenu',
+    'resourcesTree',
+    'resourcesTreeLabel',
+    'resourcesTreeItem',
+    'resourcesTreeItemLabel',
+    'resourcesTreeItemCheckbox',
+    'agendaView',
+    'agendaViewRow',
+    'agendaViewDayHeaderCell',
+    'agendaViewDayNumberCell',
+    'agendaViewWeekDayCell',
+    'agendaViewWeekDayNameLabel',
+    'agendaViewYearAndMonthLabel',
+    'agendaViewEventsList',
+    'agendaViewWeekNumberLabel',
+    'agendaViewWeekNumberRow',
+    'monthView',
+    'monthViewGrid',
+    'monthViewHeader',
+    'monthViewHeaderCell',
+    'monthViewWeekHeaderCell',
+    'monthViewBody',
+    'monthViewRow',
+    'monthViewWeekNumberCell',
+    'monthViewCell',
+    'monthViewCellNumber',
+    'monthViewCellNumberButton',
+    'monthViewCellEvents',
+    'monthViewMoreEvents',
+    'monthViewPlaceholderContainer',
+    'dayTimeGridContainer',
+    'dayTimeGrid',
+    'dayTimeGridHeader',
+    'dayTimeGridHeaderCell',
+    'dayTimeGridAllDayEventsGrid',
+    'dayTimeGridAllDayEventsRow',
+    'dayTimeGridAllDayEventsCell',
+    'dayTimeGridAllDayEventsHeaderCell',
+    'dayTimeGridHeaderContent',
+    'dayTimeGridHeaderButton',
+    'dayTimeGridHeaderDayName',
+    'dayTimeGridHeaderDayNumber',
+    'dayTimeGridBody',
+    'dayTimeGridScrollableContent',
+    'dayTimeGridTimeAxis',
+    'dayTimeGridTimeAxisCell',
+    'dayTimeGridTimeAxisText',
+    'dayTimeGridGrid',
+    'dayTimeGridColumn',
+    'dayTimeGridColumnInteractiveLayer',
+    'dayTimeGridCurrentTimeIndicator',
+    'dayTimeGridCurrentTimeIndicatorCircle',
+    'dayTimeGridCurrentTimeLabel',
+    'dayTimeGridAllDayEventsCellEvents',
+    'dayTimeGridAllDayEventContainer',
+    'dayTimeGridScrollablePlaceholder',
+    'dayGridEvent',
+    'dayGridEventPlaceholder',
+    'dayGridEventTitle',
+    'dayGridEventTime',
+    'dayGridEventRecurringIcon',
+    'dayGridEventResizeHandler',
+    'dayGridEventCardWrapper',
+    'dayGridEventCardContent',
+    'dayGridEventLinesClamp',
+    'eventColorIndicator',
+    'timeGridEvent',
+    'timeGridEventPlaceholder',
+    'timeGridEventSkeleton',
+    'timeGridEventTitle',
+    'timeGridEventTime',
+    'timeGridEventRecurringIcon',
+    'timeGridEventResizeHandler',
+    'eventItemCard',
+    'eventItemCardWrapper',
+    'eventItemTitle',
+    'eventItemTime',
+    'eventItemRecurringIcon',
+    'resourceLegendColor',
+    'eventItemCardContent',
+    'eventItemLinesClamp',
+    'moreEventsPopoverHeader',
+    'moreEventsPopoverTitle',
+    'moreEventsPopoverBody',
+    'eventDragPreview',
+    'standaloneEvent',
+    'agendaViewEventListItem',
+    'sidePanelCollapse',
+    'sidePanelDivider',
+    'headerToolbarSidePanelToggle',
+    'headerToolbarPreviousButton',
+    'headerToolbarTodayButton',
+    'headerToolbarNextButton',
+    'headerToolbarWeekNumber',
+    'preferencesMenuButton',
+    'preferencesMenuList',
+    'preferencesMenuListItemIcon',
+    'preferencesMenuListSubheader',
+    'preferencesMenuItem',
+    'preferencesMenuDivider',
+    'preferencesMenuListItemText',
+    'viewSwitcherButton',
+    'viewSwitcherMenu',
+    'miniCalendarPreviousButton',
+    'miniCalendarNextButton',
+    'moreEventsPopover',
+    'headerToolbarCompactMenuButton',
+    'headerToolbarCompactTodayButton',
+    'sidePanelDrawer',
+    'sidePanelDrawerBackdrop',
+    'sidePanelDrawerViewport',
+    'sidePanelDrawerHeader',
+    'sidePanelDrawerTitle',
+    'sidePanelDrawerCloseButton',
+    'sidePanelDrawerViewList',
+    'sidePanelDrawerViewItem',
+    'sidePanelDrawerPreferencesButton',
+    'sidePanelDrawerPreferences',
+    'sidePanelDrawerPreferencesList',
+    ...errorContainerClassKeys,
+    ...eventSkeletonClassKeys,
+    ...eventDialogClassKeys,
+    ...eventContextMenuClassKeys,
+  ],
+);
+
+const slots = {
+  root: ['root'],
+  sidePanel: ['sidePanel'],
+  mainPanel: ['mainPanel'],
+  content: ['content'],
+  miniCalendar: ['miniCalendar'],
+  miniCalendarHeader: ['miniCalendarHeader'],
+  miniCalendarNavigation: ['miniCalendarNavigation'],
+  miniCalendarMonthLabel: ['miniCalendarMonthLabel'],
+  miniCalendarWeekdayHeader: ['miniCalendarWeekdayHeader'],
+  miniCalendarWeekdayCell: ['miniCalendarWeekdayCell'],
+  miniCalendarGrid: ['miniCalendarGrid'],
+  miniCalendarWeekRow: ['miniCalendarWeekRow'],
+  miniCalendarDayCell: ['miniCalendarDayCell'],
+  miniCalendarDayButton: ['miniCalendarDayButton'],
+  headerToolbar: ['headerToolbar'],
+  headerToolbarActions: ['headerToolbarActions'],
+  headerToolbarLeftElement: ['headerToolbarLeftElement'],
+  headerToolbarLabel: ['headerToolbarLabel'],
+  headerToolbarDateNavigator: ['headerToolbarDateNavigator'],
+  viewSwitcher: ['viewSwitcher'],
+  preferencesMenu: ['preferencesMenu'],
+  resourcesTree: ['resourcesTree'],
+  resourcesTreeLabel: ['resourcesTreeLabel'],
+  resourcesTreeItem: ['resourcesTreeItem'],
+  resourcesTreeItemLabel: ['resourcesTreeItemLabel'],
+  resourcesTreeItemCheckbox: ['resourcesTreeItemCheckbox'],
+  agendaView: ['agendaView'],
+  agendaViewRow: ['agendaViewRow'],
+  agendaViewDayHeaderCell: ['agendaViewDayHeaderCell'],
+  agendaViewDayNumberCell: ['agendaViewDayNumberCell'],
+  agendaViewWeekDayCell: ['agendaViewWeekDayCell'],
+  agendaViewWeekDayNameLabel: ['agendaViewWeekDayNameLabel'],
+  agendaViewYearAndMonthLabel: ['agendaViewYearAndMonthLabel'],
+  agendaViewEventsList: ['agendaViewEventsList'],
+  agendaViewWeekNumberLabel: ['agendaViewWeekNumberLabel'],
+  agendaViewWeekNumberRow: ['agendaViewWeekNumberRow'],
+  monthView: ['monthView'],
+  monthViewGrid: ['monthViewGrid'],
+  monthViewHeader: ['monthViewHeader'],
+  monthViewHeaderCell: ['monthViewHeaderCell'],
+  monthViewWeekHeaderCell: ['monthViewWeekHeaderCell'],
+  monthViewBody: ['monthViewBody'],
+  monthViewRow: ['monthViewRow'],
+  monthViewWeekNumberCell: ['monthViewWeekNumberCell'],
+  monthViewCell: ['monthViewCell'],
+  monthViewCellNumber: ['monthViewCellNumber'],
+  monthViewCellNumberButton: ['monthViewCellNumberButton'],
+  monthViewCellEvents: ['monthViewCellEvents'],
+  monthViewMoreEvents: ['monthViewMoreEvents'],
+  monthViewPlaceholderContainer: ['monthViewPlaceholderContainer'],
+  dayTimeGridContainer: ['dayTimeGridContainer'],
+  dayTimeGrid: ['dayTimeGrid'],
+  dayTimeGridHeader: ['dayTimeGridHeader'],
+  dayTimeGridHeaderCell: ['dayTimeGridHeaderCell'],
+  dayTimeGridAllDayEventsGrid: ['dayTimeGridAllDayEventsGrid'],
+  dayTimeGridAllDayEventsRow: ['dayTimeGridAllDayEventsRow'],
+  dayTimeGridAllDayEventsCell: ['dayTimeGridAllDayEventsCell'],
+  dayTimeGridAllDayEventsHeaderCell: ['dayTimeGridAllDayEventsHeaderCell'],
+  dayTimeGridHeaderContent: ['dayTimeGridHeaderContent'],
+  dayTimeGridHeaderButton: ['dayTimeGridHeaderButton'],
+  dayTimeGridHeaderDayName: ['dayTimeGridHeaderDayName'],
+  dayTimeGridHeaderDayNumber: ['dayTimeGridHeaderDayNumber'],
+  dayTimeGridBody: ['dayTimeGridBody'],
+  dayTimeGridScrollableContent: ['dayTimeGridScrollableContent'],
+  dayTimeGridTimeAxis: ['dayTimeGridTimeAxis'],
+  dayTimeGridTimeAxisCell: ['dayTimeGridTimeAxisCell'],
+  dayTimeGridTimeAxisText: ['dayTimeGridTimeAxisText'],
+  dayTimeGridGrid: ['dayTimeGridGrid'],
+  dayTimeGridColumn: ['dayTimeGridColumn'],
+  dayTimeGridColumnInteractiveLayer: ['dayTimeGridColumnInteractiveLayer'],
+  dayTimeGridCurrentTimeIndicator: ['dayTimeGridCurrentTimeIndicator'],
+  dayTimeGridCurrentTimeIndicatorCircle: ['dayTimeGridCurrentTimeIndicatorCircle'],
+  dayTimeGridCurrentTimeLabel: ['dayTimeGridCurrentTimeLabel'],
+  dayTimeGridAllDayEventsCellEvents: ['dayTimeGridAllDayEventsCellEvents'],
+  dayTimeGridAllDayEventContainer: ['dayTimeGridAllDayEventContainer'],
+  dayTimeGridScrollablePlaceholder: ['dayTimeGridScrollablePlaceholder'],
+  dayGridEvent: ['dayGridEvent'],
+  dayGridEventPlaceholder: ['dayGridEventPlaceholder'],
+  dayGridEventTitle: ['dayGridEventTitle'],
+  dayGridEventTime: ['dayGridEventTime'],
+  dayGridEventRecurringIcon: ['dayGridEventRecurringIcon'],
+  dayGridEventResizeHandler: ['dayGridEventResizeHandler'],
+  dayGridEventCardWrapper: ['dayGridEventCardWrapper'],
+  dayGridEventCardContent: ['dayGridEventCardContent'],
+  dayGridEventLinesClamp: ['dayGridEventLinesClamp'],
+  eventColorIndicator: ['eventColorIndicator'],
+  timeGridEvent: ['timeGridEvent'],
+  timeGridEventPlaceholder: ['timeGridEventPlaceholder'],
+  timeGridEventSkeleton: ['timeGridEventSkeleton'],
+  timeGridEventTitle: ['timeGridEventTitle'],
+  timeGridEventTime: ['timeGridEventTime'],
+  timeGridEventRecurringIcon: ['timeGridEventRecurringIcon'],
+  timeGridEventResizeHandler: ['timeGridEventResizeHandler'],
+  eventItemCard: ['eventItemCard'],
+  eventItemCardWrapper: ['eventItemCardWrapper'],
+  eventItemTitle: ['eventItemTitle'],
+  eventItemTime: ['eventItemTime'],
+  eventItemRecurringIcon: ['eventItemRecurringIcon'],
+  resourceLegendColor: ['resourceLegendColor'],
+  eventItemCardContent: ['eventItemCardContent'],
+  eventItemLinesClamp: ['eventItemLinesClamp'],
+  moreEventsPopoverHeader: ['moreEventsPopoverHeader'],
+  moreEventsPopoverTitle: ['moreEventsPopoverTitle'],
+  moreEventsPopoverBody: ['moreEventsPopoverBody'],
+  eventDragPreview: ['eventDragPreview'],
+  standaloneEvent: ['standaloneEvent'],
+  agendaViewEventListItem: ['agendaViewEventListItem'],
+  sidePanelCollapse: ['sidePanelCollapse'],
+  sidePanelDivider: ['sidePanelDivider'],
+  headerToolbarSidePanelToggle: ['headerToolbarSidePanelToggle'],
+  headerToolbarPreviousButton: ['headerToolbarPreviousButton'],
+  headerToolbarTodayButton: ['headerToolbarTodayButton'],
+  headerToolbarNextButton: ['headerToolbarNextButton'],
+  headerToolbarWeekNumber: ['headerToolbarWeekNumber'],
+  preferencesMenuButton: ['preferencesMenuButton'],
+  preferencesMenuList: ['preferencesMenuList'],
+  preferencesMenuListItemIcon: ['preferencesMenuListItemIcon'],
+  preferencesMenuListSubheader: ['preferencesMenuListSubheader'],
+  preferencesMenuItem: ['preferencesMenuItem'],
+  preferencesMenuDivider: ['preferencesMenuDivider'],
+  preferencesMenuListItemText: ['preferencesMenuListItemText'],
+  viewSwitcherButton: ['viewSwitcherButton'],
+  viewSwitcherMenu: ['viewSwitcherMenu'],
+  miniCalendarPreviousButton: ['miniCalendarPreviousButton'],
+  miniCalendarNextButton: ['miniCalendarNextButton'],
+  moreEventsPopover: ['moreEventsPopover'],
+  headerToolbarCompactMenuButton: ['headerToolbarCompactMenuButton'],
+  headerToolbarCompactTodayButton: ['headerToolbarCompactTodayButton'],
+  sidePanelDrawer: ['sidePanelDrawer'],
+  sidePanelDrawerBackdrop: ['sidePanelDrawerBackdrop'],
+  sidePanelDrawerViewport: ['sidePanelDrawerViewport'],
+  sidePanelDrawerHeader: ['sidePanelDrawerHeader'],
+  sidePanelDrawerTitle: ['sidePanelDrawerTitle'],
+  sidePanelDrawerCloseButton: ['sidePanelDrawerCloseButton'],
+  sidePanelDrawerViewList: ['sidePanelDrawerViewList'],
+  sidePanelDrawerViewItem: ['sidePanelDrawerViewItem'],
+  sidePanelDrawerPreferencesButton: ['sidePanelDrawerPreferencesButton'],
+  sidePanelDrawerPreferences: ['sidePanelDrawerPreferences'],
+  sidePanelDrawerPreferencesList: ['sidePanelDrawerPreferencesList'],
+  ...errorContainerSlots,
+  ...eventSkeletonSlots,
+  ...eventDialogSlots,
+  ...eventContextMenuSlots,
+};
+
+/**
+ * Computes the utility classes for EventCalendar components.
+ * Exported so both EventCalendar and EventCalendarPremium can use it.
+ */
+export const useEventCalendarUtilityClasses = (
+  classes: Partial<EventCalendarClasses> | undefined,
+): EventCalendarClasses => {
+  return composeClasses(slots, getEventCalendarUtilityClass, classes);
+};

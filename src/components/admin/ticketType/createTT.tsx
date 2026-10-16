@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import "../../../styles/admin/popup/popup.css";
 import type { TicketType } from "../../../types/ticket-type/ticket-type";
 import { useCreateTicketType } from "../../../hooks/admin/ticketType/useCreateTicketType";
@@ -61,7 +62,7 @@ export const CreateTT: React.FC<CreateTTProps> = ({
       setUiLoading(false);
     }
   };
-  return (
+  return createPortal(
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-box-mini" onClick={(e) => e.stopPropagation()}>
         <div className="popup-header">
@@ -127,6 +128,7 @@ export const CreateTT: React.FC<CreateTTProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };

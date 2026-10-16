@@ -8,13 +8,11 @@ import { CustomOption, CustomSingleValue } from "../layout/CustomSelect";
 import Select from "react-select";
 import { useSwitchOrg } from "../../../hooks/admin/org/useSwitchOrg";
 import { PosterUpload } from "../layout/Upload";
-import Flatpickr from "react-flatpickr";
-import { Vietnamese } from "flatpickr/dist/l10n/vn.js";
-import "flatpickr/dist/themes/dark.css";
 import { useUpload } from "../../../hooks/admin/useUpload";
 import { PlaceInput } from "../layout/Place";
 import { eventService } from "../../../services/admin/event.service";
 import type { CategoryDto } from "../../../types/event/event";
+import { EventDateTimePicker } from "./EventDateTimePicker";
 
 type SelectOption = {
   value: string;
@@ -24,7 +22,7 @@ type SelectOption = {
 type CategoryResponse =
   | CategoryDto[]
   | {
-      data?: CategoryDto[] | { items?: CategoryDto[] };
+      data?: CategoryDto[] | { items?: CategoryDto[]; data?: CategoryDto[] };
       items?: CategoryDto[];
     };
 
@@ -35,12 +33,38 @@ function extractCategories(response: CategoryResponse) {
   if (response.data && "items" in response.data && Array.isArray(response.data.items)) {
     return response.data.items;
   }
+  if (response.data && "data" in response.data && Array.isArray(response.data.data)) {
+    return response.data.data;
+  }
 
   return [];
 }
 
-// mặc định (không cần import theme)
-// import "flatpickr/dist/flatpickr.min.css";
+const CREATE_EVENT_FORM_ID = "create-event-form";
+
+const logCreateEventDebug = (
+  marker: string,
+  details?: Record<string, unknown>,
+) => {
+  if (!import.meta.env.DEV) return;
+  console.info(marker, details ?? {});
+};
+
+const getCreateEventSubmitState = (
+  form: Partial<EventPayload>,
+  banner: File | null,
+) => ({
+  hasBanner: Boolean(banner),
+  hasTitle: Boolean(form.title?.trim()),
+  hasStartDateTime: Boolean(form.startDateTime),
+  hasEndDateTime: Boolean(form.endDateTime),
+  hasRegistrationEndDate: Boolean(form.registrationEndDate),
+  hasCapacity: Boolean(form.capacity && form.capacity > 0),
+  hasOrganizationId: Boolean(form.organizationId),
+  categoryIdsCount: form.categoryIds?.length ?? 0,
+  hasPlace: Boolean(form.place?.trim()),
+});
+
 export const CreateEventPopup = ({
   onClose,
   onSuccess,
@@ -53,6 +77,9 @@ export const CreateEventPopup = ({
   const { data: switchOrgs } = useSwitchOrg();
   const { upload } = useUpload();
   const [categories, setCategories] = useState<CategoryDto[]>([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
+  const [categoryError, setCategoryError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState<Partial<EventPayload>>({
     title: "",
@@ -71,11 +98,18 @@ export const CreateEventPopup = ({
     let ignore = false;
 
     const fetchCategories = async () => {
+      setCategoryLoading(true);
+      setCategoryError("");
       try {
         const response = await eventService.getCategories({ limit: 100 });
         if (!ignore) setCategories(extractCategories(response));
       } catch {
-        if (!ignore) setCategories([]);
+        if (!ignore) {
+          setCategories([]);
+          setCategoryError("Không thể tải danh mục sự kiện");
+        }
+      } finally {
+        if (!ignore) setCategoryLoading(false);
       }
     };
 
@@ -116,45 +150,180 @@ export const CreateEventPopup = ({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const focusField = (fieldName: string) => {
+    const field = document.querySelector<HTMLElement>(
+      `#${CREATE_EVENT_FORM_ID} [name="${fieldName}"], #${CREATE_EVENT_FORM_ID} #${fieldName}`,
+    );
+    field?.focus();
+    field?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const showValidationError = (message: string, fieldName?: string) => {
+    toast.warning(message);
+    if (fieldName) focusField(fieldName);
+  };
+
+  const failValidation = (
+    reason: string,
+    message: string,
+    fieldName?: string,
+  ) => {
+    logCreateEventDebug("CREATE_EVENT_VALIDATION_FAILED", {
+      reason,
+      fieldName,
+      ...getCreateEventSubmitState(form, banner),
+    });
+    showValidationError(message, fieldName);
+    return false;
+  };
+
+  const validateForm = () => {
     if (!banner) {
-      toast.warning("Event banner is required");
-      return;
+      return failValidation(
+        "missing_banner",
+        "Vui lòng chọn banner sự kiện.",
+        "event-banner-create-input",
+      );
+    }
+    if (!form.title?.trim()) {
+      return failValidation("missing_title", "Vui lòng nhập tên sự kiện.", "title");
+    }
+    if (!form.startDateTime) {
+      return failValidation(
+        "missing_startDateTime",
+        "Vui lòng chọn thời gian bắt đầu.",
+        "startDateTime",
+      );
+    }
+    if (!form.endDateTime) {
+      return failValidation(
+        "missing_endDateTime",
+        "Vui lòng chọn thời gian kết thúc.",
+        "endDateTime",
+      );
+    }
+    if (new Date(form.endDateTime).getTime() <= new Date(form.startDateTime).getTime()) {
+      return failValidation(
+        "endDateTime_not_after_startDateTime",
+        "Thời gian kết thúc phải sau thời gian bắt đầu.",
+        "endDateTime",
+      );
+    }
+    if (!form.registrationEndDate) {
+      return failValidation(
+        "missing_registrationEndDate",
+        "Vui lòng chọn hạn đăng ký.",
+        "registrationEndDate",
+      );
+    }
+    if (new Date(form.registrationEndDate).getTime() > new Date(form.startDateTime).getTime()) {
+      return failValidation(
+        "registrationEndDate_after_startDateTime",
+        "Hạn đăng ký không được sau thời gian bắt đầu.",
+        "registrationEndDate",
+      );
+    }
+    if (!form.capacity || form.capacity < 1) {
+      return failValidation(
+        "invalid_capacity",
+        "Vui lòng nhập sức chứa hợp lệ.",
+        "capacity",
+      );
+    }
+    if (!form.organizationId) {
+      return failValidation("missing_organizationId", "Vui lòng chọn tổ chức.");
+    }
+    if (!form.categoryIds?.length) {
+      return failValidation("missing_categoryIds", "Vui lòng chọn danh mục sự kiện.");
+    }
+    if (!form.place?.trim()) {
+      return failValidation("missing_place", "Vui lòng chọn địa điểm.", "place");
     }
 
-    // upload file lấy url
-    const formData = new FormData();
-    formData.append("file", banner);
-    formData.append("folder", "banner");
-    const res = await upload(formData);
-    const submitForm = { ...form, eventBanner: res.secure_url };
-    if (
-      !submitForm.title ||
-      !submitForm.organizationId ||
-      !submitForm.categoryIds?.length ||
-      !submitForm.eventBanner ||
-      submitForm.capacity === 0 ||
-      !submitForm.startDateTime ||
-      !submitForm.endDateTime ||
-      !submitForm.registrationEndDate ||
-      !submitForm.place
-    ) {
-      toast.warning("Please fill all required fields");
-      return;
-    }
+    return true;
+  };
+
+  const getSubmitErrorMessage = (error: any) => {
+    const message = error?.response?.data?.message || error?.message;
+    if (Array.isArray(message)) return message[0];
+    return message || "Không thể tạo sự kiện. Vui lòng thử lại.";
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    logCreateEventDebug("CREATE_EVENT_FORM_SUBMIT_ATTEMPT", {
+      ...getCreateEventSubmitState(form, banner),
+    });
+
+    if (isSubmitting || loading) return;
+
+    if (!validateForm()) return;
+
+    logCreateEventDebug("CREATE_EVENT_VALIDATION_PASSED", {
+      ...getCreateEventSubmitState(form, banner),
+    });
+
+    setIsSubmitting(true);
     try {
-      await createEvent(submitForm as EventPayload);
-      toast.success("Event created successfully");
+      const formData = new FormData();
+      formData.append("file", banner as File);
+      formData.append("folder", "banner");
+      const res = await upload(formData);
+      const submitForm: EventPayload = {
+        title: form.title!.trim(),
+        eventBanner: res.secure_url,
+        startDateTime: form.startDateTime!,
+        endDateTime: form.endDateTime!,
+        registrationEndDate: form.registrationEndDate!,
+        capacity: Number(form.capacity),
+        organizationId: form.organizationId!,
+        categoryIds: form.categoryIds!,
+        description: form.description || "",
+        place: form.place!.trim(),
+      };
+
+      logCreateEventDebug("CREATE_EVENT_API_CALL_START", {
+        endpoint: "POST events",
+        payload: {
+          hasTitle: Boolean(submitForm.title),
+          hasEventBanner: Boolean(submitForm.eventBanner),
+          hasStartDateTime: Boolean(submitForm.startDateTime),
+          hasEndDateTime: Boolean(submitForm.endDateTime),
+          hasRegistrationEndDate: Boolean(submitForm.registrationEndDate),
+          capacity: submitForm.capacity,
+          hasOrganizationId: Boolean(submitForm.organizationId),
+          categoryIdsCount: submitForm.categoryIds.length,
+          hasPlace: Boolean(submitForm.place),
+        },
+      });
+      await createEvent(submitForm);
+      logCreateEventDebug("CREATE_EVENT_API_CALL_SUCCESS");
+      toast.success("Tạo sự kiện thành công.");
       onClose();
       onSuccess();
-    } catch (error) {
-      toast.error("Failed to create event");
+    } catch (error: any) {
+      if (import.meta.env.DEV) {
+        logCreateEventDebug("CREATE_EVENT_API_CALL_ERROR", {
+          status: error?.response?.status,
+          message: getSubmitErrorMessage(error),
+        });
+        console.error("Create event failed", error);
+      }
+      toast.error(getSubmitErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const submitLoading = isSubmitting || loading;
+
   return createPortal(
-    <div className="popup-overlay" onClick={onClose}>
+    <div
+      className="popup-overlay"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
       <div className="popup-box" onClick={(e) => e.stopPropagation()}>
         <div className="popup-header">
           <div className="header-items">
@@ -172,7 +341,12 @@ export const CreateEventPopup = ({
             ✕
           </button>
         </div>
-        <form id="popup-form" className="popup-form" onSubmit={handleSubmit}>
+        <form
+          id={CREATE_EVENT_FORM_ID}
+          className="popup-form"
+          noValidate
+          onSubmit={handleSubmit}
+        >
           <div className="form-group full-width">
             <label className="required event-media-label">Event Banner</label>
             <p className="event-media-hint">
@@ -184,6 +358,7 @@ export const CreateEventPopup = ({
               inputId="event-banner-create-input"
               title="Drag & drop your event banner here"
               subtitle="Recommended 16:9 banner — PNG, JPG, WEBP"
+              pasteHint="Or copy an AI image, then press Ctrl+V to paste it here."
               previewAlt="Event banner preview"
               variant="banner"
             />
@@ -201,68 +376,38 @@ export const CreateEventPopup = ({
 
           <div className="form-group">
             <label className="required">Start DateTime</label>
-            <Flatpickr
+            <EventDateTimePicker
               value={form.startDateTime}
-              onChange={([date]: any) =>
-                setForm((prev) => ({
-                  ...prev,
-                  startDateTime: date.toISOString(),
-                }))
+              onChange={(startDateTime) =>
+                setForm((prev) => ({ ...prev, startDateTime }))
               }
-              options={{
-                enableTime: true,
-                dateFormat: "d/m/Y H:i",
-                time_24hr: true,
-                minuteIncrement: 15,
-                maxDate: form.endDateTime || undefined,
-                locale: Vietnamese,
-              }}
-              className="date-input"
+              maxDate={form.endDateTime || undefined}
               placeholder="dd/mm/yyyy --:--"
+              name="startDateTime"
             />
           </div>
           <div className="form-group">
             <label className="required">End DateTime</label>
-            <Flatpickr
+            <EventDateTimePicker
               value={form.endDateTime}
-              onChange={([date]: any) =>
-                setForm((prev) => ({
-                  ...prev,
-                  endDateTime: date.toISOString(),
-                }))
+              onChange={(endDateTime) =>
+                setForm((prev) => ({ ...prev, endDateTime }))
               }
-              options={{
-                enableTime: true,
-                dateFormat: "d/m/Y H:i",
-                time_24hr: true,
-                minuteIncrement: 15,
-                minDate: form.startDateTime || undefined,
-                locale: Vietnamese,
-              }}
-              className="date-input"
+              minDate={form.startDateTime || undefined}
               placeholder="dd/mm/yyyy --:--"
+              name="endDateTime"
             />
           </div>
           <div className="form-group">
             <label className="required">Registration End Date</label>
-            <Flatpickr
+            <EventDateTimePicker
               value={form.registrationEndDate}
-              onChange={([date]: any) =>
-                setForm((prev) => ({
-                  ...prev,
-                  registrationEndDate: date.toISOString(),
-                }))
+              onChange={(registrationEndDate) =>
+                setForm((prev) => ({ ...prev, registrationEndDate }))
               }
-              options={{
-                enableTime: true,
-                dateFormat: "d/m/Y H:i",
-                time_24hr: true,
-                minuteIncrement: 15,
-                maxDate: form.startDateTime || undefined,
-                locale: Vietnamese,
-              }}
-              className="date-input"
+              maxDate={form.startDateTime || undefined}
               placeholder="dd/mm/yyyy --:--"
+              name="registrationEndDate"
             />
           </div>
           <div className="form-group">
@@ -362,16 +507,20 @@ export const CreateEventPopup = ({
               closeMenuOnSelect={false}
               className="react-select event-category-select"
               classNamePrefix="custom-select"
-              placeholder="Select one or more categories"
+              placeholder={categoryLoading ? "Loading categories..." : "Select one or more categories"}
               options={categoryOptions}
+              isLoading={categoryLoading}
+              isDisabled={categoryLoading || Boolean(categoryError)}
               value={categoryOptions.filter((category) =>
                 form.categoryIds?.includes(category.value),
               )}
               onChange={(selected) =>
                 handleCategoryChange(selected as readonly SelectOption[])
               }
-              noOptionsMessage={() => "No categories found"}
+              loadingMessage={() => "Loading categories..."}
+              noOptionsMessage={() => categoryError || "No categories found"}
             />
+            {categoryError && <p className="form-error">{categoryError}</p>}
           </div>
           <div className="form-group-textarea">
             <label>Description</label>
@@ -396,8 +545,17 @@ export const CreateEventPopup = ({
           <button type="button" onClick={onClose}>
             Cancel
           </button>
-          <button type="submit" form="popup-form" disabled={loading}>
-            {loading ? "Creating..." : "Create"}
+          <button
+            type="submit"
+            form={CREATE_EVENT_FORM_ID}
+            disabled={submitLoading}
+            onClick={() =>
+              logCreateEventDebug("CREATE_EVENT_BUTTON_CLICK", {
+                ...getCreateEventSubmitState(form, banner),
+              })
+            }
+          >
+            {submitLoading ? "Creating..." : "Create"}
           </button>
         </div>
       </div>

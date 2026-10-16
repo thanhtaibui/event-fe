@@ -10,6 +10,7 @@ const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/auth/RegisterPage"));
 const OrgRegisterPage = lazy(() => import("../pages/auth/OrgRegisterPage"));
 const AcceptInvitePage = lazy(() => import("../pages/invite/AcceptInvitePage"));
+const CheckoutPage = lazy(() => import("../pages/user/CheckoutPage"));
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
   {
     path: "/tickets",
     element: <Navigate to="/app/tickets" replace />,
+  },
+  {
+    path: "/checkout",
+    element: <CheckoutPage />,
   },
   {
     path: "/events/accept",

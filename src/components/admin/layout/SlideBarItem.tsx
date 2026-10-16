@@ -13,14 +13,13 @@ export const SidebarItem = ({
   label,
   icon,
   activeIcon,
-  isCollapsed,
 }: SidebarItemProps) => {
   return (
-    <NavLink to={to}>
+    <NavLink to={to} aria-label={label} title={label}>
       {({ isActive }) => (
-        <li className={isActive ? "active" : ""}>
+        <li className={isActive ? "active" : ""} data-label={label}>
           <img src={isActive ? activeIcon : icon} alt={label} />
-          {!isCollapsed && <span>{label}</span>}
+          <span>{label}</span>
         </li>
       )}
     </NavLink>

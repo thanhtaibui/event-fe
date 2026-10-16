@@ -1,0 +1,1108 @@
+/* G07 shared input system.
+   This file is imported last so form controls stay neutral across user/admin/auth pages. */
+
+:root {
+  --input-height-sm: 40px;
+  --input-height-md: 46px;
+  --input-height-lg: 54px;
+  --input-radius: 10px;
+  --input-bg: #ffffff;
+  --input-bg-muted: #f8fafc;
+  --input-text: #0f172a;
+  --input-placeholder: #8a94a6;
+  --input-border: #d6dce7;
+  --input-hover-border: #aeb8c8;
+  --input-focus-border: #6b7280;
+  --input-disabled-bg: #f1f5f9;
+  --input-disabled-text: #94a3b8;
+  --input-error-border: #dc2626;
+  --input-shadow: none;
+  --input-focus-shadow: none;
+  --form-control-dropdown-bg: #ffffff;
+  --form-control-dropdown-border: #e2e8f0;
+  --form-control-dropdown-shadow: 0 14px 36px rgba(15, 23, 42, 0.12);
+  --form-control-option-hover: #f8fafc;
+  --form-control-option-selected: #f5f3ff;
+}
+
+.dark-mode,
+.user-layout.dark-mode,
+.admin-layout.dark-mode,
+.auth-layout.dark-mode,
+.layout-container.dark-mode {
+  --input-bg: #111827;
+  --input-bg-muted: #0f172a;
+  --input-text: #f8fafc;
+  --input-placeholder: #94a3b8;
+  --input-border: rgba(148, 163, 184, 0.34);
+  --input-hover-border: rgba(203, 213, 225, 0.54);
+  --input-focus-border: #cbd5e1;
+  --input-disabled-bg: #0b1120;
+  --input-disabled-text: #64748b;
+  --input-error-border: #f87171;
+  --form-control-dropdown-bg: #111827;
+  --form-control-dropdown-border: rgba(148, 163, 184, 0.28);
+  --form-control-dropdown-shadow: 0 18px 44px rgba(0, 0, 0, 0.38);
+  --form-control-option-hover: rgba(148, 163, 184, 0.1);
+  --form-control-option-selected: rgba(91, 33, 182, 0.24);
+}
+
+:where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select
+) {
+  min-height: var(--input-height-md);
+  border: 1px solid var(--input-border) !important;
+  border-radius: var(--input-radius) !important;
+  outline: none !important;
+  background-color: var(--input-bg) !important;
+  box-shadow: var(--input-shadow) !important;
+  color: var(--input-text) !important;
+  caret-color: var(--input-text);
+  color-scheme: light;
+}
+
+:where(.dark-mode, .user-layout.dark-mode, .admin-layout.dark-mode, .auth-layout.dark-mode, .layout-container.dark-mode)
+  :where(
+    input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+    textarea,
+    select
+  ) {
+  color-scheme: dark;
+}
+
+:where(input, textarea)::placeholder {
+  color: var(--input-placeholder) !important;
+  font-weight: 400 !important;
+  font-family: inherit !important;
+  font-style: normal !important;
+  opacity: 1;
+}
+
+:where(input, textarea, .MuiInputBase-input, .MuiSelect-select) {
+  font-weight: 400 !important;
+}
+
+:where(input[type="search"])::placeholder {
+  font-weight: 400 !important;
+}
+
+:where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select
+):hover {
+  border-color: var(--input-hover-border) !important;
+}
+
+:where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select
+):focus,
+:where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select
+):focus-visible {
+  border-color: var(--input-focus-border) !important;
+  box-shadow: var(--input-focus-shadow) !important;
+  outline: none !important;
+}
+
+:where(input, textarea, select):disabled,
+:where(input, textarea, select)[aria-disabled="true"] {
+  border-color: var(--input-border) !important;
+  background-color: var(--input-disabled-bg) !important;
+  color: var(--input-disabled-text) !important;
+  cursor: not-allowed;
+}
+
+:where(select:not([multiple])) {
+  min-height: var(--input-height-md);
+  padding: 0 42px 0 14px !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.5 7.5L10 12L14.5 7.5' stroke='%236b7280' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 16px 16px !important;
+}
+
+:where(.dark-mode, .user-layout.dark-mode, .admin-layout.dark-mode, .auth-layout.dark-mode)
+  :where(select:not([multiple])) {
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.5 7.5L10 12L14.5 7.5' stroke='%23cbd5e1' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+}
+
+:where(input, textarea):-webkit-autofill,
+:where(input, textarea):-webkit-autofill:hover,
+:where(input, textarea):-webkit-autofill:focus,
+:where(input, textarea):-webkit-autofill:active {
+  border-color: var(--input-border) !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--input-text) !important;
+  caret-color: var(--input-text) !important;
+  transition: background-color 9999s ease-out 0s;
+}
+
+:where(input, textarea):-webkit-autofill:focus {
+  border-color: var(--input-focus-border) !important;
+}
+
+.MuiInputBase-root,
+.MuiOutlinedInput-root {
+  border-radius: var(--input-radius) !important;
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  color-scheme: light;
+  box-shadow: none !important;
+}
+
+:where(.dark-mode, .user-layout.dark-mode, .admin-layout.dark-mode, .auth-layout.dark-mode)
+  :where(.MuiInputBase-root, .MuiOutlinedInput-root) {
+  color-scheme: dark;
+}
+
+.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border-color: var(--input-border) !important;
+  border-width: 1px !important;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--input-hover-border) !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused {
+  box-shadow: none !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--input-focus-border) !important;
+  border-width: 1px !important;
+}
+
+.MuiInputBase-input,
+.MuiSelect-select {
+  background-color: transparent !important;
+  color: var(--input-text) !important;
+  font-weight: 400 !important;
+  -webkit-text-fill-color: var(--input-text) !important;
+}
+
+.MuiInputBase-input::placeholder {
+  color: var(--input-placeholder) !important;
+  font-weight: 400 !important;
+  font-family: inherit !important;
+  font-style: normal !important;
+  opacity: 1 !important;
+}
+
+html body #root :where(input, textarea, .MuiInputBase-input)::placeholder {
+  font-weight: 400 !important;
+  font-family: inherit !important;
+  font-style: normal !important;
+}
+
+html body #root :where(input, textarea, .MuiInputBase-input)::selection {
+  background: var(--text-selection-bg, rgba(14, 165, 233, 0.28)) !important;
+  color: var(--text-selection-text, #082f49) !important;
+  -webkit-text-fill-color: var(--text-selection-text, #082f49) !important;
+}
+
+html body #root :where(.dark-mode, .user-layout.dark-mode, .layout-container.dark-mode, .auth-layout.dark-mode)
+  :where(input, textarea, .MuiInputBase-input)::selection {
+  background: var(--text-selection-bg, rgba(56, 189, 248, 0.72)) !important;
+  color: var(--text-selection-text, #082f49) !important;
+  -webkit-text-fill-color: var(--text-selection-text, #082f49) !important;
+}
+
+.MuiInputBase-input:-webkit-autofill,
+.MuiInputBase-input:-webkit-autofill:hover,
+.MuiInputBase-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--input-text) !important;
+}
+
+.MuiFormLabel-root,
+.MuiInputLabel-root {
+  color: var(--input-placeholder) !important;
+}
+
+.MuiInputLabel-root.Mui-focused,
+.MuiFormLabel-root.Mui-focused {
+  color: var(--input-focus-border) !important;
+}
+
+.Mui-error .MuiOutlinedInput-notchedOutline,
+.MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline,
+:where(input, textarea, select)[aria-invalid="true"] {
+  border-color: var(--input-error-border) !important;
+}
+
+.custom-select__control,
+.react-select__control,
+.industry-multiselect__trigger,
+.event-filter,
+.myTicketsSearch {
+  border-color: var(--input-border) !important;
+  border-radius: var(--input-radius) !important;
+  background-color: var(--input-bg) !important;
+  box-shadow: none !important;
+  color: var(--input-text) !important;
+}
+
+.custom-select__control--is-focused,
+.react-select__control--is-focused,
+.industry-multiselect__trigger:focus-visible,
+.event-filter:focus-within,
+.myTicketsSearch:focus-within {
+  border-color: var(--input-focus-border) !important;
+  box-shadow: none !important;
+}
+
+/* G36 - Select/Autocomplete shared reset: outer control owns the border. */
+:where(.react-select, .custom-select, .MuiAutocomplete-root) {
+  min-width: 0;
+}
+
+:where(.custom-select__control, .react-select__control) {
+  min-height: var(--input-height-md) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+:where(
+  .custom-select__value-container,
+  .react-select__value-container,
+  .MuiAutocomplete-inputRoot
+) {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+:where(
+  .custom-select__input-container,
+  .react-select__input-container,
+  .MuiAutocomplete-input
+) {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  color: inherit !important;
+}
+
+:where(
+  .custom-select__input-container input,
+  .react-select__input-container input,
+  .MuiAutocomplete-input
+) {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+  caret-color: currentColor !important;
+  color-scheme: inherit !important;
+}
+
+:where(
+  .custom-select__input-container input:focus,
+  .custom-select__input-container input:focus-visible,
+  .react-select__input-container input:focus,
+  .react-select__input-container input:focus-visible,
+  .MuiAutocomplete-input:focus,
+  .MuiAutocomplete-input:focus-visible
+) {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+:where(
+  .custom-select__single-value,
+  .react-select__single-value,
+  .custom-select__placeholder,
+  .react-select__placeholder,
+  .MuiAutocomplete-input
+) {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 400 !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Keep react-select caret at the start while focused with an empty search value. */
+:where(
+  .custom-select__control--is-focused .custom-select__placeholder,
+  .react-select__control--is-focused .react-select__placeholder
+) {
+  display: none !important;
+}
+
+:where(
+  .custom-select__control--is-focused .custom-select__input-container,
+  .react-select__control--is-focused .react-select__input-container
+) {
+  flex: 1 1 auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+:where(
+  .custom-select__menu,
+  .react-select__menu,
+  .MuiMenu-paper,
+  .MuiAutocomplete-paper
+) {
+  z-index: 1600 !important;
+  border: 1px solid var(--form-control-dropdown-border) !important;
+  border-radius: 12px !important;
+  background: var(--form-control-dropdown-bg) !important;
+  box-shadow: var(--form-control-dropdown-shadow) !important;
+  color: var(--input-text) !important;
+  overflow: hidden !important;
+}
+
+:where(.custom-select__menu-list, .react-select__menu-list, .MuiAutocomplete-listbox) {
+  padding: 6px !important;
+  max-height: min(260px, 46vh) !important;
+}
+
+:where(
+  .custom-option,
+  .custom-select__option,
+  .react-select__option,
+  .MuiMenuItem-root,
+  .MuiAutocomplete-option
+) {
+  min-height: 38px;
+  border-radius: 8px !important;
+  font-weight: 400 !important;
+}
+
+:where(
+  .custom-option.is-focused,
+  .custom-select__option--is-focused,
+  .react-select__option--is-focused,
+  .MuiMenuItem-root.Mui-focusVisible,
+  .MuiAutocomplete-option.Mui-focused
+) {
+  background: var(--form-control-option-hover) !important;
+  color: var(--input-text) !important;
+}
+
+:where(
+  .custom-option.is-selected,
+  .custom-select__option--is-selected,
+  .react-select__option--is-selected,
+  .MuiMenuItem-root.Mui-selected,
+  .MuiAutocomplete-option[aria-selected="true"]
+) {
+  background: var(--form-control-option-selected) !important;
+  color: #4c1d95 !important;
+  font-weight: 500 !important;
+}
+
+:where(
+  .custom-select__no-options-message,
+  .react-select__no-options-message,
+  .custom-select__loading-message,
+  .react-select__loading-message,
+  .MuiAutocomplete-noOptions,
+  .MuiAutocomplete-loading
+) {
+  display: grid !important;
+  min-height: 54px;
+  padding: 14px 16px !important;
+  place-items: center;
+  color: var(--input-placeholder) !important;
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-align: center;
+}
+
+:where(.custom-select__multi-value, .react-select__multi-value) {
+  max-width: 100%;
+  margin: 2px 4px 2px 0 !important;
+  border: 1px solid rgba(91, 33, 182, 0.14) !important;
+  border-radius: 8px !important;
+  background: #f8f7ff !important;
+}
+
+:where(.custom-select__multi-value__label, .react-select__multi-value__label) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where(.custom-select__menu-portal, .react-select__menu-portal, .MuiPopper-root) {
+  z-index: 1700 !important;
+}
+
+.myTicketsPage .myTicketsSearch {
+  border-color: var(--tickets-border) !important;
+  background-color: var(--tickets-surface) !important;
+  color: var(--tickets-muted) !important;
+}
+
+.myTicketsPage .myTicketsSearch:focus-within {
+  border-color: var(--input-focus-border) !important;
+  background-color: var(--tickets-surface) !important;
+}
+
+.myTicketsPage .myTicketsSearch input {
+  min-height: 0;
+  border: 0 !important;
+  background-color: transparent !important;
+  color: var(--tickets-text) !important;
+  -webkit-text-fill-color: var(--tickets-text) !important;
+  box-shadow: none !important;
+}
+
+.myTicketsPage .myTicketsSearch input::placeholder {
+  color: var(--tickets-muted) !important;
+}
+
+/* G19 - Admin light-mode input/autofill guard against browser dark forcing. */
+.layout-container.light-mode {
+  color-scheme: light !important;
+  --input-bg: #ffffff;
+  --input-bg-muted: #f8fafc;
+  --input-text: #111827;
+  --input-placeholder: #64748b;
+  --input-border: #d1d5db;
+  --input-hover-border: #cbd5e1;
+  --input-focus-border: #6d4aff;
+  --input-focus-shadow: none;
+}
+
+.layout-container.light-mode :where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select,
+  .MuiInputBase-root,
+  .MuiOutlinedInput-root
+) {
+  border-color: var(--input-border) !important;
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  color-scheme: light !important;
+  box-shadow: none !important;
+}
+
+.layout-container.light-mode :where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select
+):focus,
+.layout-container.light-mode :where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select
+):focus-visible {
+  border-color: #6d4aff !important;
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.layout-container.light-mode :where(.MuiOutlinedInput-root.Mui-focused) {
+  box-shadow: none !important;
+}
+
+.layout-container.light-mode :where(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline) {
+  border-color: #6d4aff !important;
+  border-width: 1px !important;
+}
+
+.layout-container.light-mode :where(
+  .MuiInputBase-input,
+  .MuiOutlinedInput-input,
+  .MuiSelect-select
+) {
+  background-color: transparent !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+.layout-container.light-mode :where(input, textarea)::placeholder,
+.layout-container.light-mode :where(.MuiInputBase-input)::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+.layout-container.light-mode :where(input, textarea, select):-webkit-autofill,
+.layout-container.light-mode :where(input, textarea, select):-webkit-autofill:hover,
+.layout-container.light-mode :where(input, textarea, select):-webkit-autofill:focus,
+.layout-container.light-mode :where(.MuiInputBase-input):-webkit-autofill,
+.layout-container.light-mode :where(.MuiInputBase-input):-webkit-autofill:hover,
+.layout-container.light-mode :where(.MuiInputBase-input):-webkit-autofill:focus {
+  border-color: #d1d5db !important;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  caret-color: #111827 !important;
+}
+
+/* G37 - Search controls own one outer border; every inner input stays borderless. */
+:where(
+  .admin-search-field,
+  .admin-header-search,
+  .admin-toolbar,
+  .membership-search,
+  .verification-search,
+  .event-discovery__search,
+  .event-discovery__searchField,
+  .event-filter,
+  .event-filter__field,
+  .event-filter__select,
+  .org-hero__search-grid,
+  .org-hero__search-item,
+  .myTicketsSearch,
+  .industry-multiselect__search,
+  .custom-select__control,
+  .react-select__control,
+  .MuiAutocomplete-root
+) :where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  .MuiInputBase-input,
+  .MuiOutlinedInput-input,
+  .MuiAutocomplete-input,
+  .custom-select__input-container input,
+  .react-select__input-container input
+) {
+  min-height: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: inherit;
+  font-weight: 400 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+:where(
+  .admin-search-field,
+  .admin-header-search,
+  .admin-toolbar,
+  .membership-search,
+  .verification-search,
+  .event-discovery__search,
+  .event-discovery__searchField,
+  .event-filter,
+  .event-filter__field,
+  .event-filter__select,
+  .org-hero__search-grid,
+  .org-hero__search-item,
+  .myTicketsSearch,
+  .industry-multiselect__search,
+  .custom-select__control,
+  .react-select__control,
+  .MuiAutocomplete-root
+) :where(
+  input,
+  .MuiInputBase-input,
+  .MuiOutlinedInput-input,
+  .MuiAutocomplete-input,
+  .custom-select__input-container input,
+  .react-select__input-container input
+)::placeholder {
+  color: var(--input-placeholder) !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
+}
+
+:where(
+  .membership-search,
+  .verification-search,
+  .event-discovery__search,
+  .event-discovery__searchField,
+  .event-filter,
+  .event-filter__field,
+  .event-filter__select,
+  .org-hero__search-grid,
+  .org-hero__search-item,
+  .myTicketsSearch,
+  .industry-multiselect__search,
+  .admin-header-search,
+  .admin-search-field,
+  .admin-toolbar,
+  .MuiAutocomplete-root
+) {
+  border-color: var(--input-border) !important;
+  box-shadow: none !important;
+}
+
+:where(
+  .membership-search,
+  .verification-search,
+  .event-discovery__searchField,
+  .event-filter,
+  .event-filter__field,
+  .event-filter__select,
+  .org-hero__search-item,
+  .myTicketsSearch,
+  .industry-multiselect__search,
+  .admin-header-search
+):focus-within {
+  border-color: var(--input-hover-border) !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+:where(
+  .admin-search-field,
+  .admin-toolbar,
+  .MuiAutocomplete-root
+) :where(.MuiOutlinedInput-root) {
+  border: 1px solid var(--input-border) !important;
+  box-shadow: none !important;
+}
+
+:where(
+  .admin-search-field,
+  .admin-toolbar,
+  .MuiAutocomplete-root
+) :where(.MuiOutlinedInput-notchedOutline) {
+  border-color: transparent !important;
+  border-width: 0 !important;
+}
+
+:where(
+  .admin-search-field,
+  .admin-toolbar,
+  .MuiAutocomplete-root
+) :where(.MuiOutlinedInput-root:hover) {
+  border-color: var(--input-hover-border) !important;
+}
+
+:where(
+  .admin-search-field,
+  .admin-toolbar,
+  .MuiAutocomplete-root
+) :where(.MuiOutlinedInput-root.Mui-focused) {
+  border-color: var(--input-hover-border) !important;
+  box-shadow: none !important;
+}
+
+/* G35 - Admin portal modal inputs inherit app theme even when mounted under body. */
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) {
+  --admin-popup-input-bg: #ffffff;
+  --admin-popup-input-bg-muted: #f8fafc;
+  --admin-popup-input-text: #111827;
+  --admin-popup-input-placeholder: #64748b;
+  --admin-popup-input-border: #d1d5db;
+  --admin-popup-input-hover-border: #cbd5e1;
+  --admin-popup-input-focus-border: #cbd5e1;
+  --admin-popup-input-focus-shadow: 0 0 0 1px rgba(91, 16, 208, 0.08);
+  color-scheme: light;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) {
+  --admin-popup-input-bg: #111827;
+  --admin-popup-input-bg-muted: #0f172a;
+  --admin-popup-input-text: #f8fafc;
+  --admin-popup-input-placeholder: #94a3b8;
+  --admin-popup-input-border: rgba(148, 163, 184, 0.34);
+  --admin-popup-input-hover-border: rgba(203, 213, 225, 0.48);
+  --admin-popup-input-focus-border: rgba(203, 213, 225, 0.62);
+  --admin-popup-input-focus-shadow: none;
+  color-scheme: dark;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select,
+  .MuiInputBase-root,
+  .MuiOutlinedInput-root,
+  .custom-select__control,
+  .react-select__control,
+  .industry-multiselect__trigger
+) {
+  border-color: var(--admin-popup-input-border) !important;
+  background-color: var(--admin-popup-input-bg) !important;
+  color: var(--admin-popup-input-text) !important;
+  -webkit-text-fill-color: var(--admin-popup-input-text) !important;
+  box-shadow: none !important;
+  color-scheme: light !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select,
+  .MuiInputBase-root,
+  .MuiOutlinedInput-root,
+  .custom-select__control,
+  .react-select__control,
+  .industry-multiselect__trigger
+) {
+  border-color: var(--admin-popup-input-border) !important;
+  background-color: var(--admin-popup-input-bg) !important;
+  color: var(--admin-popup-input-text) !important;
+  -webkit-text-fill-color: var(--admin-popup-input-text) !important;
+  box-shadow: none !important;
+  color-scheme: dark !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  .MuiOutlinedInput-notchedOutline,
+  .custom-select__control,
+  .react-select__control
+) {
+  border-color: var(--admin-popup-input-border) !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  .MuiInputBase-input,
+  .MuiOutlinedInput-input,
+  .MuiSelect-select,
+  .custom-select__input,
+  .custom-select__input-container,
+  .custom-select__single-value,
+  .react-select__input,
+  .react-select__single-value
+) {
+  background-color: transparent !important;
+  color: var(--admin-popup-input-text) !important;
+  -webkit-text-fill-color: var(--admin-popup-input-text) !important;
+  caret-color: var(--admin-popup-input-text) !important;
+  color-scheme: dark !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(input, textarea, .MuiInputBase-input)::placeholder,
+body:has(.layout-container.dark-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.custom-select__placeholder, .react-select__placeholder) {
+  color: var(--admin-popup-input-placeholder) !important;
+  -webkit-text-fill-color: var(--admin-popup-input-placeholder) !important;
+  opacity: 1 !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.custom-select__menu, .react-select__menu) {
+  border-color: var(--admin-popup-input-border) !important;
+  background-color: var(--admin-popup-input-bg) !important;
+  color: var(--admin-popup-input-text) !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.custom-option, .custom-select__option, .react-select__option) {
+  background-color: var(--admin-popup-input-bg) !important;
+  color: var(--admin-popup-input-text) !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select,
+  .MuiInputBase-root,
+  .MuiOutlinedInput-root,
+  .custom-select__control,
+  .react-select__control,
+  .industry-multiselect__trigger
+):hover {
+  border-color: var(--admin-popup-input-hover-border) !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select
+):focus,
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+  textarea,
+  select
+):focus-visible,
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  .MuiOutlinedInput-root.Mui-focused,
+  .custom-select__control--is-focused,
+  .react-select__control--is-focused,
+  .industry-multiselect__trigger:focus-visible
+) {
+  border-color: var(--admin-popup-input-focus-border) !important;
+  background-color: var(--admin-popup-input-bg) !important;
+  box-shadow: var(--admin-popup-input-focus-shadow) !important;
+  outline: none !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline) {
+  border-color: var(--admin-popup-input-focus-border) !important;
+  border-width: 1px !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  .MuiOutlinedInput-notchedOutline,
+  .custom-select__control,
+  .react-select__control
+) {
+  border-color: var(--admin-popup-input-border) !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(
+  .MuiInputBase-input,
+  .MuiOutlinedInput-input,
+  .MuiSelect-select,
+  .custom-select__input,
+  .custom-select__input-container,
+  .custom-select__single-value,
+  .react-select__input,
+  .react-select__single-value
+) {
+  background-color: transparent !important;
+  color: var(--admin-popup-input-text) !important;
+  -webkit-text-fill-color: var(--admin-popup-input-text) !important;
+  caret-color: var(--admin-popup-input-text) !important;
+  color-scheme: light !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(input, textarea, .MuiInputBase-input)::placeholder,
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.custom-select__placeholder, .react-select__placeholder) {
+  color: var(--admin-popup-input-placeholder) !important;
+  -webkit-text-fill-color: var(--admin-popup-input-placeholder) !important;
+  opacity: 1 !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.custom-select__menu, .react-select__menu) {
+  border-color: var(--admin-popup-input-border) !important;
+  background-color: var(--admin-popup-input-bg) !important;
+  color: var(--admin-popup-input-text) !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.custom-option, .custom-select__option, .react-select__option) {
+  background-color: var(--admin-popup-input-bg) !important;
+  color: var(--admin-popup-input-text) !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.custom-option.is-focused, .custom-select__option--is-focused, .react-select__option--is-focused) {
+  background-color: var(--admin-popup-input-bg-muted) !important;
+}
+
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(input, textarea, select):-webkit-autofill,
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(input, textarea, select):-webkit-autofill:hover,
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(input, textarea, select):-webkit-autofill:focus,
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(input, textarea, select):-webkit-autofill:active,
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.MuiInputBase-input, .MuiOutlinedInput-input):-webkit-autofill,
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.MuiInputBase-input, .MuiOutlinedInput-input):-webkit-autofill:hover,
+body:has(.layout-container.light-mode) :where(
+  .popup-overlay,
+  .invite-overlay,
+  .verification-modal-overlay,
+  .report-modal-overlay,
+  .item-modal-overlay,
+  .MuiDialog-root
+) :where(.MuiInputBase-input, .MuiOutlinedInput-input):-webkit-autofill:focus {
+  border-color: var(--admin-popup-input-border) !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--admin-popup-input-bg) inset !important;
+  box-shadow: 0 0 0 1000px var(--admin-popup-input-bg) inset !important;
+  -webkit-text-fill-color: var(--admin-popup-input-text) !important;
+  caret-color: var(--admin-popup-input-text) !important;
+  color-scheme: light !important;
+  transition: background-color 9999s ease-out 0s;
+}

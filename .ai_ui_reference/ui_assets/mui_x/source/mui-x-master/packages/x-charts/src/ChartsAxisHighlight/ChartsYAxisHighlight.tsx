@@ -1,0 +1,93 @@
+'use client';
+import * as React from 'react';
+import { getValueToPositionMapper } from '../hooks/getValueToPositionMapper';
+import { isOrdinalScale } from '../internals/scaleGuards';
+import { useStore } from '../internals/store/useStore';
+import {
+  selectorChartsHighlightYAxisValue,
+  selectorChartHighlightBucketSize,
+  selectorChartYAxis,
+} from '../internals/plugins/featurePlugins/useChartCartesianAxis';
+import type { UseChartCartesianAxisSignature } from '../internals/plugins/featurePlugins/useChartCartesianAxis';
+import { useDrawingArea } from '../hooks';
+import type { ChartsAxisHighlightType } from './ChartsAxisHighlight.types';
+import type { ChartsAxisHighlightClasses } from './chartsAxisHighlightClasses';
+import { ChartsAxisHighlightPath } from './ChartsAxisHighlightPath';
+import { getSampledBandHighlight } from './getSampledBandHighlight';
+import type { UseChartBrushSignature } from '../internals/plugins/featurePlugins/useChartBrush';
+
+/**
+ * @ignore - internal component.
+ */
+export default function ChartsYHighlight(props: {
+  type: ChartsAxisHighlightType;
+  classes: ChartsAxisHighlightClasses;
+}) {
+  const { type, classes } = props;
+
+  const { left, width } = useDrawingArea();
+
+  const store = useStore<[UseChartCartesianAxisSignature, UseChartBrushSignature]>();
+  const axisYValues = store.use(selectorChartsHighlightYAxisValue);
+  const yAxes = store.use(selectorChartYAxis);
+  const bucketSizeByAxis = store.use(selectorChartHighlightBucketSize);
+
+  if (axisYValues.length === 0) {
+    return null;
+  }
+
+  return axisYValues.map((axisValue) => {
+    const { axisId, value } = axisValue;
+    const yAxis = yAxes.axis[axisId];
+    const yScale = yAxis.scale;
+    const getYPosition = getValueToPositionMapper(yScale);
+
+    const isYScaleOrdinal = type === 'band' && value !== null && isOrdinalScale(yScale);
+
+    if (process.env.NODE_ENV !== 'production') {
+      const isError = isYScaleOrdinal && yScale(value) === undefined;
+
+      if (isError) {
+        console.error(
+          [
+            `MUI X Charts: The position value provided for the axis is not valid for the current scale.`,
+            `This probably means something is wrong with the data passed to the chart.`,
+            `The ChartsAxisHighlight component will not be displayed.`,
+          ].join('\n'),
+        );
+      }
+    }
+
+    let bandStart = 0;
+    let bandSize = 0;
+    if (isYScaleOrdinal) {
+      ({ bandStart, bandSize } = getSampledBandHighlight({
+        scale: yScale,
+        value,
+        dataIndex: axisValue.dataIndex,
+        data: yAxis.data,
+        bucketSize: bucketSizeByAxis.get(axisId) ?? 1,
+      }));
+    }
+
+    return (
+      <React.Fragment key={`${axisId}-${value}`}>
+        {isYScaleOrdinal && yScale(value) !== undefined && (
+          <ChartsAxisHighlightPath
+            d={`M ${left} ${bandStart} l 0 ${bandSize} l ${width} 0 l 0 ${-bandSize} Z`}
+            className={classes.root}
+            ownerState={{ axisHighlight: 'band' }}
+          />
+        )}
+
+        {type === 'line' && value !== null && (
+          <ChartsAxisHighlightPath
+            d={`M ${left} ${getYPosition(value)} L ${left + width} ${getYPosition(value)}`}
+            className={classes.root}
+            ownerState={{ axisHighlight: 'line' }}
+          />
+        )}
+      </React.Fragment>
+    );
+  });
+}

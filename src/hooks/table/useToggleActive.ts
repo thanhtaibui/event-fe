@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 export const useToggleActive = (apiFunction: (id: string, active: boolean,) => Promise<any>,
   onUpdate: (id: string, value: boolean) => void,
-  refetch?: () => void,) => {
+  _refetch?: () => void,) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const updatingRef = useRef(false);
 
@@ -18,9 +18,9 @@ export const useToggleActive = (apiFunction: (id: string, active: boolean,) => P
     try {
       await apiFunction(id, active);
       toast.success("Update Active Successfully");
-      refetch?.();
     } catch (err) {
       onUpdate(id, prevValue);
+      toast.error("Update Active Failed");
     } finally {
       updatingRef.current = false;
       setIsUpdating(false);

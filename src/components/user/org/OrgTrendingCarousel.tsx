@@ -1,5 +1,6 @@
 import { ArrowRight, BadgeCheck } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 type TrendingOrg = {
   id: string;
@@ -15,6 +16,15 @@ type TrendingOrg = {
   verified?: boolean;
   verifiedBadge?: boolean;
   verified_badge?: boolean;
+  slug?: string;
+  orgSlug?: string;
+  organizationSlug?: string;
+  organization?: {
+    slug?: string;
+  };
+  org?: {
+    slug?: string;
+  };
 };
 
 interface OrgTrendingCarouselProps {
@@ -33,9 +43,32 @@ function OrgIconFallback({ name }: { name: string }) {
   return <span className="org-default-icon">{name.slice(0, 1).toUpperCase()}</span>;
 }
 
+function toSlug(value?: string | null) {
+  if (!value) return "";
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "d")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
 function TrendingOrgCard({ org }: { org: TrendingOrg }) {
   const [coverFailed, setCoverFailed] = useState(false);
   const [iconFailed, setIconFailed] = useState(false);
+  const directSlug =
+    org.slug ||
+    org.orgSlug ||
+    org.organizationSlug ||
+    org.organization?.slug ||
+    org.org?.slug;
+  const slug = (directSlug && typeof directSlug === "string" && directSlug.trim())
+    ? directSlug.trim()
+    : toSlug(org.name) || org.id || "";
+  const targetRoute = `/app/organizations/${slug}`;
   const verified = Boolean(
     org.isVerified ||
       org.isve ||
@@ -86,10 +119,16 @@ function TrendingOrgCard({ org }: { org: TrendingOrg }) {
           <span>{org.members_count} Members</span>
           <span>{org.events_count} Events</span>
         </div>
-        <button className="org-trending__view-btn">
+        <Link
+          className="org-trending__view-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          to={targetRoute}
+        >
           View Organization
           <ArrowRight size={16} aria-hidden="true" />
-        </button>
+        </Link>
       </div>
     </article>
   );

@@ -141,6 +141,8 @@
     var(--skeleton-highlight) 48%,
     var(--skeleton-base) 100%
   );
+  --text-selection-bg: rgba(14, 165, 233, 0.28);
+  --text-selection-text: #082f49;
 
   /* ============== Font rendering ============== */
   --letter-tight: -0.02em;
@@ -163,7 +165,24 @@
 }
 
 .Toastify__toast-container {
-  z-index: 1301 !important;
+  z-index: 18000 !important;
+}
+
+.Toastify {
+  z-index: 18000 !important;
+}
+
+::selection {
+  background: var(--text-selection-bg);
+  color: var(--text-selection-text);
+}
+
+.dark-mode ::selection,
+.user-layout.dark-mode ::selection,
+.layout-container.dark-mode ::selection,
+.auth-layout.dark-mode ::selection {
+  background: rgba(56, 189, 248, 0.72);
+  color: #082f49;
 }
 
 /* Shared native dropdown style */
@@ -445,6 +464,116 @@ html body #root select option {
 .dark-mode .industry-multiselect__option:hover {
   background: rgba(148, 163, 184, 0.14);
 }
+
+/* Admin portal select dark-mode fallback: dropdown menus can render outside layout. */
+body:has(.layout-container.dark-mode) {
+  --select-bg: #111827;
+  --select-text: #f8fafc;
+  --select-muted: #94a3b8;
+  --select-border: rgba(148, 163, 184, 0.32);
+  --select-border-hover: rgba(196, 181, 253, 0.58);
+}
+
+body:has(.layout-container.dark-mode) :where(select, select option) {
+  background-color: #111827 !important;
+  color: #f8fafc !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .industry-multiselect__trigger,
+  .industry-multiselect__menu,
+  .industry-multiselect__search,
+  .industry-multiselect__option,
+  .custom-select__control,
+  .custom-select__menu,
+  .custom-select__menu-list,
+  .custom-select__option,
+  .custom-option,
+  .react-select__control,
+  .react-select__menu,
+  .react-select__menu-list,
+  .react-select__option,
+  .MuiMenu-paper,
+  .MuiMenu-list,
+  .MuiAutocomplete-paper,
+  .MuiAutocomplete-listbox
+) {
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  background: #111827 !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38) !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .industry-multiselect__search,
+  .custom-select__menu-list,
+  .react-select__menu-list,
+  .MuiMenu-list,
+  .MuiAutocomplete-listbox
+) {
+  background: #111827 !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .industry-multiselect__search input,
+  .custom-select__input-container input,
+  .react-select__input-container input,
+  .MuiAutocomplete-input
+) {
+  background: transparent !important;
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  caret-color: #c4b5fd !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .industry-multiselect__search input::placeholder,
+  .custom-select__placeholder,
+  .react-select__placeholder
+) {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .industry-multiselect__trigger span,
+  .custom-select__single-value,
+  .react-select__single-value,
+  .MuiMenuItem-root,
+  .MuiAutocomplete-option
+) {
+  color: #f8fafc !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .industry-multiselect__option:hover,
+  .custom-option.is-focused,
+  .custom-select__option--is-focused,
+  .react-select__option--is-focused,
+  .MuiMenuItem-root:hover,
+  .MuiMenuItem-root.Mui-focusVisible,
+  .MuiAutocomplete-option.Mui-focused
+) {
+  background: rgba(148, 163, 184, 0.14) !important;
+  color: #ffffff !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .industry-multiselect__option:has(input:checked),
+  .custom-option.is-selected,
+  .custom-select__option--is-selected,
+  .react-select__option--is-selected,
+  .MuiMenuItem-root.Mui-selected,
+  .MuiAutocomplete-option[aria-selected="true"]
+) {
+  background: rgba(124, 58, 237, 0.22) !important;
+  color: #ffffff !important;
+}
+
+body:has(.layout-container.dark-mode) .industry-multiselect__option input {
+  accent-color: #8b5cf6;
+}
 /* @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
@@ -613,25 +742,49 @@ a,
   outline-offset: 0;
 }
 
+@keyframes Toastify__spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.Toastify__spinner {
+  width: 20px !important;
+  height: 20px !important;
+  box-sizing: border-box !important;
+  border: 2.5px solid #e2e8f0 !important;
+  border-right-color: #6366f1 !important;
+  border-radius: 50% !important;
+  animation: Toastify__spin 0.75s linear infinite !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *:not(.Toastify):not(.Toastify *):not([class*="Toastify"]):not([class*="Toastify"] *):not(.animate-spin),
+  *:not([class*="Toastify"]):not([class*="Toastify"] *)::before,
+  *:not([class*="Toastify"]):not([class*="Toastify"] *)::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .Toastify__toast {
-    animation-duration: 160ms !important;
-    transition-duration: 160ms !important;
+  .Toastify__spinner,
+  .animate-spin {
+    animation: Toastify__spin 0.75s linear infinite !important;
+    animation-duration: 0.75s !important;
+    animation-iteration-count: infinite !important;
   }
 
-  .Toastify__progress-bar {
-    animation-duration: 3000ms !important;
+  .Toastify__toast {
+    animation-duration: 200ms !important;
+    transition-duration: 200ms !important;
+  }
+
+  .Toastify__progress-bar,
+  .Toastify__progress-bar--animated {
     animation-iteration-count: 1 !important;
   }
 }
@@ -821,6 +974,17 @@ a,
   .modal-content,
   .popup-content,
   .dialog-content
+):not(
+  .myTicketsPage,
+  .myTicketsPage *,
+  .myTicketsList,
+  .myTicketsList *,
+  .myTicketOrderCard,
+  .myTicketOrderCard *,
+  .myTicketRow,
+  .myTicketRow *,
+  .verification-modal,
+  .verification-modal *
 ) {
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
@@ -848,9 +1012,264 @@ a,
   [class*="Badge"],
   .pill,
   [class*="pill"],
-  [class*="Pill"]
+  [class*="Pill"],
+  .myTicketsPage *,
+  .myTicketOrderCard *,
+  .myTicketRow *
 ) {
   border-radius: min(var(--radius-md), 10px);
+}
+
+/* Shared admin dark modal fallback for portal and page-specific dialogs. */
+body:has(.layout-container.dark-mode) {
+  --admin-modal-surface: #0f172a;
+  --admin-modal-surface-soft: #111827;
+  --admin-modal-surface-muted: #0b1120;
+  --admin-modal-border: rgba(148, 163, 184, 0.2);
+  --admin-modal-border-strong: rgba(196, 181, 253, 0.34);
+  --admin-modal-text: #f8fafc;
+  --admin-modal-muted: #cbd5e1;
+  --admin-modal-placeholder: #94a3b8;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .invite-modal,
+  .verification-modal,
+  .report-review-modal,
+  .org-membership-modal,
+  .org-verification-request__modal,
+  .item-modal-shell,
+  .item-modal,
+  .banner-crop-box
+),
+.layout-container.dark-mode :where(
+  .invite-modal,
+  .verification-modal,
+  .report-review-modal,
+  .org-membership-modal,
+  .org-verification-request__modal,
+  .item-modal-shell,
+  .item-modal,
+  .banner-crop-box
+) {
+  border-color: var(--admin-modal-border) !important;
+  background: var(--admin-modal-surface) !important;
+  color: var(--admin-modal-text) !important;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.44) !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .invite-modal__header,
+  .invite-modal__body,
+  .invite-modal__footer,
+  .verification-modal__header,
+  .verification-modal__body,
+  .verification-modal__footer,
+  .report-review-modal__header,
+  .report-review-modal__body,
+  .report-review-modal__footer,
+  .org-membership-modal__header,
+  .org-membership-modal__metric,
+  .org-membership-modal__row,
+  .org-membership-modal__footer,
+  .org-verification-request__modal header,
+  .org-verification-request__modal footer,
+  .item-modal-header,
+  .item-modal__left,
+  .item-modal__right,
+  .banner-crop-header,
+  .banner-crop-area,
+  .banner-crop-footer
+),
+.layout-container.dark-mode :where(
+  .invite-modal__header,
+  .invite-modal__body,
+  .invite-modal__footer,
+  .verification-modal__header,
+  .verification-modal__body,
+  .verification-modal__footer,
+  .report-review-modal__header,
+  .report-review-modal__body,
+  .report-review-modal__footer,
+  .org-membership-modal__header,
+  .org-membership-modal__metric,
+  .org-membership-modal__row,
+  .org-membership-modal__footer,
+  .org-verification-request__modal header,
+  .org-verification-request__modal footer,
+  .item-modal-header,
+  .item-modal__left,
+  .item-modal__right,
+  .banner-crop-header,
+  .banner-crop-area,
+  .banner-crop-footer
+) {
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  background: var(--admin-modal-surface) !important;
+  color: var(--admin-modal-text) !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .invite-modal h2,
+  .invite-modal h3,
+  .verification-modal h2,
+  .verification-modal strong,
+  .report-review-modal h2,
+  .report-review-modal strong,
+  .org-membership-modal h3,
+  .org-membership-modal strong,
+  .item-modal h2,
+  .item-modal h3,
+  .banner-crop-box h3
+),
+.layout-container.dark-mode :where(
+  .invite-modal h2,
+  .invite-modal h3,
+  .verification-modal h2,
+  .verification-modal strong,
+  .report-review-modal h2,
+  .report-review-modal strong,
+  .org-membership-modal h3,
+  .org-membership-modal strong,
+  .item-modal h2,
+  .item-modal h3,
+  .banner-crop-box h3
+) {
+  color: var(--admin-modal-text) !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .invite-modal p,
+  .invite-modal span,
+  .verification-modal p,
+  .verification-modal span,
+  .verification-doc-checklist label,
+  .verification-field,
+  .report-review-modal p,
+  .report-review-modal span,
+  .report-review-help,
+  .org-membership-modal span,
+  .org-membership-modal__footer,
+  .item-modal p,
+  .item-modal span,
+  .banner-crop-box p,
+  .zoom-label
+),
+.layout-container.dark-mode :where(
+  .invite-modal p,
+  .invite-modal span,
+  .verification-modal p,
+  .verification-modal span,
+  .verification-doc-checklist label,
+  .verification-field,
+  .report-review-modal p,
+  .report-review-modal span,
+  .report-review-help,
+  .org-membership-modal span,
+  .org-membership-modal__footer,
+  .item-modal p,
+  .item-modal span,
+  .banner-crop-box p,
+  .zoom-label
+) {
+  color: var(--admin-modal-muted) !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .verification-review-card,
+  .verification-doc-checklist,
+  .verification-document-preview,
+  .verification-field,
+  .report-detail-card,
+  .report-readonly-note,
+  .invite-filter-tab,
+  .invite-row,
+  .email-chip,
+  .dropzone,
+  .dropzone__file-info
+),
+.layout-container.dark-mode :where(
+  .verification-review-card,
+  .verification-doc-checklist,
+  .verification-document-preview,
+  .verification-field,
+  .report-detail-card,
+  .report-readonly-note,
+  .invite-filter-tab,
+  .invite-row,
+  .email-chip,
+  .dropzone,
+  .dropzone__file-info
+) {
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  background: var(--admin-modal-surface-soft) !important;
+  color: var(--admin-modal-muted) !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .invite-modal input,
+  .invite-modal textarea,
+  .invite-modal select,
+  .verification-modal input,
+  .verification-modal textarea,
+  .verification-modal select,
+  .report-review-modal input,
+  .report-review-modal textarea,
+  .report-review-modal select,
+  .item-modal input,
+  .item-modal textarea,
+  .item-modal select,
+  .banner-crop-box input,
+  .banner-crop-box textarea,
+  .banner-crop-box select
+),
+.layout-container.dark-mode :where(
+  .invite-modal input,
+  .invite-modal textarea,
+  .invite-modal select,
+  .verification-modal input,
+  .verification-modal textarea,
+  .verification-modal select,
+  .report-review-modal input,
+  .report-review-modal textarea,
+  .report-review-modal select,
+  .item-modal input,
+  .item-modal textarea,
+  .item-modal select,
+  .banner-crop-box input,
+  .banner-crop-box textarea,
+  .banner-crop-box select
+) {
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  background: var(--admin-modal-surface-soft) !important;
+  color: var(--admin-modal-text) !important;
+  -webkit-text-fill-color: var(--admin-modal-text) !important;
+  caret-color: #c4b5fd !important;
+}
+
+body:has(.layout-container.dark-mode) :where(
+  .invite-modal input::placeholder,
+  .invite-modal textarea::placeholder,
+  .verification-modal input::placeholder,
+  .verification-modal textarea::placeholder,
+  .report-review-modal input::placeholder,
+  .report-review-modal textarea::placeholder,
+  .item-modal input::placeholder,
+  .item-modal textarea::placeholder
+),
+.layout-container.dark-mode :where(
+  .invite-modal input::placeholder,
+  .invite-modal textarea::placeholder,
+  .verification-modal input::placeholder,
+  .verification-modal textarea::placeholder,
+  .report-review-modal input::placeholder,
+  .report-review-modal textarea::placeholder,
+  .item-modal input::placeholder,
+  .item-modal textarea::placeholder
+) {
+  color: var(--admin-modal-placeholder) !important;
+  -webkit-text-fill-color: var(--admin-modal-placeholder) !important;
+  opacity: 1 !important;
 }
 
 /* Page-level polish for public/auth screens that had oversized centered text. */

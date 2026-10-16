@@ -6,11 +6,16 @@ import {
   UserPlus,
   UsersRound,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { InvitePopup } from "../../components/admin/invite/InvitePopup";
+import Pagination from "../../components/admin/table/Pagination";
+import { useOrgBySlug } from "../../hooks/admin/org/useOrgBySlug";
 import api from "../../services/api";
+import { roleService } from "../../services/admin/role.service";
 import "../../styles/admin/table/table.css";
+import type { Role } from "../../types/role/role";
 
 type MembershipItem = {
   id: string;
@@ -20,6 +25,11 @@ type MembershipItem = {
   email: string;
   isActive: boolean;
   role: string | null;
+};
+
+type MembershipListResult = {
+  items: MembershipItem[];
+  total: number;
 };
 
 function unwrapMembershipItems(value: unknown): MembershipItem[] {
@@ -38,6 +48,34 @@ function unwrapMembershipItems(value: unknown): MembershipItem[] {
   }
 
   return [];
+}
+
+function getMembershipTotal(value: unknown, fallback: number) {
+  if (!value || typeof value !== "object") return fallback;
+
+  const payload = value as Record<string, any>;
+  const directTotal =
+    payload.total ?? payload.totalItems ?? payload.totalCount ?? payload.count;
+  if (typeof directTotal === "number") return directTotal;
+
+  const metaTotal =
+    payload.meta?.total ??
+    payload.meta?.totalItems ??
+    payload.meta?.totalCount ??
+    payload.pagination?.total ??
+    payload.pagination?.totalItems ??
+    payload.pagination?.totalCount;
+  if (typeof metaTotal === "number") return metaTotal;
+
+  return getMembershipTotal(payload.data, fallback);
+}
+
+function unwrapMembershipList(value: unknown): MembershipListResult {
+  const items = unwrapMembershipItems(value);
+  return {
+    items,
+    total: getMembershipTotal(value, items.length),
+  };
 }
 
 function getInitials(name: string) {
@@ -60,37 +98,94 @@ function formatDate(value?: string) {
   });
 }
 
+function unwrapRoleItems(value: unknown): Role[] {
+  if (Array.isArray(value)) return value as Role[];
+
+  if (value && typeof value === "object") {
+    const payload = value as Record<string, unknown>;
+    const keys = ["items", "roles", "data"];
+
+    for (const key of keys) {
+      const nested = payload[key];
+      if (Array.isArray(nested)) return nested as Role[];
+      const result = unwrapRoleItems(nested);
+      if (result.length) return result;
+    }
+  }
+
+  return [];
+}
+
 export default function Membership() {
   const { slug } = useParams();
+  const { data: currentOrg } = useOrgBySlug(slug || "");
   const [members, setMembers] = useState<MembershipItem[]>([]);
+  const [membersTotal, setMembersTotal] = useState(0);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
+  const [rolesLoading, setRolesLoading] = useState(false);
+  const [showInvitePopup, setShowInvitePopup] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const fetchMemberships = useCallback(async () => {
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await api.get(`/membership/org/${slug}`, {
+        params: {
+          page: page + 1,
+          limit: rowsPerPage,
+        },
+      });
+      const nextMembers = unwrapMembershipList(res.data?.data ?? res.data);
+      setMembers(nextMembers.items);
+      setMembersTotal(nextMembers.total);
+    } catch (error) {
+      console.error("Fetch organization memberships error:", error);
+      setMembers([]);
+      setMembersTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, rowsPerPage, slug]);
+
+  useEffect(() => {
+    fetchMemberships();
+  }, [fetchMemberships]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [searchTerm, statusFilter]);
 
   useEffect(() => {
     let mounted = true;
 
-    const fetchMemberships = async () => {
+    const fetchRoles = async () => {
       if (!slug) {
-        setLoading(false);
+        setRoles([]);
         return;
       }
 
       try {
-        setLoading(true);
-        const res = await api.get(`/membership/org/${slug}`);
-        if (mounted) {
-          setMembers(unwrapMembershipItems(res.data?.data ?? res.data));
-        }
+        setRolesLoading(true);
+        const res = await roleService.getRolesByOrgSlug(slug, { limit: 100 });
+        if (mounted) setRoles(unwrapRoleItems(res?.data ?? res));
       } catch (error) {
-        console.error("Fetch organization memberships error:", error);
-        if (mounted) setMembers([]);
+        console.error("Fetch organization roles error:", error);
+        if (mounted) setRoles([]);
       } finally {
-        if (mounted) setLoading(false);
+        if (mounted) setRolesLoading(false);
       }
     };
 
-    fetchMemberships();
+    fetchRoles();
 
     return () => {
       mounted = false;
@@ -122,6 +217,8 @@ export default function Membership() {
   }, [members]);
 
   const inactiveCount = members.filter((member) => !member.isActive).length;
+  const currentOrganizationId =
+    currentOrg?.data?.id || currentOrg?.id || currentOrg?.organization?.id || "";
 
   return (
     <div className="admin-page admin-membership-page">
@@ -137,17 +234,32 @@ export default function Membership() {
             one focused workspace.
           </p>
         </div>
-        <button type="button" className="membership-primary-btn">
+        <button
+          type="button"
+          className="membership-primary-btn"
+          onClick={() => setShowInvitePopup(true)}
+        >
           <UserPlus size={18} aria-hidden="true" />
           Invite Member
         </button>
       </section>
 
+      <InvitePopup
+        isOpen={showInvitePopup}
+        mode="organization"
+        organizationId={currentOrganizationId}
+        roles={roles}
+        rolesLoading={rolesLoading}
+        eventName="Organization membership"
+        onClosePopup={() => setShowInvitePopup(false)}
+        onSuccess={fetchMemberships}
+      />
+
       <section className="membership-stats" aria-label="Membership summary">
         <article>
           <UsersRound size={20} aria-hidden="true" />
           <span>Total members</span>
-          <strong>{members.length}</strong>
+          <strong>{membersTotal}</strong>
         </article>
         <article>
           <ShieldCheck size={20} aria-hidden="true" />
@@ -229,6 +341,16 @@ export default function Membership() {
             </article>
           ))}
         </div>
+        <Pagination
+          totalCount={membersTotal}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={(_, newPage) => setPage(newPage)}
+          onRowsPerPageChange={(event) => {
+            setRowsPerPage(parseInt(event.target.value, 10));
+            setPage(0);
+          }}
+        />
       </section>
     </div>
   );

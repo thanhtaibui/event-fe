@@ -1,0 +1,13 @@
+# Custom words
+fullscreen
+gamepad
+gantt
+kanban
+pilcrow
+squircle
+strikethrough
+touchpad
+ungroup
+toc
+sunlounger
+monstera

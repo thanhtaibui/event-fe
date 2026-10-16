@@ -6,8 +6,8 @@ import "../../styles/user/layout/user-layout.css";
 const footerLinks = [
   { label: "Home", href: "/app" },
   { label: "Events", href: "/app/events" },
-  { label: "Organizations", href: "/app/organizations" },
   { label: "My Tickets", href: "/app/tickets" },
+  { label: "Organizers", href: "/app/organizations" },
 ] as const;
 
 export default function UserFooter() {

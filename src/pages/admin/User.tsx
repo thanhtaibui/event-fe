@@ -5,7 +5,7 @@ import "../../styles/admin/table/table.css";
 import type { User } from "../../types/user/user";
 import AdminSkeleton from "../../components/admin/skeleton/AdminSkeleton";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { ROLE_COLOR_PALETTE } from "../../styles/status-styles";
+import { getRoleBadgeStyle } from "../../styles/status-styles";
 // import component
 import { IOSSwitch } from "../../components/admin/table/Switch";
 import { SearchBar } from "../../components/admin/table/SearchBar";
@@ -27,7 +27,47 @@ import {
   ADMIN_PERMISSION_CODES,
   canAccessAdminAction,
   getUserPermissionCodes,
+  isSuperAdmin,
 } from "../../config/adminPermissionConfig";
+
+function normalizeRoleText(value: unknown) {
+  return String(value || "")
+    .trim()
+    .replace(/[\s_-]+/g, "")
+    .toUpperCase();
+}
+
+function hasSuperAdminRoleMarker(user?: User | null) {
+  const roles = Array.isArray(user?.role)
+    ? user.role
+    : user?.role
+      ? [user.role]
+      : [];
+
+  return roles.some((role: any) => {
+    if (typeof role === "string") {
+      return normalizeRoleText(role).includes("SUPERADMIN");
+    }
+
+    const roleValues = [
+      role?.isSuperAdmin ? "SUPERADMIN" : "",
+      role?.roleName,
+      role?.roleCode,
+      role?.role_name,
+      role?.role_code,
+      role?.name,
+      role?.role?.name,
+      role?.role?.code,
+      role?.role?.role_name,
+      role?.role?.role_code,
+      role?.role?.isSuperAdmin ? "SUPERADMIN" : "",
+    ];
+
+    return roleValues.some((value) =>
+      normalizeRoleText(value).includes("SUPERADMIN"),
+    );
+  });
+}
 
 export default function User() {
   // useatate ẩn hiện
@@ -35,6 +75,10 @@ export default function User() {
   const permissionCodes = useMemo(
     () => getUserPermissionCodes(currentUser),
     [currentUser],
+  );
+  const currentUserIsSuperAdmin = useMemo(
+    () => isSuperAdmin(permissionCodes),
+    [permissionCodes],
   );
   const canCreateUser = canAccessAdminAction(
     permissionCodes,
@@ -73,6 +117,20 @@ export default function User() {
     search.handleSearchChange(val);
   };
 
+  const isProtectedSuperAdminUser = (user: User) =>
+    hasSuperAdminRoleMarker(user) ||
+    (currentUserIsSuperAdmin &&
+      Boolean(currentUser?.id) &&
+      user.id === currentUser?.id) ||
+    (currentUserIsSuperAdmin &&
+      Boolean(currentUser?.email) &&
+      user.email === currentUser?.email);
+
+  const visibleUsers = useMemo(
+    () => (data.items || []).filter((user) => !isProtectedSuperAdminUser(user)),
+    [data.items, currentUser?.email, currentUser?.id, currentUserIsSuperAdmin],
+  );
+
   // setup column
   const userColumns: Column<User>[] = [
     { id: "fullName", label: "FullName", sortable: true },
@@ -88,30 +146,17 @@ export default function User() {
             : [];
 
         if (roles.length === 0) {
-          const guestStyle = ROLE_COLOR_PALETTE.gray;
           return (
             <span
-              className="role-badge"
-              style={{
-                background: guestStyle.bg,
-                color: guestStyle.text,
-                border: guestStyle.border,
-              }}
+              className="role-badge user-role-chip user-role-chip--guest"
+              style={getRoleBadgeStyle("gray")}
             >
-              GUEST
+              <span className="user-role-chip__role">GUEST</span>
             </span>
           );
         }
         return (
-          <div
-            style={{
-              display: "flex",
-              gap: "6px",
-              flexWrap: "wrap",
-              cursor: "pointer",
-              userSelect: "none",
-            }}
-          >
+          <div className="user-role-stack">
             {roles.map((role, index) => {
               const roleName =
                 typeof role === "string" ? role : role.role_name || role.role_code || "ROLE";
@@ -119,23 +164,24 @@ export default function User() {
                 typeof role === "string"
                   ? ""
                   : role.orgName || role.organizationName || "Organization";
-              const style =
-                ROLE_COLOR_PALETTE[
-                  typeof role === "string"
-                    ? "gray"
-                    : (role.colorKey as keyof typeof ROLE_COLOR_PALETTE)
-                ] || ROLE_COLOR_PALETTE.gray;
+              const colorKey = typeof role === "string" ? "gray" : role.colorKey;
+              const label = orgName ? `${roleName} of ${orgName}` : roleName;
               return (
                 <span
                   key={index}
-                  className={`role-badge`}
-                  style={{
-                    background: style.bg,
-                    color: style.text,
-                    border: style.border,
-                  }}
+                  className="role-badge user-role-chip"
+                  style={getRoleBadgeStyle(colorKey)}
+                  title={label}
                 >
-                  {orgName ? `${roleName} of ${orgName}` : roleName}
+                  <span className="user-role-chip__role">{roleName}</span>
+                  {orgName && (
+                    <>
+                      <span className="user-role-chip__divider" aria-hidden="true">
+                        ·
+                      </span>
+                      <span className="user-role-chip__org">{orgName}</span>
+                    </>
+                  )}
                 </span>
               );
             })}
@@ -153,7 +199,11 @@ export default function User() {
             <IOSSwitch
               sx={{ m: 1 }}
               checked={user.isActive}
-              disabled={actions.isUpdating || !canUpdateUser}
+              disabled={
+                actions.isUpdating ||
+                !canUpdateUser ||
+                isProtectedSuperAdminUser(user)
+              }
               onChange={(e) =>
                 actions.toggleActive?.(user.id, e.target.checked)
               }
@@ -167,49 +217,53 @@ export default function User() {
     {
       id: "actions",
       label: "Actions",
-      render: (user) => (
-        <div style={{ display: "flex", gap: "8px" }}>
-          {canUpdateUser && (
-            <button
-              className="btn-edit"
-              onClick={() => {
-                setPopupType("update");
-                setSelectedIds([user.id]);
-              }}
-            >
-              <img
-                width="20"
-                height="20"
-                className="icon-white"
-                src="https://img.icons8.com/nolan/64/pencil.png"
-                alt="pencil"
-              />
-              <span className="text-edit">Edit</span>
-            </button>
-          )}
-          {canDeleteUser && (
-            <button
-              className="btn-delete"
-              onClick={() => {
-                setPopupType("confirm");
-                setSelectedIds([user.id]);
-              }}
-            >
-              <img
-                width="20"
-                height="20"
-                className="icon-white"
-                src="https://img.icons8.com/nolan/64/waste.png"
-                alt="waste"
-              />
-              <span className="text-delete">Delete</span>
-            </button>
-          )}
-          {!canUpdateUser && !canDeleteUser && (
-            <span className="table-action-empty">No actions</span>
-          )}
-        </div>
-      ),
+      render: (user) => {
+        const protectedSuperAdmin = isProtectedSuperAdminUser(user);
+
+        return (
+          <div style={{ display: "flex", gap: "8px" }}>
+            {canUpdateUser && !protectedSuperAdmin && (
+              <button
+                className="btn-edit"
+                onClick={() => {
+                  setPopupType("update");
+                  setSelectedIds([user.id]);
+                }}
+              >
+                <img
+                  width="20"
+                  height="20"
+                  className="icon-white"
+                  src="https://img.icons8.com/nolan/64/pencil.png"
+                  alt="pencil"
+                />
+                <span className="text-edit">Edit</span>
+              </button>
+            )}
+            {canDeleteUser && !protectedSuperAdmin && (
+              <button
+                className="btn-delete"
+                onClick={() => {
+                  setPopupType("confirm");
+                  setSelectedIds([user.id]);
+                }}
+              >
+                <img
+                  width="20"
+                  height="20"
+                  className="icon-white"
+                  src="https://img.icons8.com/nolan/64/waste.png"
+                  alt="waste"
+                />
+                <span className="text-delete">Delete</span>
+              </button>
+            )}
+            {(!canUpdateUser && !canDeleteUser) || protectedSuperAdmin ? (
+              <span className="table-action-empty">No actions</span>
+            ) : null}
+          </div>
+        );
+      },
       sortable: false,
     },
   ];
@@ -267,18 +321,20 @@ export default function User() {
         <AdminSkeleton variant="table" rows={7} />
       ) : (
         <>
-          <CustomTable
-            rows={data.items}
-            columns={userColumns}
-            order={table.sortOrder}
-            orderBy={table.sortBy}
-            onSort={table.handleSort}
-            selected={table.selected}
-            onSelectOne={table.handleSelectOne}
-            onSelectAll={(checked) =>
-              table.handleSelectAll(checked, data.items || [])
-            }
-          />
+          <div className="admin-table-shell">
+            <CustomTable
+              rows={visibleUsers}
+              columns={userColumns}
+              order={table.sortOrder}
+              orderBy={table.sortBy}
+              onSort={table.handleSort}
+              selected={table.selected}
+              onSelectOne={table.handleSelectOne}
+              onSelectAll={(checked) =>
+                table.handleSelectAll(checked, visibleUsers)
+              }
+            />
+          </div>
           <Pagination
             totalCount={data.total || 0}
             page={pagination.page}

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import ConfirmDialog from "../layout/DialogConfirm";
 import { useSend } from "../../../hooks/admin/invite/useSend";
 import { useCheckEmail } from "../../../hooks/admin/invite/useCheckEmail";
+import api from "../../../services/api";
 import "../../../styles/admin/invite/invite-popup.css";
 import { STATUS_CONFIG } from "../../../styles/status-styles";
 export type EmailStatus =
@@ -15,16 +16,61 @@ export type EmailStatus =
   | "invalid_format";
 
 type EmailRow = { email: string; status: EmailStatus };
+type InviteRoleOption = {
+  id: string;
+  role_name?: string;
+  role_code?: string;
+};
 
 export type InvitePopupProps = {
   isOpen: boolean;
-  eventId: string;
+  eventId?: string;
+  organizationId?: string;
+  mode?: "event" | "organization";
+  roles?: InviteRoleOption[];
+  rolesLoading?: boolean;
   onClosePopup: () => void;
   onSuccess?: () => void;
   eventName?: string;
 };
 
 const ERROR_STATUSES: EmailStatus[] = ["not_exists", "invalid_format"];
+const MEMBER_NOT_FOUND_MESSAGE = "Không tìm thấy tài khoản với email này.";
+const MEMBER_FORBIDDEN_MESSAGE = "Bạn không có quyền mời thành viên.";
+const MEMBER_INVITE_FAILED_MESSAGE = "Gửi lời mời thất bại.";
+
+function getMembershipInviteErrorMessage(error: any) {
+  const status = error?.response?.status;
+  if (status === 404) return MEMBER_NOT_FOUND_MESSAGE;
+  if (status === 403) return MEMBER_FORBIDDEN_MESSAGE;
+  if (
+    error?.message === MEMBER_NOT_FOUND_MESSAGE ||
+    error?.message === MEMBER_FORBIDDEN_MESSAGE
+  ) {
+    return error.message;
+  }
+  return MEMBER_INVITE_FAILED_MESSAGE;
+}
+
+async function lookupMembershipUserIdByEmail(email: string) {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  try {
+    const response = await api.get(
+      "/membership/users/lookup",
+      {
+        params: { email: normalizedEmail },
+        skipGlobalToast: true,
+      } as any,
+    );
+    const userId = response.data?.data?.id || response.data?.id || "";
+    if (!userId) throw new Error(MEMBER_NOT_FOUND_MESSAGE);
+
+    return userId;
+  } catch (error: any) {
+    throw new Error(getMembershipInviteErrorMessage(error));
+  }
+}
 
 function parseEmails(raw: string): string[] {
   return [
@@ -39,13 +85,19 @@ function parseEmails(raw: string): string[] {
 
 export const InvitePopup: React.FC<InvitePopupProps> = ({
   isOpen,
-  eventId,
+  eventId = "",
+  organizationId = "",
+  mode = "event",
+  roles = [],
+  rolesLoading = false,
   onClosePopup,
   onSuccess,
   eventName = "Event",
 }) => {
   const [rawInput, setRawInput] = useState("");
+  const [memberEmail, setMemberEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [selectedRoleId, setSelectedRoleId] = useState("");
   const [rows, setRows] = useState<EmailRow[]>([]);
   const [filter, setFilter] = useState<"all" | "valid" | "error">("all");
   const [loading, setLoading] = useState(false);
@@ -139,6 +191,37 @@ export const InvitePopup: React.FC<InvitePopupProps> = ({
 
   if (!isOpen) return null;
 
+  const handleOrganizationInvite = async () => {
+    const emails = parseEmails(memberEmail);
+    if (!emails.length || !selectedRoleId || !organizationId || loading) return;
+
+    setLoading(true);
+    try {
+      await Promise.all(
+        emails.map(async (email) => {
+          const userId = await lookupMembershipUserIdByEmail(email);
+
+          return api.post(
+            "/membership",
+            {
+              userId,
+              roleId: selectedRoleId,
+              orgId: organizationId,
+            },
+            { skipGlobalToast: true } as any,
+          );
+        }),
+      );
+      toast.success("Invitation sent successfully");
+      onSuccess?.();
+      onClosePopup();
+    } catch (err: any) {
+      toast.error(getMembershipInviteErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return createPortal(
     <div className="invite-overlay" onClick={onClosePopup}>
       <ConfirmDialog
@@ -174,7 +257,9 @@ export const InvitePopup: React.FC<InvitePopupProps> = ({
               />
             </div>
             <div>
-              <h2 className="invite-modal__title">Invite Guests</h2>
+              <h2 className="invite-modal__title">
+                {mode === "organization" ? "Invite Member" : "Invite Guests"}
+              </h2>
               <p className="invite-modal__subtitle">{eventName}</p>
             </div>
           </div>
@@ -188,6 +273,58 @@ export const InvitePopup: React.FC<InvitePopupProps> = ({
         </div>
 
         {/* ── Body ── */}
+        {mode === "organization" ? (
+          <div className="invite-modal__body">
+            <div className="invite-field">
+              <label className="invite-label" htmlFor="member-email">
+                Email/user cần mời
+              </label>
+              <input
+                id="member-email"
+                className="invite-textarea invite-textarea--message"
+                value={memberEmail}
+                placeholder="member@example.com"
+                onChange={(event) => setMemberEmail(event.target.value)}
+              />
+            </div>
+
+            <div className="invite-field">
+              <label className="invite-label" htmlFor="member-role">
+                Select Role
+              </label>
+              <select
+                id="member-role"
+                className="invite-textarea invite-textarea--message"
+                value={selectedRoleId}
+                onChange={(event) => setSelectedRoleId(event.target.value)}
+                disabled={rolesLoading}
+              >
+                <option value="">
+                  {rolesLoading ? "Loading roles..." : "Choose a role"}
+                </option>
+                {roles.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.role_name || role.role_code || "Role"}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="invite-field">
+              <label className="invite-label" htmlFor="member-message">
+                Invitation message{" "}
+                <span className="invite-label--optional">(Optional)</span>
+              </label>
+              <textarea
+                id="member-message"
+                className="invite-textarea invite-textarea--message"
+                value={message}
+                placeholder="Write a short invitation message"
+                onChange={(event) => setMessage(event.target.value)}
+              />
+            </div>
+          </div>
+        ) : (
         <div className="invite-modal__body">
           {/* Step 1 — Raw input */}
           <div className="invite-field">
@@ -349,6 +486,7 @@ export const InvitePopup: React.FC<InvitePopupProps> = ({
             />
           </div>
         </div>
+        )}
 
         {/* ── Footer ── */}
         <div className="invite-modal__footer">
@@ -361,8 +499,22 @@ export const InvitePopup: React.FC<InvitePopupProps> = ({
           </button>
           <button
             className="invite-btn invite-btn--primary"
-            onClick={() => setConfirm("send")}
-            disabled={!validRows.length || loading}
+            onClick={() => {
+              if (mode === "organization") {
+                handleOrganizationInvite();
+                return;
+              }
+              setConfirm("send");
+            }}
+            disabled={
+              mode === "organization"
+                ? !memberEmail.trim() ||
+                  !selectedRoleId ||
+                  !organizationId ||
+                  loading ||
+                  rolesLoading
+                : !validRows.length || loading
+            }
           >
             <img
               width="24"
@@ -372,7 +524,9 @@ export const InvitePopup: React.FC<InvitePopupProps> = ({
             ></img>
             {loading
               ? "Sending..."
-              : `Send Invitations${validRows.length > 0 ? ` (${validRows.length})` : ""}`}
+              : mode === "organization"
+                ? "Submit Invite"
+                : `Send Invitations${validRows.length > 0 ? ` (${validRows.length})` : ""}`}
           </button>
         </div>
       </div>

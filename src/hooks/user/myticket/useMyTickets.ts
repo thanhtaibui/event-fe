@@ -5,6 +5,7 @@ import { getAccessToken } from "../../../constants/authStorage";
 import { userTicketService } from "../../../services/user/ticket.service";
 import type { JwtPayloadCustom } from "../../../types/JwtPayloadCustom";
 import {
+  groupTicketsByOrder,
   type MyTicket,
   type TicketsSidebarSummary,
   type UpcomingNextItem,
@@ -77,16 +78,62 @@ function normalizeTicket(item: unknown, index: number): MyTicket {
     record.ticketType && typeof record.ticketType === "object"
       ? (record.ticketType as Record<string, unknown>)
       : {};
+  const order =
+    record.order && typeof record.order === "object"
+      ? (record.order as Record<string, unknown>)
+      : {};
 
   const id = pickString(record.id, record.ticketId, event.id) || `ticket-${index}`;
+  const orderId =
+    pickString(order.id, record.orderId, record.order_id, record.orderRef) ||
+    (record.order && typeof record.order === "string" ? String(record.order) : "") ||
+    (event.id && record.createdAt ? `order-${event.id}-${record.createdAt}` : `order-${id}`);
+
   const startDate = pickString(event.startDateTime, record.startDateTime, record.createdAt);
-  const ticketTypeName = pickString(ticketType.name, record.ticketTypeName, record.type);
+  const ticketTypeName = pickString(ticketType.name, record.ticketTypeName, record.type) || "Standard";
   const eventName = pickString(event.title, record.eventName, record.title) || "Untitled event";
   const organizationName =
     pickString(organization.name, record.organizationName, record.orgName) || "Eventix";
 
+  const bannerUrlFromEvent =
+    typeof event.bannerUrl === "string" && event.bannerUrl.trim()
+      ? event.bannerUrl.trim()
+      : event.bannerUrl === null
+      ? null
+      : undefined;
+
+  const fallbackBanner =
+    pickString(event.eventBanner, event.eventPoster, record.imageUrl, record.banner) || null;
+
+  const finalBannerUrl =
+    bannerUrlFromEvent !== undefined
+      ? bannerUrlFromEvent
+      : fallbackBanner;
+
+  const imageUrl = finalBannerUrl || "/default-banner.png";
+
+  const ticketPrice = pickNumber(ticketType.price, record.price, record.ticketPrice);
+  const orderTotalPrice = pickNumber(
+    order.totalPrice,
+    order.totalAmount,
+    order.amount,
+    record.orderTotalPrice
+  );
+
+  const ticketTypeObj = {
+    ...ticketType,
+    name: ticketTypeName,
+    ...(ticketPrice > 0 ? { price: ticketPrice } : {}),
+  };
+
   return {
     id,
+    orderId,
+    order: {
+      id: orderId,
+      ...(orderTotalPrice > 0 ? { totalPrice: orderTotalPrice } : {}),
+      ...order,
+    },
     status: getTicketStatus(record, event),
     eventName,
     shortDescription:
@@ -95,9 +142,16 @@ function normalizeTicket(item: unknown, index: number): MyTicket {
     date: getDateParts(startDate),
     location: pickString(event.place, record.location, record.place) || "Online",
     ticketCount: Math.max(1, pickNumber(record.quantity, record.ticketCount, record.count, 1)),
-    imageUrl:
-      pickString(event.eventBanner, event.eventPoster, record.imageUrl, record.banner) ||
-      "/default-banner.png",
+    imageUrl,
+    ticketType: ticketTypeObj,
+    event: {
+      id: pickString(event.id, record.eventId) || id,
+      title: eventName,
+      bannerUrl: finalBannerUrl,
+      startDateTime: startDate,
+      place: pickString(event.place, record.location, record.place) || "Online",
+      ...(organization.name ? { organization } : {}),
+    },
   };
 }
 
@@ -117,7 +171,7 @@ function buildUpcomingNext(tickets: MyTicket[]): UpcomingNextItem {
     eventName: ticket?.eventName || "No upcoming ticket",
     organizationName: ticket?.organizationName || "Eventix",
     dateLabel: ticket ? `${ticket.date.month} ${ticket.date.day}` : "Explore events",
-    imageUrl: ticket?.imageUrl || "/default-banner.png",
+    imageUrl: ticket?.event?.bannerUrl || ticket?.imageUrl || "/default-banner.png",
   };
 }
 
@@ -165,9 +219,11 @@ export function useMyTickets() {
 
   const summary = useMemo(() => buildSummary(tickets), [tickets]);
   const upcomingNext = useMemo(() => buildUpcomingNext(tickets), [tickets]);
+  const orders = useMemo(() => groupTicketsByOrder(tickets), [tickets]);
 
   return {
     tickets,
+    orders,
     summary,
     upcomingNext,
     loading,

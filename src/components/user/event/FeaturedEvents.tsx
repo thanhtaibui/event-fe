@@ -57,6 +57,10 @@ function getEventBanner(event: EventDto) {
   return event.eventBanner || "/default-banner.png";
 }
 
+function getPrimaryCategory(event: EventDto) {
+  return event.categories?.[0]?.name || "Event";
+}
+
 type FeaturedEventsProps = {
   events: EventDto[];
   loading: boolean;
@@ -118,6 +122,7 @@ export default function FeaturedEvents({
           <span>{event.organization?.name || "Eventix Partner"}</span>
           <small>{event.status}</small>
         </div>
+        <span className="event-card__category">{getPrimaryCategory(event)}</span>
         <h3>{event.title}</h3>
 
         <div className="event-card__details">
@@ -153,6 +158,14 @@ export default function FeaturedEvents({
           </span>
         </div>
 
+        <div className="event-card__ticketRow">
+          <div>
+            <small>Tickets</small>
+            <strong>View options</strong>
+          </div>
+          <span>{event.capacity ? `${event.capacity} seats` : "Open capacity"}</span>
+        </div>
+
         <Link
           className="event-card__detailLink"
           to={`/app/events/${encodeId(event.id)}`}
@@ -179,7 +192,7 @@ export default function FeaturedEvents({
 
       {loading && (
         <div className="featured-events__skeletonGrid" aria-label="Loading events">
-          {[1, 2, 3, 4].map((item) => (
+          {[1, 2, 3, 4, 5, 6].map((item) => (
             <div className="event-card-skeleton" key={item}>
               <span />
               <strong />

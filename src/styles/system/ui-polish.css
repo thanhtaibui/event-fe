@@ -422,6 +422,45 @@ h1 span, h2 span, h3 span {
   color: var(--ux-highlight-strong) !important;
 }
 
+:where(
+  .eventixNotification--user,
+  .eventixNotification--admin
+) .eventixNotification__badge {
+  width: 20px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  padding: 0 !important;
+  border: 2px solid #ffffff !important;
+  border-radius: 50% !important;
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  box-shadow:
+    0 8px 16px rgba(239, 68, 68, 0.32),
+    0 0 0 1px rgba(127, 29, 29, 0.08) !important;
+}
+
+.layout-container.dark-mode .eventixNotification--admin .eventixNotification__badge,
+.user-eventixHeader:not(.user-eventixHeader--light) .eventixNotification--user .eventixNotification__badge {
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  background: #f43f5e !important;
+  color: #ffffff !important;
+}
+
+:where(
+  .eventixNotification--user,
+  .eventixNotification--admin
+) :where(
+  .eventixNotification__head small,
+  .eventixNotification__content small,
+  .eventixNotification__content em,
+  .eventixNotification__empty
+) {
+  color: #888888 !important;
+}
+
 :where(.event-page .event-card__body h3, .myTicketCard__eventName, .org-list__name, .stat-value) {
   color: #111827 !important;
 }
@@ -493,10 +532,15 @@ body {
 
 .admin-page,
 .dashboard,
-.org-detail,
 .admin-membership-page,
 .report {
   width: min(100%, 1440px);
+  margin-inline: auto;
+}
+
+.org-detail {
+  width: min(100%, 1760px);
+  box-sizing: border-box;
   margin-inline: auto;
 }
 
@@ -664,7 +708,6 @@ body {
 
 .stat-trend,
 .chart-pill,
-.role-badge,
 .membership-role,
 .membership-status,
 .admin-header__role-pill {
@@ -740,7 +783,6 @@ select {
   border-bottom-color: rgba(15, 23, 42, 0.06) !important;
 }
 
-.permission-card,
 .membership-row-card,
 .org-membership-modal__row {
   border-color: rgba(79, 70, 229, 0.12) !important;
@@ -753,13 +795,15 @@ select {
 .org-detail {
   display: grid;
   gap: 22px;
-  padding: clamp(18px, 2.5vw, 32px) !important;
+  padding: clamp(18px, 2.5vw, 32px) clamp(24px, 3vw, 48px) !important;
 }
 
 .org-detail__cover {
-  max-width: 100% !important;
+  width: 100% !important;
+  max-width: none !important;
+  aspect-ratio: 1200 / 420 !important;
   border: 1px solid rgba(79, 70, 229, 0.14) !important;
-  border-radius: 24px !important;
+  border-radius: 22px !important;
   background:
     radial-gradient(circle at 88% 18%, rgba(79, 70, 229, 0.14), transparent 30%),
     #f3f4ff !important;
@@ -840,6 +884,44 @@ select {
 .org-detail__avatar {
   border: 4px solid #ffffff !important;
   box-shadow: 0 18px 34px rgba(79, 70, 229, 0.18) !important;
+}
+
+.org-verification-request__modal {
+  border-radius: 26px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(124, 58, 237, 0.16), transparent 34%),
+    linear-gradient(180deg, #ffffff 0%, #fbfcff 100%) !important;
+  box-shadow: 0 32px 90px rgba(15, 23, 42, 0.26) !important;
+}
+
+.org-verification-request__field,
+.org-verification-request__documents,
+.org-verification-request__upload,
+.org-verification-request__preview {
+  border-color: rgba(124, 58, 237, 0.14) !important;
+  border-radius: 18px !important;
+}
+
+.org-verification-request__documents {
+  background:
+    linear-gradient(135deg, rgba(124, 58, 237, 0.06), rgba(37, 99, 235, 0.035)),
+    #ffffff !important;
+}
+
+.org-verification-request__upload {
+  border-style: dashed !important;
+  background:
+    linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(37, 99, 235, 0.04)),
+    #fbfaff !important;
+}
+
+.org-verification-request__upload--ready {
+  border-style: solid !important;
+  border-color: rgba(16, 185, 129, 0.28) !important;
+  background:
+    linear-gradient(135deg, rgba(16, 185, 129, 0.11), rgba(124, 58, 237, 0.04)),
+    #f8fffb !important;
+  color: #047857 !important;
 }
 
 .org-detail__badge,
@@ -1161,6 +1243,80 @@ select {
   color: #ffffff !important;
 }
 
+.layout-container.dark-mode .org-detail__cover {
+  width: 100% !important;
+  max-width: none !important;
+  aspect-ratio: 1200 / 420 !important;
+  border-color: rgba(148, 163, 184, 0.22) !important;
+  background:
+    radial-gradient(circle at 88% 16%, rgba(129, 140, 248, 0.18), transparent 32%),
+    linear-gradient(135deg, #171f30 0%, #121827 60%, #0d1320 100%) !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.34) !important;
+}
+
+.layout-container.dark-mode :where(
+  .org-detail__header,
+  .org-detail__panel,
+  .org-detail__map
+) {
+  border-color: rgba(148, 163, 184, 0.22) !important;
+  background:
+    radial-gradient(circle at 92% 0%, rgba(91, 33, 182, 0.14), transparent 28%),
+    linear-gradient(145deg, #171f30 0%, #121927 58%, #101624 100%) !important;
+  color: #f8fafc !important;
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.layout-container.dark-mode .org-detail__cards .stat-card {
+  border-color: rgba(148, 163, 184, 0.22) !important;
+  background:
+    radial-gradient(circle at 92% 0%, rgba(91, 33, 182, 0.15), transparent 30%),
+    linear-gradient(145deg, #171f30 0%, #121927 58%, #101624 100%) !important;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.layout-container.dark-mode .org-detail__panel::before {
+  opacity: 0.92 !important;
+}
+
+.layout-container.dark-mode .org-verification-request__modal {
+  border-color: rgba(148, 163, 184, 0.2) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(124, 58, 237, 0.16), transparent 34%),
+    linear-gradient(180deg, #151c2b 0%, #101827 100%) !important;
+  box-shadow: 0 34px 92px rgba(0, 0, 0, 0.46) !important;
+}
+
+.layout-container.dark-mode :where(
+  .org-verification-request__field,
+  .org-verification-request__documents,
+  .org-verification-request__upload,
+  .org-verification-request__preview
+) {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  background:
+    radial-gradient(circle at 92% 0%, rgba(91, 33, 182, 0.12), transparent 28%),
+    #111827 !important;
+}
+
+.layout-container.dark-mode .org-verification-request__documents li {
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  background: rgba(15, 23, 42, 0.68) !important;
+  color: #e2e8f0 !important;
+}
+
+.layout-container.dark-mode .org-verification-request__upload--ready {
+  border-color: rgba(52, 211, 153, 0.3) !important;
+  background:
+    linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(124, 58, 237, 0.06)),
+    #111827 !important;
+  color: #6ee7b7 !important;
+}
+
 @media (max-width: 900px) {
   .content-body {
     padding: 16px !important;
@@ -1196,6 +1352,10 @@ select {
 
   .header-left-detail {
     margin-left: 0 !important;
+  }
+
+  .org-detail__cover {
+    width: 100% !important;
   }
 }
 
@@ -1438,4 +1598,51 @@ select {
 ) {
   background: var(--skeleton-gradient, linear-gradient(100deg, #111827 0%, #1f2937 48%, #111827 100%)) !important;
   background-size: 220% 100% !important;
+}
+
+/* Reports hero uses a dark moderation banner in both themes. */
+.layout-container.light-mode .report-overview {
+  border-color: rgba(91, 33, 182, 0.18) !important;
+  background:
+    radial-gradient(circle at 92% 88%, rgba(37, 99, 235, 0.34), transparent 34%),
+    linear-gradient(135deg, #180f3e 0%, #1f1452 50%, #174189 100%) !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12) !important;
+}
+
+.layout-container.light-mode .report-overview__copy h1 {
+  color: #ffffff !important;
+}
+
+.layout-container.light-mode .report-overview__copy p {
+  color: rgba(255, 255, 255, 0.76) !important;
+}
+
+.layout-container.light-mode .report-overview__copy span {
+  border-color: rgba(196, 181, 253, 0.22) !important;
+  background: rgba(91, 33, 182, 0.28) !important;
+  color: #a78bfa !important;
+}
+
+.layout-container.light-mode .report-stat-card,
+.layout-container.light-mode .report-stat-card:hover {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
+}
+
+.layout-container.light-mode .report-stat-card::before {
+  display: none !important;
+  content: none !important;
+}
+
+.layout-container.light-mode .report-stat-card span {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.layout-container.light-mode .report-stat-card strong {
+  color: #ffffff !important;
 }

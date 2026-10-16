@@ -6,6 +6,7 @@ interface StatisticCardProps {
   value: string | number;
   icon?: React.ReactNode;
   trend?: string;
+  className?: string;
 }
 
 const StatisticCard: React.FC<StatisticCardProps> = ({
@@ -13,9 +14,10 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
   value,
   icon,
   trend,
+  className = "",
 }) => {
   return (
-    <div className="stat-card">
+    <div className={`stat-card ${className}`.trim()}>
       <div className="stat-header">
         {icon && <div className="stat-icon">{icon}</div>}
         <span className="stat-trend">Live</span>

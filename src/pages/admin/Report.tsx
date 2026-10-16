@@ -385,18 +385,20 @@ export default function Report() {
         <AdminSkeleton variant="table" rows={7} />
       ) : (
         <>
-          <CustomTable
-            rows={data.items}
-            columns={reportColumns}
-            order={table.sortOrder}
-            orderBy={table.sortBy}
-            onSort={table.handleSort}
-            selected={table.selected}
-            onSelectOne={table.handleSelectOne}
-            onSelectAll={(checked) =>
-              table.handleSelectAll(checked, data.items || [])
-            }
-          />
+          <div className="admin-table-shell">
+            <CustomTable
+              rows={data.items}
+              columns={reportColumns}
+              order={table.sortOrder}
+              orderBy={table.sortBy}
+              onSort={table.handleSort}
+              selected={table.selected}
+              onSelectOne={table.handleSelectOne}
+              onSelectAll={(checked) =>
+                table.handleSelectAll(checked, data.items || [])
+              }
+            />
+          </div>
           <Pagination
             totalCount={data.total || 0}
             page={pagination.page}

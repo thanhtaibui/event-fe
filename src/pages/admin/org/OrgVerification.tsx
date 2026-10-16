@@ -1,10 +1,16 @@
 import { useMemo, useState } from "react";
 import {
   BadgeCheck,
-  Building2,
+  Check,
+  CheckCircle2,
+  Clock,
+  Copy,
   ExternalLink,
+  Eye,
   FileCheck2,
+  FileText,
   Search,
+  ShieldAlert,
   ShieldCheck,
   X,
 } from "lucide-react";
@@ -19,13 +25,38 @@ import type {
 import { triggerNotification } from "../../../hooks/notification/useNotificationTrigger";
 import "../../../styles/admin/org-verification.css";
 
-const REVIEW_STATUSES: Array<{
+const REVIEW_STATUS_OPTIONS: Array<{
   label: string;
   value: Exclude<OrgVerificationStatus, "PENDING">;
+  description: string;
+  icon: typeof ShieldCheck;
+  color: "approved" | "processing" | "rejected";
+  disabled?: boolean;
+  badge?: string;
 }> = [
-  { label: "Approve verification", value: "APPROVED" },
-  { label: "Request more review", value: "PROCESSING" },
-  { label: "Reject request", value: "REJECTED" },
+  {
+    label: "Approve verification",
+    value: "APPROVED",
+    description: "Grant verified status and official verified badge",
+    icon: ShieldCheck,
+    color: "approved",
+  },
+  {
+    label: "Request more review",
+    value: "PROCESSING",
+    description: "Mark for additional inspection (BE pending)",
+    icon: Clock,
+    color: "processing",
+    disabled: true,
+    badge: "Readonly",
+  },
+  {
+    label: "Reject request",
+    value: "REJECTED",
+    description: "Decline verification request with internal reason",
+    icon: ShieldAlert,
+    color: "rejected",
+  },
 ];
 
 function getOrgName(request: OrgVerificationRequest) {
@@ -57,6 +88,7 @@ export default function OrgVerification() {
     useState<Exclude<OrgVerificationStatus, "PENDING">>("APPROVED");
   const [reviewerNote, setReviewerNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [copiedTax, setCopiedTax] = useState(false);
 
   const apiQuery = useMemo(
     () => ({
@@ -74,12 +106,22 @@ export default function OrgVerification() {
     setSelected(request);
     setReviewStatus(request.status === "PROCESSING" ? "PROCESSING" : "APPROVED");
     setReviewerNote(request.reviewerNote || "");
+    setCopiedTax(false);
   };
 
   const closeReview = () => {
     setSelected(null);
     setReviewerNote("");
     setReviewStatus("APPROVED");
+    setCopiedTax(false);
+  };
+
+  const handleCopyTax = (taxNumber: string) => {
+    if (!taxNumber || taxNumber === "-") return;
+    navigator.clipboard.writeText(taxNumber);
+    setCopiedTax(true);
+    toast.success("Tax number copied to clipboard");
+    setTimeout(() => setCopiedTax(false), 2000);
   };
 
   const handleReview = async () => {
@@ -106,6 +148,11 @@ export default function OrgVerification() {
   const totalPending = data.items.filter(
     (item) => (item.status || "PENDING") === "PENDING",
   ).length;
+
+  const isImageDoc = Boolean(
+    selected?.documentUrl &&
+      /\.(png|jpe?g|webp|gif|svg)(\?.*)?$/i.test(selected.documentUrl),
+  );
 
   return (
     <div className="verification-page">
@@ -200,8 +247,10 @@ export default function OrgVerification() {
                   type="button"
                   className="verification-review-btn"
                   onClick={() => openReview(request)}
+                  title="Review verification request"
                 >
-                  Review
+                  <Eye size={15} aria-hidden="true" />
+                  <span>Review</span>
                 </button>
               </article>
             ))
@@ -218,10 +267,27 @@ export default function OrgVerification() {
             aria-labelledby="verification-review-title"
             onClick={(event) => event.stopPropagation()}
           >
+            {/* Header */}
             <header className="verification-modal__header">
-              <div>
-                <span>Verification review</span>
-                <h2 id="verification-review-title">{getOrgName(selected)}</h2>
+              <div className="verification-modal__title-group">
+                <div className="verification-modal__eyebrow">
+                  <ShieldCheck size={14} aria-hidden="true" />
+                  <span>Verification Dossier</span>
+                  <span className={statusClass(selected.status)}>
+                    {selected.status || "PENDING"}
+                  </span>
+                </div>
+                <div className="verification-modal__org-info">
+                  <span className="verification-avatar verification-avatar--modal">
+                    {getOrgName(selected).charAt(0).toUpperCase()}
+                  </span>
+                  <div>
+                    <h2 id="verification-review-title">{getOrgName(selected)}</h2>
+                    <p className="verification-modal__sub">
+                      {selected.organization?.owner?.email || "No owner email"} • Submitted {formatDate(selected.createdAt)}
+                    </p>
+                  </div>
+                </div>
               </div>
               <button
                 type="button"
@@ -233,91 +299,203 @@ export default function OrgVerification() {
               </button>
             </header>
 
+            {/* Body: 2-Column Responsive Dossier + Full Width Bottom Audit Note */}
             <div className="verification-modal__body">
-              <div className="verification-review-card verification-review-card--identity">
-                <Building2 size={22} aria-hidden="true" />
-                <div>
-                  <span>Tax number</span>
-                  <strong>{getTaxNumber(selected)}</strong>
-                  <p>
-                    Compare this number with the submitted registration or tax
-                    authority document before approving.
-                  </p>
+              {/* Top Grid: Left (Tax & Doc), Right (Checklist & Decision) */}
+              <div className="verification-modal__grid">
+                {/* Left Column: Số thuế và ảnh */}
+                <div className="verification-modal__col">
+                  {/* Tax ID Number Card */}
+                  {/* Tax ID Number Card - Inline compact */}
+                  <div className="verification-card verification-card--tax">
+                    <div className="verification-tax-line">
+                      <span className="verification-tax-label">TAX ID:</span>
+                      <code className="verification-tax-code">{getTaxNumber(selected)}</code>
+                      <button
+                        type="button"
+                        className="verification-copy-btn"
+                        onClick={() => handleCopyTax(getTaxNumber(selected))}
+                        title="Copy tax number"
+                      >
+                        {copiedTax ? (
+                          <>
+                            <Check size={13} aria-hidden="true" />
+                            <span>Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={13} aria-hidden="true" />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Submitted Document Proof */}
+                  <div className="verification-card verification-card--doc">
+                    <div className="verification-card-title">
+                      <FileCheck2 size={14} aria-hidden="true" />
+                      <span>Submitted Legal Document</span>
+                    </div>
+                    {selected.documentUrl ? (
+                      <div className="verification-doc-box">
+                        {isImageDoc && (
+                          <div className="verification-doc-thumb">
+                            <img src={selected.documentUrl} alt="Document preview" />
+                          </div>
+                        )}
+                        <div className="verification-doc-meta">
+                          <span className="verification-doc-name" title={selected.documentUrl}>
+                            {selected.documentUrl.split("/").pop() || "Verification document"}
+                          </span>
+                          <a
+                            className="verification-doc-open-btn"
+                            href={selected.documentUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <ExternalLink size={13} aria-hidden="true" />
+                            <span>Open</span>
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="verification-doc-empty">
+                        <FileText size={18} aria-hidden="true" />
+                        <span>No document URL provided</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right Column: Checklist & Review Decision */}
+                <div className="verification-modal__col">
+                  {/* Verification Criteria Checklist */}
+                  <div className="verification-card verification-card--checklist">
+                    <div className="verification-card-title">
+                      <ShieldCheck size={14} aria-hidden="true" />
+                      <span>Verification Criteria</span>
+                    </div>
+
+                    <div className="verification-checklist-simple">
+                      <div className="verification-checklist-simple-item">
+                        <CheckCircle2 size={14} className="checklist-icon--required" aria-hidden="true" />
+                        <span>
+                          <strong>Business License / Registration (MST)</strong>
+                          <em className="tag-required">Mandatory</em>
+                        </span>
+                      </div>
+                      <div className="verification-checklist-simple-item">
+                        <CheckCircle2 size={14} className="checklist-icon--optional" aria-hidden="true" />
+                        <span>
+                          <strong>Sub-licenses & Legal Rep ID</strong>
+                          <em className="tag-optional">Optional</em>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Review Decision */}
+                  <div className="verification-card verification-card--decision">
+                    <div className="verification-card-title">
+                      <BadgeCheck size={14} aria-hidden="true" />
+                      <span>Review Decision</span>
+                    </div>
+                    <div className="verification-decision-cards" role="radiogroup" aria-label="Review decision">
+                      {REVIEW_STATUS_OPTIONS.map((item) => {
+                        const IconComponent = item.icon;
+                        const isSelected = reviewStatus === item.value;
+                        const isDisabled = Boolean(item.disabled);
+                        return (
+                          <div
+                            key={item.value}
+                            role="radio"
+                            aria-checked={isSelected}
+                            aria-disabled={isDisabled}
+                            tabIndex={isDisabled ? -1 : 0}
+                            className={`verification-decision-option verification-decision-option--${item.color} ${
+                              isSelected ? "is-selected" : ""
+                            } ${isDisabled ? "is-disabled" : ""}`}
+                            onClick={() => {
+                              if (!isDisabled) setReviewStatus(item.value);
+                            }}
+                            onKeyDown={(e) => {
+                              if (!isDisabled && (e.key === " " || e.key === "Enter")) {
+                                e.preventDefault();
+                                setReviewStatus(item.value);
+                              }
+                            }}
+                          >
+                            <div className="verification-decision-option__icon">
+                              <IconComponent size={16} aria-hidden="true" />
+                            </div>
+                            <div className="verification-decision-option__content">
+                              <div className="verification-decision-option__title-row">
+                                <strong>{item.label}</strong>
+                                {item.badge && (
+                                  <span className="verification-decision-badge">
+                                    {item.badge}
+                                  </span>
+                                )}
+                              </div>
+                              <small>{item.description}</small>
+                            </div>
+                            <div className="verification-decision-option__check">
+                              <div className="verification-radio-dot" />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="verification-doc-checklist">
-                <span>Required document checklist</span>
-                <label>
-                  <input type="checkbox" readOnly checked />
-                  Business registration certificate
+              {/* Bottom: Internal Audit Note (Full Width) */}
+              <div className="verification-card verification-card--note">
+                <label className="verification-card-title" htmlFor="verification-reviewer-note">
+                  <FileText size={14} aria-hidden="true" />
+                  <span>Internal Audit Note</span>
                 </label>
-                <label>
-                  <input type="checkbox" readOnly checked />
-                  Tax registration or tax authority confirmation
-                </label>
-                <label>
-                  <input type="checkbox" readOnly checked />
-                  Legal representative information included
-                </label>
-              </div>
-
-              <a
-                className="verification-document-preview"
-                href={selected.documentUrl || "#"}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FileCheck2 size={24} aria-hidden="true" />
-                <span>Open submitted document</span>
-                <ExternalLink size={16} aria-hidden="true" />
-              </a>
-
-              <label className="verification-field">
-                Review decision
-                <select
-                  value={reviewStatus}
-                  onChange={(event) =>
-                    setReviewStatus(
-                      event.target.value as Exclude<OrgVerificationStatus, "PENDING">,
-                    )
-                  }
-                >
-                  {REVIEW_STATUSES.map((item) => (
-                    <option value={item.value} key={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="verification-field verification-field--wide">
-                Internal note
                 <textarea
+                  id="verification-reviewer-note"
                   value={reviewerNote}
                   onChange={(event) => setReviewerNote(event.target.value)}
-                  placeholder="Add a short review note for this request..."
+                  placeholder="Enter review notes, findings, reason for approval or rejection..."
                   rows={4}
                 />
-              </label>
+              </div>
             </div>
 
+            {/* Footer */}
             <footer className="verification-modal__footer">
               <button
                 type="button"
                 className="verification-btn verification-btn--ghost"
                 onClick={closeReview}
+                disabled={submitting}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="verification-btn verification-btn--primary"
+                className={`verification-btn verification-btn--primary verification-btn--${reviewStatus.toLowerCase()}`}
                 onClick={handleReview}
                 disabled={submitting}
               >
                 <BadgeCheck size={17} aria-hidden="true" />
-                {submitting ? "Saving..." : "Save decision"}
+                <span>
+                  {submitting
+                    ? "Saving decision..."
+                    : `Confirm ${
+                        reviewStatus === "APPROVED"
+                          ? "Approval"
+                          : reviewStatus === "REJECTED"
+                            ? "Rejection"
+                            : "Update"
+                      }`}
+                </span>
               </button>
             </footer>
           </section>

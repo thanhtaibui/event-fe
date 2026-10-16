@@ -12,6 +12,7 @@
   border-radius: 8px;
   border: 1px solid transparent;
   background: #ffffff;
+  box-shadow: inset 0 1px 0 var(--surface-inner, rgba(255, 255, 255, 0.9));
   cursor: pointer;
   font-size: 0.86rem;
   font-weight: 650;
@@ -21,25 +22,26 @@
     background 160ms ease,
     border-color 160ms ease,
     color 160ms ease,
+    box-shadow 160ms ease,
     transform 160ms ease;
 }
 
 .btn-edit {
-  color: #6d28d9;
-  background: #f5f3ff;
-  border-color: #ddd6fe;
+  color: var(--surface-info-text, #1e3a8a);
+  background: var(--surface-info, #eff6ff);
+  border-color: var(--surface-info-border, #bfdbfe);
 }
 
 .btn-delete {
-  color: #dc2626;
-  background: #fef2f2;
-  border-color: #fecaca;
+  color: var(--surface-danger-text, #b91c1c);
+  background: var(--surface-danger, #fef2f2);
+  border-color: var(--surface-danger-border, #fecaca);
 }
 
 .btn-detail {
-  color: #0f766e;
-  background: #f0fdfa;
-  border-color: #99f6e4;
+  color: var(--surface-info-text, #1e3a8a);
+  background: var(--surface-info, #eff6ff);
+  border-color: var(--surface-info-border, #bfdbfe);
 }
 
 .btn-edit:hover,
@@ -49,15 +51,15 @@
 }
 
 .btn-edit:hover {
-  background: #ede9fe;
+  background: var(--surface-info-hover, #dbeafe);
 }
 
 .btn-delete:hover {
-  background: #fee2e2;
+  background: var(--surface-danger-hover, #fee2e2);
 }
 
 .btn-detail:hover {
-  background: #ccfbf1;
+  background: var(--surface-info-hover, #dbeafe);
 }
 
 .text-edit,

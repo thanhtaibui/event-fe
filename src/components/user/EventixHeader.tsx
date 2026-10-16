@@ -11,6 +11,7 @@ import {
   Menu,
   Moon,
   ShieldCheck,
+  ShoppingCart,
   Sun,
   Ticket,
   X,
@@ -25,15 +26,16 @@ import {
   isSuperAdmin as checkSuperAdmin,
 } from "../../config/adminPermissionConfig";
 import { clearAccessToken, getAccessToken } from "../../constants/authStorage";
-import { useOrgsByUser } from "../../hooks/admin/org/useOrgsByUser";
+import { useBookingCart } from "../../contexts/BookingCartContext";
+import { useOrgsByUser, canFetchUserOrganizations } from "../../hooks/admin/org/useOrgsByUser";
 import NotificationMenu from "../common/NotificationMenu";
 import "../../styles/user/layout/eventixHeader.css";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/app", icon: Home },
   { label: "Events", href: "/app/events", icon: CalendarDays },
-  { label: "Organizations", href: "/app/organizations", icon: Building2 },
   { label: "My Tickets", href: "/app/tickets", icon: Ticket },
+  { label: "Organizers", href: "/app/organizations", icon: Building2 },
 ] as const;
 
 function persistTheme(next: string) {
@@ -138,6 +140,7 @@ export default function EventixHeader() {
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useAuth();
   const userInfo = useInfo();
+  const { openCart, totalQuantity } = useBookingCart();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [workspaceOpen, setWorkspaceOpen] = useState(false);
   const workspaceRef = useRef<HTMLDivElement>(null);
@@ -151,8 +154,8 @@ export default function EventixHeader() {
   const activeLabel = useMemo(() => {
     const pathname = location.pathname;
     if (pathname.startsWith("/app/events")) return "Events";
-    if (pathname.startsWith("/app/organizations")) return "Organizations";
     if (pathname.startsWith("/app/tickets")) return "My Tickets";
+    if (pathname.startsWith("/app/organizations")) return "Organizers";
     return "Home";
   }, [location.pathname]);
 
@@ -201,13 +204,19 @@ export default function EventixHeader() {
     };
   }, [workspaceOpen]);
 
+  const canAccessOrgs = useMemo(() => {
+    return canFetchUserOrganizations(userInfo);
+  }, [userInfo]);
+
   const { data: membershipData, loading: membershipLoading } = useOrgsByUser(
-    currentUser?.id || "",
+    canAccessOrgs ? currentUser?.id || "" : "",
+    { enabled: canAccessOrgs },
   );
 
   const memberships = useMemo<UserMembership[]>(() => {
+    if (!canAccessOrgs) return [];
     return normalizeMemberships(membershipData);
-  }, [membershipData]);
+  }, [canAccessOrgs, membershipData]);
 
   const isSuperAdmin = useMemo(() => {
     return checkSuperAdmin(getUserPermissionCodes(userInfo));
@@ -291,6 +300,19 @@ export default function EventixHeader() {
               variant="user"
               enabled={isLoggedIn}
             />
+            <button
+              type="button"
+              className="user-eventixHeader__cartButton"
+              aria-label={`Open cart with ${totalQuantity} tickets`}
+              onClick={openCart}
+            >
+              <ShoppingCart size={18} aria-hidden="true" />
+              {totalQuantity > 0 && (
+                <span className="user-eventixHeader__cartBadge">
+                  {totalQuantity > 99 ? "99+" : totalQuantity}
+                </span>
+              )}
+            </button>
             {currentUser ? (
               <div className="user-eventixHeader__workspace" ref={workspaceRef}>
                 <button
@@ -317,7 +339,7 @@ export default function EventixHeader() {
                   }`}
                 >
                   <div className="user-eventixHeader__workspaceHead">
-                    <span>My Organizations</span>
+                    <span>Account</span>
                   </div>
                   <div className="user-eventixHeader__workspaceList">
                     {isSuperAdmin && (
@@ -340,7 +362,7 @@ export default function EventixHeader() {
                         />
                       </Link>
                     )}
-                    {membershipLoading && (
+                    {canAccessOrgs && membershipLoading && (
                       <div className="user-eventixHeader__membershipSkeleton" aria-label="Loading memberships">
                         <span />
                         <div>
@@ -349,7 +371,8 @@ export default function EventixHeader() {
                         </div>
                       </div>
                     )}
-                    {!membershipLoading &&
+                    {canAccessOrgs &&
+                      !membershipLoading &&
                       memberships.map((membership, index) => {
                         const orgName = getMembershipOrgName(membership);
                         const roleLabel = getOrgWorkspaceRoleLabel(
@@ -393,13 +416,6 @@ export default function EventixHeader() {
                           </Link>
                         );
                       })}
-                    {!membershipLoading &&
-                      !isSuperAdmin &&
-                      memberships.length === 0 && (
-                        <div className="user-eventixHeader__workspaceEmpty">
-                          No organization membership yet.
-                        </div>
-                      )}
                     <button
                       type="button"
                       className="user-eventixHeader__logout"
@@ -421,11 +437,11 @@ export default function EventixHeader() {
                   Login
                 </Link>
                 <Link
-                  to="/app/events"
+                  to="/register"
                   className="user-eventixHeader__btn user-eventixHeader__btn--primary"
-                  aria-label="Get Started"
+                  aria-label="Sign Up"
                 >
-                  Get Started
+                  Sign Up
                 </Link>
               </>
             )}
@@ -493,6 +509,22 @@ export default function EventixHeader() {
             </span>
           </div>
           <div className="user-eventixHeader__mobileTopActions">
+            <button
+              type="button"
+              className="user-eventixHeader__cartButton user-eventixHeader__cartButton--mobile"
+              aria-label={`Open cart with ${totalQuantity} tickets`}
+              onClick={() => {
+                setMobileOpen(false);
+                openCart();
+              }}
+            >
+              <ShoppingCart size={18} aria-hidden="true" />
+              {totalQuantity > 0 && (
+                <span className="user-eventixHeader__cartBadge">
+                  {totalQuantity > 99 ? "99+" : totalQuantity}
+                </span>
+              )}
+            </button>
             <button
               type="button"
               className={`user-eventixHeader__themeSwitch ${
@@ -583,7 +615,7 @@ export default function EventixHeader() {
                     />
                   </Link>
                 )}
-                {membershipLoading && (
+                {canAccessOrgs && membershipLoading && (
                   <div className="user-eventixHeader__membershipSkeleton" aria-label="Loading memberships">
                     <span />
                     <div>
@@ -592,7 +624,8 @@ export default function EventixHeader() {
                     </div>
                   </div>
                 )}
-                {!membershipLoading &&
+                {canAccessOrgs &&
+                  !membershipLoading &&
                   memberships.map((membership, index) => {
                     const orgName = getMembershipOrgName(membership);
                     const roleLabel = getOrgWorkspaceRoleLabel(
@@ -636,13 +669,6 @@ export default function EventixHeader() {
                       </Link>
                     );
                   })}
-                {!membershipLoading &&
-                  !isSuperAdmin &&
-                  memberships.length === 0 && (
-                    <div className="user-eventixHeader__workspaceEmpty">
-                      No organization membership yet.
-                    </div>
-                  )}
                 <button
                   type="button"
                   className="user-eventixHeader__logout user-eventixHeader__logout--mobile"
@@ -663,11 +689,11 @@ export default function EventixHeader() {
                 Login
               </Link>
               <Link
-                to="/app/events"
+                to="/register"
                 className="user-eventixHeader__btn user-eventixHeader__btn--primary"
-                aria-label="Get Started"
+                aria-label="Sign Up"
               >
-                Get Started
+                Sign Up
               </Link>
             </>
           )}

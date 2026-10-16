@@ -5,7 +5,11 @@ import api from "../api";
 
 export const orgService = {
   getOrgs: async (query?: Query) => {
-    const res = await api.get('organizations', { params: query });
+    const res = await api.get('/organizations/management', { params: query });
+    return res.data;
+  },
+  getPublicOrganizations: async (query?: Query) => {
+    const res = await api.get('/organizations', { params: query });
     return res.data;
   },
   getOrgById: async (id: string) => {
@@ -13,7 +17,11 @@ export const orgService = {
     return res.data;
   },
   getOrgBySlug: async (slug: string) => {
-    const res = await api.get(`organizations/detail/${slug}`);
+    const res = await api.get(`/organizations/detail/${slug}`);
+    return res.data;
+  },
+  getPublicOrgBySlug: async (slug: string) => {
+    const res = await api.get(`/organizations/public-detail/${slug}`);
     return res.data;
   },
   getSwitchOrgs: async () => {
@@ -32,8 +40,8 @@ export const orgService = {
     const res = await api.patch(`organizations/${id}`, updateOrg);
     return res.data;
   },
-  updateActive: async (id: string, active: boolean) => {
-    const res = await api.patch(`organizations/${id}/active`, { active });
+  approveOrganization: async (id: string) => {
+    const res = await api.patch(`organizations/${id}/approve`);
     return res.data;
   },
   updateStatus: async (id: string, status: OrgRequestStatus) => {

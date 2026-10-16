@@ -65,14 +65,14 @@ export default function EventHero({
       <div className="event-hero__content">
         <p className="event-hero__eyebrow">
           <Compass size={15} aria-hidden="true" />
-          Transforming live experiences
+          Premium event discovery
         </p>
         <h1>
-          Discover
-          <span>Events</span>
+          Discover events that move your <span>community</span>.
         </h1>
         <p className="event-hero__copy">
-          Find experiences, communities and events that match your interests.
+          Search curated experiences, filter by city or date, and find the right
+          event for your next meaningful moment.
         </p>
 
         <form
@@ -154,6 +154,21 @@ export default function EventHero({
             <span>Search</span>
           </button>
         </form>
+
+        <div className="event-hero__quickStats" aria-label="Event discovery stats">
+          <span>
+            <strong>12K+</strong>
+            attendees
+          </span>
+          <span>
+            <strong>Live</strong>
+            updates
+          </span>
+          <span>
+            <strong>Verified</strong>
+            hosts
+          </span>
+        </div>
       </div>
 
       <div className="event-hero__visual" aria-hidden="true">
@@ -163,12 +178,12 @@ export default function EventHero({
           className="event-hero__image"
         />
         <div className="event-hero__visualCard event-hero__visualCard--top">
-          <strong>Today</strong>
+          <strong>Featured</strong>
           <span>Curated picks</span>
         </div>
         <div className="event-hero__visualCard event-hero__visualCard--bottom">
-          <strong>Live</strong>
-          <span>Fresh listings</span>
+          <strong>Smart filters</strong>
+          <span>Find the right seat</span>
         </div>
       </div>
     </section>

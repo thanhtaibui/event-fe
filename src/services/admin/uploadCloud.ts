@@ -21,8 +21,11 @@ export const uploadService = {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        timeout: 90000,
+        // @ts-expect-error custom config property for api interceptor
+        skipGlobalToast: true,
       }
     );
     return res.data;
   },
-}
+};

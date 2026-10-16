@@ -44,12 +44,13 @@ export const SearchBar = ({
         alignItems: "center",
         gap: 1,
         justifyContent: "space-between",
+        rowGap: 1.5,
         mb: 3,
       }}
     >
       <Box
         className="admin-toolbar__controls"
-        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+        sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}
       >
         <TextField
           className="admin-search-field"
@@ -88,7 +89,12 @@ export const SearchBar = ({
       </Box>
 
       {onCreate && (
-        <Button className="btn-create" variant="contained" onClick={onCreate}>
+        <Button
+          className="btn-create admin-toolbar__create"
+          variant="contained"
+          onClick={onCreate}
+          sx={{ flexShrink: 0 }}
+        >
           <span className="icon-create">
             <img
               width="25"

@@ -1,0 +1,239 @@
+---
+productId: x-scheduler
+title: React Scheduler component
+packageName: '@mui/x-scheduler'
+githubLabel: 'scope: scheduler'
+components: EventCalendar, EventCalendarPremium
+---
+
+# Event Calendar - Resources
+
+<p class="description">Define resources to group events, with support for nested hierarchies, custom colors, and visibility controls.</p>
+
+{{"component": "@mui/internal-core-docs/ComponentLinkHeader", "design": false}}
+
+## Define resources
+
+Use the `resources` prop to define available resources, and the `resource` property on the event model to link an event to its resource:
+
+```tsx
+const event = [
+  { resource: 'work' /** other properties */ },
+  { resource: 'holidays' /** other properties */ },
+];
+
+const resources = [
+  { name: 'Work', id: 'work' },
+  { name: 'Holidays', id: 'holidays' },
+];
+
+<EventCalendar events={events} resources={resources} />;
+```
+
+## Nested resources
+
+Use the `children` property to create hierarchical resource structures:
+
+```tsx
+const resources = [
+  {
+    id: 'academics',
+    title: 'Academics',
+    children: [
+      {
+        id: 'stem',
+        title: 'STEM',
+        children: [
+          { id: 'computer-science', title: 'Computer Science' },
+          { id: 'mathematics', title: 'Mathematics' },
+        ],
+      },
+    ],
+  },
+];
+```
+
+{{"demo": "NestedResources.js", "bg": "inline", "defaultCodeOpen": false}}
+
+### Default collapsed resources
+
+Parent resources can be collapsed to hide their descendants in the resources tree.
+Use the `defaultCollapsedResources` prop to initialize the collapsed resources.
+A resource is expanded unless it is present in the object with a `true` value.
+
+{{"demo": "DefaultCollapsedResources.js", "bg": "inline", "defaultCodeOpen": false}}
+
+### Controlled collapsed resources
+
+You can also control the collapsed resources using `collapsedResources` and `onCollapsedResourcesChange` props:
+
+```tsx
+const [collapsedResources, setCollapsedResources] = React.useState<
+  Record<string, boolean>
+>({});
+
+return (
+  <EventCalendar
+    collapsedResources={collapsedResources}
+    onCollapsedResourcesChange={setCollapsedResources}
+  />
+);
+```
+
+## Visible resources
+
+### Default visible resources
+
+Use the `defaultVisibleResources` prop to initialize the visible resources.
+A resource is visible if it's absent from the object or set to `true`.
+
+{{"demo": "DefaultVisibleResources.js", "bg": "inline", "defaultCodeOpen": false}}
+
+### Controlled visible resources
+
+You can also control the visible resources using `visibleResources` and `onVisibleResourcesChange` props:
+
+```tsx
+const [visibleResources, setVisibleResources] = React.useState<
+  Record<string, boolean>
+>({});
+
+return (
+  <EventCalendar
+    visibleResources={visibleResources}
+    onVisibleResourcesChange={setVisibleResources}
+  />
+);
+```
+
+## Require a resource
+
+By default, an event on the Event Calendar can be saved without a resource — deselecting every entry in the resource picker leaves the event unassigned.
+Set `shouldEventRequireResource` to `true` to make a resource mandatory: the form cannot be submitted with an empty selection.
+
+```tsx
+<EventCalendar shouldEventRequireResource />
+```
+
+## Multiple resources per event
+
+An event can be associated with more than one resource by passing an array to `resource`:
+
+```tsx
+const event = {
+  // ...
+  resource: ['team-a', 'team-b'],
+};
+```
+
+{{"demo": "MultipleResourcesPerEvent.js", "bg": "inline", "defaultCodeOpen": false}}
+
+The resource picker in the edit dialog switches between a single-select and a multi-select depending on the event:
+
+- An event whose `resource` is a string is edited as single-resource — the picker shows one entry at a time.
+- An event whose `resource` is an array (including `[]`, meaning multi-resource with nothing selected yet) is edited as multi-resource.
+
+Saving an existing event never changes that shape: one that arrives as a string is always saved back as a string (or `undefined` once cleared), and one that arrives as an array is always saved back as an array (`[]` once cleared).
+
+For a new event, or an existing one whose `resource` is `null` or not set, there's no shape to preserve — `canHaveMultipleResources` on `eventCreation` decides the picker instead:
+
+```tsx
+<EventCalendar eventCreation={{ canHaveMultipleResources: true }} />
+```
+
+When `canHaveMultipleResources` isn't set, it's inferred from the `events` prop: the first event with a `resource` value determines the mode for new events (a string means single, an array means multiple), and data with no resource at all defaults to multiple.
+
+## Resource properties
+
+### Color
+
+Use the `eventColor` property to define a resource's color.
+The available color palettes are shown below:
+
+{{"demo": "ColorPalettes.js", "bg": "inline", "defaultCodeOpen": false}}
+
+:::info
+Event colors can also be defined on the event or at the component level.
+The effective color resolves in the following order:
+
+1. The `color` property assigned to the event. This always wins, even for a multi-resource event.
+
+```tsx
+<EventCalendar events={[{ id: '1', title: 'Event 1', color: 'pink' }]} />
+```
+
+2. The `eventColor` property assigned to the event's resource. For a multi-resource event, this is the first resource in the `resource` array.
+
+```tsx
+<EventCalendar resources={[{ id: '1', title: 'Resource 1', eventColor: 'pink' }]} />
+```
+
+3. The `eventColor` prop assigned to the Event Calendar
+
+```tsx
+<EventCalendar eventColor="pink" />
+```
+
+4. The default color palette, `"teal"`
+
+:::
+
+### Drag interactions
+
+Use the `areEventsDraggable` property to prevent dragging a resource's events to a different time slot:
+
+```ts
+const resource = {
+  // ...other properties
+  areEventsDraggable: false,
+};
+```
+
+Use the `areEventsResizable` property to prevent resizing a resource's events by dragging their start or end edge:
+
+```ts
+const resource = {
+  // ...other properties
+  areEventsResizable: false,
+  areEventsResizable: "start" // only the start edge is draggable.
+  areEventsResizable: "end" // only the end edge is draggable.
+};
+```
+
+See [Drag interactions](/x/react-scheduler/event-calendar/drag-interactions/) for details.
+
+### Read-only
+
+Use the `areEventsReadOnly` property to mark all events of a resource as read-only:
+
+```ts
+const resource = {
+  // ...other properties
+  areEventsReadOnly: true,
+};
+```
+
+See [Editing—Read-only](/x/react-scheduler/event-calendar/editing/#read-only) for details.
+
+## Store data in custom properties
+
+Use the `resourceModelStructure` prop to define how to read resource properties when your data doesn't match the expected model:
+
+```tsx
+const resourceModelStructure = {
+  title: {
+    getter: (resource) => resource.name,
+  },
+};
+
+function Calendar() {
+  return (
+    <EventCalendar
+      resources={[{ name: 'Resource 1' /** ... */ }]}
+      resourceModelStructure={resourceModelStructure}
+    />
+  );
+}
+```
+
+{{"demo": "TitleProperty.js", "bg": "inline", "defaultCodeOpen": false}}

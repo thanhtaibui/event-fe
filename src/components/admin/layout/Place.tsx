@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const VIETMAP_KEY = "371b22709ec99c49f3653060065b20b4688e22044f075f41";
 
@@ -7,31 +7,72 @@ interface PlaceInputProps {
   onChange: (value: string) => void;
 }
 
+type VietMapSuggestion = {
+  ref_id?: string;
+  display?: string;
+  name?: string;
+  address?: string;
+};
+
+type SelectedPlace = {
+  displayValue: string;
+  raw: VietMapSuggestion;
+};
+
+function getSuggestionDisplay(suggestion: VietMapSuggestion) {
+  return suggestion.display || suggestion.address || suggestion.name || "";
+}
+
 export function PlaceInput({ value, onChange }: PlaceInputProps) {
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [isTyping, setIsTyping] = useState(false); //load không dùng API map
+  const [suggestions, setSuggestions] = useState<VietMapSuggestion[]>([]);
+  const [selectedPlace, setSelectedPlace] = useState<SelectedPlace | null>(null);
+  const [isPlaceDropdownOpen, setIsPlaceDropdownOpen] = useState(false);
+  const [isPlaceLoading, setIsPlaceLoading] = useState(false);
+  const requestSeqRef = useRef(0);
 
   useEffect(() => {
-    if (!isTyping) return;
+    if (!isPlaceDropdownOpen) return;
 
-    if (!value || value.length < 4) {
+    if (selectedPlace && value === selectedPlace.displayValue) {
       setSuggestions([]);
+      setIsPlaceLoading(false);
       return;
     }
+
+    if (!value || value.trim().length < 4) {
+      setSuggestions([]);
+      setIsPlaceLoading(false);
+      return;
+    }
+
+    const requestSeq = requestSeqRef.current + 1;
+    requestSeqRef.current = requestSeq;
+    setIsPlaceLoading(true);
+
     const timer = setTimeout(async () => {
       try {
         const res = await fetch(
           `https://maps.vietmap.vn/api/autocomplete/v3?apikey=${VIETMAP_KEY}&text=${encodeURIComponent(value)}&focus=10.762622,106.660172`,
         );
         const data = await res.json();
-        // console.log(data);
-        setSuggestions(Array.isArray(data) ? data : []);
+        if (requestSeqRef.current === requestSeq) {
+          setSuggestions(Array.isArray(data) ? data : []);
+        }
       } catch {
-        setSuggestions([]);
+        if (requestSeqRef.current === requestSeq) {
+          setSuggestions([]);
+        }
+      } finally {
+        if (requestSeqRef.current === requestSeq) {
+          setIsPlaceLoading(false);
+        }
       }
-    }, 600);
-    return () => clearTimeout(timer);
-  }, [value]);
+    }, 400);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isPlaceDropdownOpen, selectedPlace, value]);
 
   return (
     <div style={{ position: "relative" }}>
@@ -40,14 +81,27 @@ export function PlaceInput({ value, onChange }: PlaceInputProps) {
         placeholder="Enter event location..."
         value={value}
         onChange={(e) => {
-          setIsTyping(true);
-          onChange(e.target.value);
+          const nextValue = e.target.value;
+          if (selectedPlace && nextValue !== selectedPlace.displayValue) {
+            setSelectedPlace(null);
+          }
+          setIsPlaceDropdownOpen(true);
+          onChange(nextValue);
         }}
-        onBlur={() => setTimeout(() => setSuggestions([]), 200)}
+        onFocus={() => {
+          if (!selectedPlace || value !== selectedPlace.displayValue) {
+            setIsPlaceDropdownOpen(true);
+          }
+        }}
+        onBlur={() => {
+          window.setTimeout(() => {
+            setIsPlaceDropdownOpen(false);
+          }, 160);
+        }}
         autoComplete="off"
         style={{ width: "100%" }}
       />
-      {suggestions.length > 0 && (
+      {isPlaceDropdownOpen && (isPlaceLoading || suggestions.length > 0) && (
         <ul
           style={{
             position: "absolute",
@@ -66,12 +120,27 @@ export function PlaceInput({ value, onChange }: PlaceInputProps) {
             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
           }}
         >
-          {suggestions.map((s: any) => (
+          {isPlaceLoading && suggestions.length === 0 && (
             <li
-              key={s.ref_id}
+              style={{
+                padding: "8px 12px",
+                fontSize: 13,
+                color: "#64748b",
+              }}
+            >
+              Đang tìm địa điểm...
+            </li>
+          )}
+          {suggestions.map((s) => (
+            <li
+              key={s.ref_id || getSuggestionDisplay(s)}
               onMouseDown={() => {
-                onChange(s.display);
+                const displayValue = getSuggestionDisplay(s);
+                setSelectedPlace({ displayValue, raw: s });
+                onChange(displayValue);
                 setSuggestions([]);
+                setIsPlaceDropdownOpen(false);
+                setIsPlaceLoading(false);
               }}
               style={{
                 padding: "8px 12px",
@@ -100,7 +169,7 @@ export function PlaceInput({ value, onChange }: PlaceInputProps) {
                 <path d="M7 1C4.79 1 3 2.79 3 5c0 3 4 8 4 8s4-5 4-8c0-2.21-1.79-4-4-4z" />
                 <circle cx="7" cy="5" r="1.5" />
               </svg>
-              {s.display}
+              {getSuggestionDisplay(s)}
             </li>
           ))}
         </ul>

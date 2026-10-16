@@ -1,5 +1,6 @@
 // PosterUpload.tsx
 import { useCallback, useEffect, useState } from "react";
+import type { ClipboardEvent as ReactClipboardEvent, KeyboardEvent } from "react";
 import "../../../styles/admin/popup/popup.css";
 
 interface PosterUploadProps {
@@ -10,6 +11,7 @@ interface PosterUploadProps {
   inputId?: string;
   title?: string;
   subtitle?: string;
+  pasteHint?: string;
   previewAlt?: string;
   variant?: "poster" | "banner";
 }
@@ -22,6 +24,7 @@ export function PosterUpload({
   inputId = "poster-input",
   title = "Drag & drop your poster here",
   subtitle = "PNG, JPG, WEBP — max 5MB",
+  pasteHint,
   previewAlt = "Poster preview",
   variant = "poster",
 }: PosterUploadProps) {
@@ -32,19 +35,17 @@ export function PosterUpload({
     size: string;
   } | null>(null);
   useEffect(() => {
-    if (defaultUrl) setPreview(defaultUrl);
-    else {
-      setPreview(null);
-      setFileInfo(null);
-    }
-  }, [defaultUrl]);
+    if (value) return;
 
-  useEffect(() => {
-    if (!value) {
-      setPreview(null);
+    if (defaultUrl) {
+      setPreview(defaultUrl);
       setFileInfo(null);
+      return;
     }
-  }, [value]);
+
+    setPreview(null);
+    setFileInfo(null);
+  }, [defaultUrl, value]);
   const handleFile = useCallback(
     (file: File) => {
       if (!file.type.startsWith("image/")) return;
@@ -72,6 +73,44 @@ export function PosterUpload({
     [handleFile],
   );
 
+  const handlePaste = useCallback(
+    (event: ReactClipboardEvent<HTMLDivElement>) => {
+      const pastedFile =
+        Array.from(event.clipboardData.files).find((file) => file.type.startsWith("image/")) ||
+        Array.from(event.clipboardData.items)
+          .find((item) => item.type.startsWith("image/"))
+          ?.getAsFile();
+
+      if (!pastedFile) return;
+      event.preventDefault();
+      handleFile(pastedFile);
+    },
+    [handleFile],
+  );
+
+  useEffect(() => {
+    const handleDocumentPaste = (event: globalThis.ClipboardEvent) => {
+      const pastedFile =
+        Array.from(event.clipboardData?.files || []).find((file) => file.type.startsWith("image/")) ||
+        Array.from(event.clipboardData?.items || [])
+          .find((item) => item.type.startsWith("image/"))
+          ?.getAsFile();
+
+      if (!pastedFile) return;
+      event.preventDefault();
+      handleFile(pastedFile);
+    };
+
+    document.addEventListener("paste", handleDocumentPaste);
+    return () => document.removeEventListener("paste", handleDocumentPaste);
+  }, [handleFile]);
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (preview || (event.key !== "Enter" && event.key !== " ")) return;
+    event.preventDefault();
+    document.getElementById(inputId)?.click();
+  };
+
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
     setPreview(null);
@@ -85,6 +124,9 @@ export function PosterUpload({
     document.getElementById(inputId)?.click();
   };
 
+  const resolvedPasteHint =
+    pasteHint || (variant === "banner" ? "Paste image with Ctrl+V after copying from AI." : "");
+
   return (
     <div className={`poster-upload-wrapper poster-upload-wrapper--${variant}`}>
       <div
@@ -95,9 +137,13 @@ export function PosterUpload({
         }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
+        onPaste={handlePaste}
+        onKeyDown={handleKeyDown}
         onClick={() =>
           !preview && document.getElementById(inputId)?.click()
         }
+        role="button"
+        tabIndex={0}
       >
         {!preview ? (
           <div className="dropzone__empty">
@@ -119,6 +165,7 @@ export function PosterUpload({
             </div>
             <p className="dropzone__title">{title}</p>
             <p className="dropzone__sub">{subtitle}</p>
+            {resolvedPasteHint && <p className="dropzone__paste-hint">{resolvedPasteHint}</p>}
             <button type="button" className="btn-browse" onClick={openPicker}>
               Browse file
             </button>

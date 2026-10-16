@@ -119,8 +119,11 @@ export default function ItemForm({
   return (
     <form className="inventory-form" onSubmit={handleSubmit}>
       <div className="inventory-form__header">
+        <span className="inventory-form__eyebrow">
+          {type === "create" ? "New item" : "Selected item"}
+        </span>
         <h3 className="inventory-form__title">
-          {type === "create" ? "Create Item" : "Update Item"}
+          {type === "create" ? "Create Item" : "Edit Item"}
         </h3>
 
         <div className="inventory-form__subtitle">

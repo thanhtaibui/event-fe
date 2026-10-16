@@ -6,8 +6,6 @@ import "../../../styles/event/item.css";
 import { useItems } from "../../../hooks/admin/item/useItems";
 import { useState } from "react";
 
-const arrowGif = "/icons8-arrow.gif";
-
 export type ItemModalType = "create" | "update";
 
 export type ItemModalProps = {
@@ -48,7 +46,20 @@ export default function ItemModal({
         aria-modal="true"
       >
         <div className="item-modal-header">
-          {/* <div className="item-modal-title">{title}</div> */}
+          <div className="item-modal-title-wrap">
+            <span className="item-modal-title-icon" aria-hidden="true">
+              <img
+                width="24"
+                height="24"
+                src="https://img.icons8.com/ios-filled/50/box.png"
+                alt=""
+              />
+            </span>
+            <div className="item-modal-title">
+              <span>Event items</span>
+              <strong>Item management</strong>
+            </div>
+          </div>
           <button
             type="button"
             className="item-modal-close"
@@ -59,7 +70,7 @@ export default function ItemModal({
           </button>
         </div>
 
-        <div className={`item-modal `}>
+        <div className="item-modal">
           <div className="item-modal__left">
             <Item
               items={items}
@@ -67,18 +78,6 @@ export default function ItemModal({
               onSelectItem={handleSelectItem}
               selectedItemId={selectedItem?.id}
             />
-          </div>
-          <div className={`transfer-indicator`}>
-            <span
-              className={`transfer-indicator__arrow ${
-                formType === "create"
-                  ? "transfer-indicator__arrow--left"
-                  : "transfer-indicator__arrow--right"
-              }`}
-            >
-              <img src={arrowGif} alt="arrowGif" />
-            </span>
-            {/* <span className="transfer-indicator__arrow">‹</span> */}
           </div>
           <div className="item-modal__right">
             <ItemForm

@@ -1,0 +1,59 @@
+'use client';
+import PropTypes from 'prop-types';
+import { useSankeyLayout, useSankeySeries } from '../hooks/useSankeySeries';
+import { useUtilityClasses } from './sankeyClasses';
+import type { SankeyClasses } from './sankeyClasses';
+import { SankeyNodeLabel } from './SankeyNodeLabel';
+
+export interface SankeyNodeLabelPlotProps {
+  /**
+   * Classes applied to the various elements.
+   */
+  classes?: Partial<SankeyClasses>;
+}
+
+function SankeyNodeLabelPlot(props: SankeyNodeLabelPlotProps) {
+  const { classes: inputClasses } = props;
+
+  const classes = useUtilityClasses({ classes: inputClasses });
+
+  const sankeySeries = useSankeySeries()[0];
+  const layout = useSankeyLayout();
+
+  if (!sankeySeries) {
+    throw new Error(
+      `MUI X Charts: Sankey series context is missing. Ensure the SankeyPlot is used inside a properly configured ChartsDataProviderPro.`,
+    );
+  }
+
+  // Early return if no data or dimensions
+  if (!layout || !layout.nodes) {
+    return null;
+  }
+
+  const showNodeLabels = sankeySeries.nodeOptions?.showLabels ?? true;
+  if (!showNodeLabels) {
+    return null;
+  }
+
+  return (
+    <g className={classes.nodeLabels}>
+      {layout.nodes.map((node) => (
+        <SankeyNodeLabel key={`label-node-${node.id}`} seriesId={sankeySeries.id} node={node} />
+      ))}
+    </g>
+  );
+}
+
+SankeyNodeLabelPlot.propTypes /* remove-proptypes */ = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // | To update them edit the TypeScript types and run "pnpm proptypes"  |
+  // ----------------------------------------------------------------------
+  /**
+   * Classes applied to the various elements.
+   */
+  classes: PropTypes.object,
+} as any;
+
+export { SankeyNodeLabelPlot };

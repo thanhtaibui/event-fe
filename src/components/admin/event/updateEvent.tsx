@@ -9,12 +9,14 @@ import type { EventPayload } from "../../../types/event/create";
 import { useSwitchOrg } from "../../../hooks/admin/org/useSwitchOrg";
 import { PosterUpload } from "../layout/Upload";
 import { useUpload } from "../../../hooks/admin/useUpload";
-import Flatpickr from "react-flatpickr";
-import { Vietnamese } from "flatpickr/dist/l10n/vn.js";
 import { useUpdateEvent } from "../../../hooks/admin/event/useUpdateEvent";
 import { PlaceInput } from "../layout/Place";
 import { eventService } from "../../../services/admin/event.service";
 import type { CategoryDto } from "../../../types/event/event";
+import { EventDateTimePicker } from "./EventDateTimePicker";
+import { AdminModalError, AdminModalLoading } from "../layout/AdminModalState";
+
+const UPDATE_EVENT_FORM_ID = "update-event-form";
 
 type SelectOption = {
   value: string;
@@ -24,7 +26,7 @@ type SelectOption = {
 type CategoryResponse =
   | CategoryDto[]
   | {
-      data?: CategoryDto[] | { items?: CategoryDto[] };
+      data?: CategoryDto[] | { items?: CategoryDto[]; data?: CategoryDto[] };
       items?: CategoryDto[];
     };
 
@@ -35,17 +37,61 @@ function extractCategories(response: CategoryResponse) {
   if (response.data && "items" in response.data && Array.isArray(response.data.items)) {
     return response.data.items;
   }
+  if (response.data && "data" in response.data && Array.isArray(response.data.data)) {
+    return response.data.data;
+  }
 
   return [];
 }
 
-function getEventCategoryIds(event: any) {
+function getEventCategoryIds(event: any): string[] {
+  if (!event) return [];
+  if (Array.isArray(event.categoryIds)) {
+    return event.categoryIds.map(String).filter(Boolean);
+  }
   const eventCategories = event?.categories ?? event?.eventCategories ?? [];
   if (!Array.isArray(eventCategories)) return [];
 
   return eventCategories
-    .map((category: CategoryDto) => category.id)
+    .map((category: any) =>
+      typeof category === "string" ? category : category?.id
+    )
     .filter(Boolean);
+}
+
+function toIsoDateTime(dateValue: any): string {
+  if (!dateValue) return "";
+  try {
+    const d = new Date(dateValue);
+    if (!isNaN(d.getTime())) {
+      return d.toISOString();
+    }
+  } catch {}
+  return "";
+}
+
+function getErrorMessage(error: any): { status?: number; message: string } {
+  const status = error?.response?.status;
+  const backendMessage = error?.response?.data?.message || error?.message;
+  const message = Array.isArray(backendMessage) ? backendMessage[0] : backendMessage;
+
+  if (status === 401) {
+    return { status, message: "Unauthorized: Vui lòng đăng nhập lại." };
+  }
+  if (status === 400) {
+    return { status, message: message || "Validation error: Dữ liệu cập nhật không hợp lệ." };
+  }
+  if (status === 403) {
+    return { status, message: "No permission: Bạn không có quyền thực hiện thao tác này." };
+  }
+  if (status === 404) {
+    return { status, message: "Event not found: Sự kiện không tồn tại hoặc đã bị xóa." };
+  }
+  if (status && status >= 500) {
+    return { status, message: "Server error: Lỗi máy chủ, vui lòng thử lại sau." };
+  }
+
+  return { status, message: message || "Đã xảy ra lỗi. Vui lòng thử lại." };
 }
 
 export const UpdateEventPopup = ({
@@ -62,10 +108,13 @@ export const UpdateEventPopup = ({
   const { updateEvent } = useUpdateEvent();
   const { data: switchOrgs } = useSwitchOrg();
   const [categories, setCategories] = useState<CategoryDto[]>([]);
+  const [categoryLoading, setCategoryLoading] = useState(true);
+  const [categoryError, setCategoryError] = useState("");
   const [uiLoading, setUiLoading] = useState(false);
-  // const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
   const eventById = useEventById(id);
   const { upload } = useUpload();
+  const [detailReady, setDetailReady] = useState(false);
+  const [fallbackOrgName, setFallbackOrgName] = useState("");
   const [form, setForm] = useState<Partial<EventPayload>>({
     title: "",
     eventBanner: "",
@@ -83,11 +132,18 @@ export const UpdateEventPopup = ({
     let ignore = false;
 
     const fetchCategories = async () => {
+      setCategoryLoading(true);
+      setCategoryError("");
       try {
         const response = await eventService.getCategories({ limit: 100 });
         if (!ignore) setCategories(extractCategories(response));
       } catch {
-        if (!ignore) setCategories([]);
+        if (!ignore) {
+          setCategories([]);
+          setCategoryError("Không thể tải danh mục sự kiện");
+        }
+      } finally {
+        if (!ignore) setCategoryLoading(false);
       }
     };
 
@@ -108,26 +164,72 @@ export const UpdateEventPopup = ({
   );
 
   useEffect(() => {
-    const loadData = async () => {
-      if (eventById.data) {
-        // console.log(eventById.data);
-        setBannerUrl(eventById.data.eventBanner || "");
-        setForm({
-          title: eventById?.data?.title || "",
-          eventBanner: eventById?.data?.eventBanner || "",
-          startDateTime: eventById?.data?.startDateTime || "",
-          endDateTime: eventById?.data?.endDateTime || "",
-          registrationEndDate: eventById.data.registrationEndDate,
-          capacity: eventById.data.capacity,
-          organizationId: eventById.data.organization.id,
-          categoryIds: getEventCategoryIds(eventById.data),
-          description: eventById.data.description,
-          place: eventById.data.place,
-        });
-      }
-    };
-    loadData();
+    setDetailReady(false);
+    setBanner(null);
+    setBannerUrl("");
+    setFallbackOrgName("");
+    setForm({
+      title: "",
+      eventBanner: "",
+      startDateTime: "",
+      endDateTime: "",
+      registrationEndDate: "",
+      capacity: 0,
+      organizationId: "",
+      categoryIds: [],
+      description: "",
+      place: "",
+    });
+  }, [id]);
+
+  useEffect(() => {
+    if (!eventById.data) return;
+
+    try {
+      const rawEvent = eventById.data?.data ?? eventById.data;
+      if (!rawEvent) return;
+
+      const bannerImg = rawEvent.eventBanner || rawEvent.banner || "";
+      setBannerUrl(bannerImg);
+
+      const orgId =
+        rawEvent.organization?.id ||
+        rawEvent.organizationId ||
+        (typeof rawEvent.organization === "string" ? rawEvent.organization : "") ||
+        "";
+
+      const orgName =
+        rawEvent.organization?.name ||
+        (typeof rawEvent.organization === "string" ? rawEvent.organization : "");
+
+      if (orgName) setFallbackOrgName(orgName);
+
+      setForm({
+        title: rawEvent.title || "",
+        eventBanner: bannerImg,
+        startDateTime: toIsoDateTime(rawEvent.startDateTime),
+        endDateTime: toIsoDateTime(rawEvent.endDateTime),
+        registrationEndDate: toIsoDateTime(rawEvent.registrationEndDate),
+        capacity: Number(rawEvent.capacity) || 0,
+        organizationId: orgId,
+        categoryIds: getEventCategoryIds(rawEvent),
+        description: rawEvent.description || "",
+        place:
+          typeof rawEvent.place === "string"
+            ? rawEvent.place
+            : rawEvent.place?.name ||
+              rawEvent.place?.address ||
+              rawEvent.location ||
+              "",
+      });
+      setDetailReady(true);
+    } catch (err) {
+      console.error("[UpdateEventPopup] Failed to populate form data:", err);
+      setDetailReady(true);
+    }
   }, [eventById?.data]);
+
+  const isInitialLoading = eventById.loading || (!detailReady && !eventById.error);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -138,6 +240,7 @@ export const UpdateEventPopup = ({
       [name]: name === "capacity" ? parseInt(value) || 0 : value,
     }));
   };
+
   const handleOrgChange = (selected: any) => {
     setForm((prev) => ({ ...prev, organizationId: selected?.value || "" }));
   };
@@ -151,25 +254,78 @@ export const UpdateEventPopup = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("FORM SUBMIT START");
 
     if (!bannerUrl && !banner) {
       toast.warning("Event banner is required");
       return;
     }
 
-    if (
-      !form.title ||
-      !form.organizationId ||
-      !form.categoryIds?.length ||
-      form.capacity === 0 ||
-      !form.startDateTime ||
-      !form.endDateTime ||
-      !form.registrationEndDate ||
-      !form.place
-    ) {
-      toast.warning("Please fill all required fields");
+    if (!form.title?.trim()) {
+      toast.warning("Please enter event title");
       return;
     }
+
+    if (!form.description?.trim()) {
+      toast.warning("Please enter event description");
+      return;
+    }
+
+    if (!form.startDateTime) {
+      toast.warning("Please select start date and time");
+      return;
+    }
+
+    if (!form.endDateTime) {
+      toast.warning("Please select end date and time");
+      return;
+    }
+
+    if (!form.registrationEndDate) {
+      toast.warning("Please select registration end date");
+      return;
+    }
+
+    if (!form.capacity || form.capacity <= 0) {
+      toast.warning("Capacity must be greater than 0");
+      return;
+    }
+
+    if (!form.organizationId) {
+      toast.warning("Please select an organization");
+      return;
+    }
+
+    if (!form.categoryIds?.length) {
+      toast.warning("Please select at least one category");
+      return;
+    }
+
+    if (!form.place?.trim()) {
+      toast.warning("Please enter event place");
+      return;
+    }
+
+    const startTime = new Date(form.startDateTime).getTime();
+    const endTime = new Date(form.endDateTime).getTime();
+    const regEndTime = new Date(form.registrationEndDate).getTime();
+
+    if (isNaN(startTime) || isNaN(endTime) || isNaN(regEndTime)) {
+      toast.warning("Invalid date format");
+      return;
+    }
+
+    if (endTime <= startTime) {
+      toast.warning("End datetime must be after start datetime");
+      return;
+    }
+
+    if (regEndTime > startTime) {
+      toast.warning("Registration end date cannot be after start datetime");
+      return;
+    }
+
+    console.log("VALIDATION PASSED");
 
     setUiLoading(true);
     try {
@@ -181,36 +337,52 @@ export const UpdateEventPopup = ({
         formData.append("file", banner);
         formData.append("folder", "banner");
 
-        await toast.promise(
-          upload(formData).then((res) => {
-            bannerFinal = res.secure_url;
-          }),
-          {
-            pending: "Uploading banner...",
-            success: "Banner uploaded!",
-            error: "Failed to upload banner",
-          },
-        );
+        const uploadRes = await upload(formData);
+        if (uploadRes?.secure_url || uploadRes?.url) {
+          bannerFinal = uploadRes.secure_url || uploadRes.url;
+        } else {
+          throw new Error("Không thể tải lên ảnh banner");
+        }
       }
 
       // update event
-      await updateEvent(id, {
-        ...form,
+      const payload: EventPayload = {
+        title: form.title.trim(),
         eventBanner: bannerFinal,
-      } as EventPayload);
+        startDateTime: toIsoDateTime(form.startDateTime),
+        endDateTime: toIsoDateTime(form.endDateTime),
+        registrationEndDate: toIsoDateTime(form.registrationEndDate),
+        capacity: Number(form.capacity),
+        organizationId: form.organizationId,
+        categoryIds: form.categoryIds,
+        description: form.description?.trim() || "",
+        place: form.place.trim(),
+      };
+
+      console.log("CALL UPDATE API");
+      console.log("UPDATE PAYLOAD", payload);
+      const response = await updateEvent(id, payload);
+      console.log("UPDATE SUCCESS", response);
       toast.success("Event updated successfully");
 
       onClose();
       onSuccess();
-    } catch (error) {
-      // handled by toast.promise
+    } catch (error: any) {
+      console.error("UPDATE ERROR", error);
+      const { message } = getErrorMessage(error);
+      toast.error(message);
     } finally {
       setUiLoading(false);
     }
   };
 
   return createPortal(
-    <div className="popup-overlay" onClick={onClose}>
+    <div
+      className="popup-overlay"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
       <div className="popup-box" onClick={(e) => e.stopPropagation()}>
         <div className="popup-header">
           <div className="header-items">
@@ -228,236 +400,245 @@ export const UpdateEventPopup = ({
             ✕
           </button>
         </div>
-        <form id="popup-form" className="popup-form" onSubmit={handleSubmit}>
-          <div className="form-group full-width">
-            <label className="required event-media-label">Event Banner</label>
-            <p className="event-media-hint">
-              Used on event cards, event detail hero, and public discovery pages.
-            </p>
-            <PosterUpload
-              value={banner}
-              onChange={setBanner}
-              defaultUrl={bannerUrl}
-              onRemove={() => setBannerUrl("")}
-              inputId="event-banner-update-input"
-              title="Drag & drop your event banner here"
-              subtitle="Recommended 16:9 banner — PNG, JPG, WEBP"
-              previewAlt="Event banner preview"
-              variant="banner"
-            />
-          </div>
-          <div className="form-group">
-            <label className="required">Title</label>
-            <input
-              name="title"
-              placeholder="Event title"
-              value={form.title || ""}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="required">Start DateTime</label>
-            <Flatpickr
-              value={form.startDateTime}
-              onChange={([date]: any) =>
-                setForm((prev) => ({
-                  ...prev,
-                  startDateTime: date.toISOString(),
-                }))
-              }
-              options={{
-                enableTime: true,
-                dateFormat: "d/m/Y H:i",
-                time_24hr: true,
-                minuteIncrement: 15,
-                maxDate: form.endDateTime || undefined,
-                locale: Vietnamese,
-              }}
-              className="date-input"
-              placeholder="dd/mm/yyyy --:--"
-            />
-          </div>
-          <div className="form-group">
-            <label className="required">End DateTime</label>
-            <Flatpickr
-              value={form.endDateTime}
-              onChange={([date]: any) =>
-                setForm((prev) => ({
-                  ...prev,
-                  endDateTime: date.toISOString(),
-                }))
-              }
-              options={{
-                enableTime: true,
-                dateFormat: "d/m/Y H:i",
-                time_24hr: true,
-                minuteIncrement: 15,
-                minDate: form.startDateTime || undefined,
-                locale: Vietnamese,
-              }}
-              className="date-input"
-              placeholder="dd/mm/yyyy --:--"
-            />
-          </div>
-          <div className="form-group">
-            <label className="required">Registration End Date</label>
-            <Flatpickr
-              value={form.registrationEndDate}
-              onChange={([date]: any) =>
-                setForm((prev) => ({
-                  ...prev,
-                  registrationEndDate: date.toISOString(),
-                }))
-              }
-              options={{
-                enableTime: true,
-                dateFormat: "d/m/Y H:i",
-                time_24hr: true,
-                minuteIncrement: 15,
-                maxDate: form.startDateTime || undefined,
-                locale: Vietnamese,
-              }}
-              className="date-input"
-              placeholder="dd/mm/yyyy --:--"
-            />
-          </div>
-          <div className="form-group">
-            <label className="required">Capacity</label>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <button
-                type="button"
-                onClick={() =>
-                  setForm((p) => ({
-                    ...p,
-                    capacity: Math.max(1, (p.capacity || 1) - 10),
-                  }))
-                }
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 8,
-                  border: "1px solid #e5e7eb",
-                  background: "#f9fafb",
-                  fontSize: 18,
-                  cursor: "pointer",
-                  color: "black",
+        {eventById.error ? (
+          <AdminModalError
+            message={getErrorMessage(eventById.error).message}
+            onRetry={eventById.refetch}
+          />
+        ) : isInitialLoading ? (
+          <AdminModalLoading />
+        ) : (
+          <form
+            id={UPDATE_EVENT_FORM_ID}
+            className="popup-form"
+            onSubmit={handleSubmit}
+            noValidate
+          >
+            <div className="form-group full-width">
+              <label className="required event-media-label">Event Banner</label>
+              <p className="event-media-hint">
+                Used on event cards, event detail hero, and public discovery pages.
+              </p>
+              <PosterUpload
+                value={banner}
+                onChange={setBanner}
+                defaultUrl={bannerUrl}
+                onRemove={() => {
+                  setBanner(null);
+                  setBannerUrl("");
                 }}
-              >
-                −
-              </button>
-
+                inputId="event-banner-update-input"
+                title="Drag & drop your event banner here"
+                subtitle="Recommended 16:9 banner — PNG, JPG, WEBP"
+                pasteHint="Or copy an AI image, then press Ctrl+V to paste it here."
+                previewAlt="Event banner preview"
+                variant="banner"
+              />
+            </div>
+            <div className="form-group">
+              <label className="required">Title</label>
               <input
-                type="number"
-                name="capacity"
-                value={form.capacity || ""}
+                name="title"
+                placeholder="Event title"
+                value={form.title || ""}
                 onChange={handleChange}
-                min={1}
-                placeholder="100"
-                style={{
-                  width: 100,
-                  height: 36,
-                  textAlign: "center",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 8,
-                  fontSize: 14,
-                  outline: "none",
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="required">Start DateTime</label>
+              <EventDateTimePicker
+                value={form.startDateTime}
+                onChange={(startDateTime) =>
+                  setForm((prev) => ({ ...prev, startDateTime }))
+                }
+                maxDate={form.endDateTime || undefined}
+                placeholder="dd/mm/yyyy --:--"
+                name="startDateTime"
+              />
+            </div>
+            <div className="form-group">
+              <label className="required">End DateTime</label>
+              <EventDateTimePicker
+                value={form.endDateTime}
+                onChange={(endDateTime) =>
+                  setForm((prev) => ({ ...prev, endDateTime }))
+                }
+                minDate={form.startDateTime || undefined}
+                placeholder="dd/mm/yyyy --:--"
+                name="endDateTime"
+              />
+            </div>
+            <div className="form-group">
+              <label className="required">Registration End Date</label>
+              <EventDateTimePicker
+                value={form.registrationEndDate}
+                onChange={(registrationEndDate) =>
+                  setForm((prev) => ({ ...prev, registrationEndDate }))
+                }
+                maxDate={form.startDateTime || undefined}
+                placeholder="dd/mm/yyyy --:--"
+                name="registrationEndDate"
+              />
+            </div>
+            <div className="form-group">
+              <label className="required">Capacity</label>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((p) => ({
+                      ...p,
+                      capacity: Math.max(1, (p.capacity || 1) - 10),
+                    }))
+                  }
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 8,
+                    border: "1px solid #e5e7eb",
+                    background: "#f9fafb",
+                    fontSize: 18,
+                    cursor: "pointer",
+                    color: "black",
+                  }}
+                >
+                  −
+                </button>
+
+                <input
+                  type="number"
+                  name="capacity"
+                  value={form.capacity || ""}
+                  onChange={handleChange}
+                  min={1}
+                  placeholder="100"
+                  style={{
+                    width: 100,
+                    height: 36,
+                    textAlign: "center",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 8,
+                    fontSize: 14,
+                    outline: "none",
+                  }}
+                />
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((p) => ({ ...p, capacity: (p.capacity || 0) + 10 }))
+                  }
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 8,
+                    border: "1px solid #e5e7eb",
+                    background: "#f9fafb",
+                    fontSize: 18,
+                    cursor: "pointer",
+                    color: "black",
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="required">Organization</label>
+              <Select
+                className="react-select"
+                classNamePrefix="custom-select"
+                placeholder="Select organization"
+                options={switchOrgs?.map((org: any) => ({
+                  value: org.id,
+                  label: org.name,
+                })) || []}
+                value={
+                  form.organizationId
+                    ? {
+                        value: form.organizationId,
+                        label:
+                          switchOrgs?.find(
+                            (org: any) => org.id === form.organizationId,
+                          )?.name ||
+                          fallbackOrgName ||
+                          form.organizationId,
+                      }
+                    : null
+                }
+                onChange={handleOrgChange}
+                components={{
+                  Option: CustomOption,
+                  SingleValue: CustomSingleValue,
                 }}
               />
-
-              <button
-                type="button"
-                onClick={() =>
-                  setForm((p) => ({ ...p, capacity: (p.capacity || 0) + 10 }))
-                }
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 8,
-                  border: "1px solid #e5e7eb",
-                  background: "#f9fafb",
-                  fontSize: 18,
-                  cursor: "pointer",
-                  color: "black",
-                }}
-              >
-                +
-              </button>
             </div>
-          </div>
-          <div className="form-group">
-            <label className="required">Organization</label>
-            <Select
-              className="react-select"
-              classNamePrefix="custom-select"
-              placeholder="Select organization"
-              options={switchOrgs?.map((org: any) => ({
-                value: org.id,
-                label: org.name,
-              }))}
-              value={
-                switchOrgs?.find((org: any) => org.id === form.organizationId)
-                  ? {
-                      value: form.organizationId,
-                      label: switchOrgs.find(
-                        (org: any) => org.id === form.organizationId,
-                      )?.name,
-                    }
-                  : null
-              }
-              onChange={handleOrgChange}
-              components={{
-                Option: CustomOption,
-                SingleValue: CustomSingleValue,
+            <div className="form-group full-width">
+              <label className="required">Categories</label>
+              <Select
+                isMulti
+                closeMenuOnSelect={false}
+                className="react-select event-category-select"
+                classNamePrefix="custom-select"
+                placeholder={
+                  categoryLoading
+                    ? "Loading categories..."
+                    : "Select one or more categories"
+                }
+                options={categoryOptions}
+                isLoading={categoryLoading}
+                isDisabled={categoryLoading || Boolean(categoryError)}
+                value={categoryOptions.filter((category) =>
+                  form.categoryIds?.includes(category.value),
+                )}
+                onChange={(selected) =>
+                  handleCategoryChange(selected as readonly SelectOption[])
+                }
+                loadingMessage={() => "Loading categories..."}
+                noOptionsMessage={() => categoryError || "No categories found"}
+              />
+              {categoryError && <p className="form-error">{categoryError}</p>}
+            </div>
+            <div className="form-group-textarea">
+              <label>Description</label>
+              <textarea
+                style={{ whiteSpace: "pre-wrap" }}
+                name="description"
+                placeholder="Event description..."
+                rows={4}
+                value={form.description || ""}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group full-width">
+              <label className="required">Place</label>
+              <PlaceInput
+                value={form.place || ""}
+                onChange={(val) => setForm((prev) => ({ ...prev, place: val }))}
+              />
+            </div>
+          </form>
+        )}
+        {detailReady && !eventById.error && (
+          <div className="popup-footer">
+            <button type="button" onClick={onClose}>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              form={UPDATE_EVENT_FORM_ID}
+              formNoValidate
+              disabled={uiLoading}
+              onClick={() => {
+                console.log("SAVE CLICKED");
               }}
-            />
+            >
+              {uiLoading ? "Save Changes..." : "Save Changes"}
+            </button>
           </div>
-          <div className="form-group full-width">
-            <label className="required">Categories</label>
-            <Select
-              isMulti
-              closeMenuOnSelect={false}
-              className="react-select event-category-select"
-              classNamePrefix="custom-select"
-              placeholder="Select one or more categories"
-              options={categoryOptions}
-              value={categoryOptions.filter((category) =>
-                form.categoryIds?.includes(category.value),
-              )}
-              onChange={(selected) =>
-                handleCategoryChange(selected as readonly SelectOption[])
-              }
-              noOptionsMessage={() => "No categories found"}
-            />
-          </div>
-          <div className="form-group-textarea">
-            <label>Description</label>
-            <textarea
-              style={{ whiteSpace: "pre-wrap" }}
-              name="description"
-              placeholder="Event description..."
-              rows={4}
-              value={form.description || ""}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group full-width">
-            <label className="required">Place</label>
-            <PlaceInput
-              value={form.place || ""}
-              onChange={(val) => setForm((prev) => ({ ...prev, place: val }))}
-            />
-          </div>
-        </form>
-        <div className="popup-footer">
-          <button type="button" onClick={onClose}>
-            Cancel
-          </button>
-          <button type="submit" form="popup-form" disabled={uiLoading}>
-            {uiLoading ? "Save Changes..." : "Save Changes"}
-          </button>
-        </div>
+        )}
       </div>
     </div>,
     document.body,

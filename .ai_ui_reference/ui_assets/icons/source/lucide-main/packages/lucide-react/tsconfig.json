@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "declaration": false,
+    "noEmitOnError": true,
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ESNext",
+    "paths": {
+      "@lucide/shared": ["../shared/src/index.ts"],
+      "@lucide/shared/types": ["../shared/src/build/types.ts"]
+    },
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
+    "sourceMap": true,
+    "jsx": "react-jsx",
+    "types": ["@testing-library/jest-dom/vitest", "node"]
+  },
+  "exclude": ["**/node_modules"],
+  "include": ["src", "tests"]
+}

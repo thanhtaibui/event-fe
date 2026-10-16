@@ -120,7 +120,10 @@ export async function triggerNotification(
 
   try {
     await notificationService.createNotification(config.buildPayload(context));
-  } catch {
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.warn("Notification trigger failed", key, error);
+    }
     return;
   }
 }

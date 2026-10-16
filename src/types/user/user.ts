@@ -54,6 +54,7 @@ export interface UserMembership {
 export interface UserPermission {
   permission_name?: string;
   permission_code?: string;
+  code?: string;
   children?: UserPermission[];
   isAll?: boolean;
 }

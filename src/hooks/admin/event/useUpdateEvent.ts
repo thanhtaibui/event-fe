@@ -9,11 +9,11 @@ export const useUpdateEvent = () => {
   const updateEvent = async (id: string, payload: EventPayload) => {
     try {
       setLoading(true);
-      await eventService.updateEvent(id, payload);
-      await triggerNotification("EVENT_UPDATED", { eventTitle: payload.title });
-      return true;
-    } catch (error) {
-      return false;
+      const res = await eventService.updateEvent(id, payload);
+      void triggerNotification("EVENT_UPDATED", { eventTitle: payload.title }).catch((notifErr) => {
+        console.warn("[useUpdateEvent] triggerNotification failed:", notifErr);
+      });
+      return res;
     } finally {
       setLoading(false);
     }
@@ -24,4 +24,3 @@ export const useUpdateEvent = () => {
     loading,
   };
 };
-

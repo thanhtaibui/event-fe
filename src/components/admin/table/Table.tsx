@@ -28,6 +28,7 @@ interface CustomTableProps<T> {
   order: "asc" | "desc";
   orderBy: keyof T | "";
   onSort: (key: keyof T) => void;
+  tableClassName?: string;
 }
 
 export default function CustomTable<T extends { id: string | number }>({
@@ -39,6 +40,7 @@ export default function CustomTable<T extends { id: string | number }>({
   order,
   orderBy,
   onSort,
+  tableClassName = "",
 }: CustomTableProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -53,9 +55,9 @@ export default function CustomTable<T extends { id: string | number }>({
         userSelect: "none",
         cursor: "grab",
       }}
-      className="custom-table-container"
+      className={`admin-table-scroll custom-table-container ${tableClassName}`.trim()}
     >
-      <Table>
+      <Table className="admin-data-table">
         <TableHead>
           <TableRow>
             <TableCell padding="checkbox">

@@ -20,5 +20,8 @@ export interface NotificationItem {
 export type CreateNotificationPayload = {
   title: string;
   message: string;
+  content?: string;
   type: NotificationType;
+  userId?: string;
+  recipientId?: string;
 };

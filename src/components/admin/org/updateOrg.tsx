@@ -14,6 +14,9 @@ import {
   parseIndustryValue,
 } from "../../../constants/industryOptions";
 import IndustryMultiSelect from "../../common/IndustryMultiSelect";
+import { AdminModalError, AdminModalLoading } from "../layout/AdminModalState";
+
+const UPDATE_ORG_FORM_ID = "update-org-form";
 
 export const UpdateOrgPopup = ({
   id,
@@ -28,6 +31,7 @@ export const UpdateOrgPopup = ({
   const [uiLoading, setUiLoading] = useState(false);
   const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
   const orgById = useOrgById(id);
+  const [detailReady, setDetailReady] = useState(false);
   const [form, setForm] = useState<Partial<PayloadOrganizationDto>>({
     name: "",
     slug: "",
@@ -45,6 +49,25 @@ export const UpdateOrgPopup = ({
 
   const { data: usersData } = useUser();
   const users = usersData?.items ?? [];
+
+  useEffect(() => {
+    setDetailReady(false);
+    setForm({
+      name: "",
+      slug: "",
+      bio: "",
+      ownerId: "",
+      legalName: "",
+      industry: "",
+      address: "",
+      email: "",
+      phone: "",
+      website: "",
+    });
+    setSelectedIndustries([]);
+    setOtherIndustry("");
+  }, [id]);
+
   useEffect(() => {
     const loadData = async () => {
       if (orgById.data) {
@@ -64,10 +87,13 @@ export const UpdateOrgPopup = ({
         });
         setSelectedIndustries(parsedIndustry.selected);
         setOtherIndustry(parsedIndustry.other);
+        setDetailReady(true);
       }
     };
     loadData();
   }, [orgById?.data]);
+
+  const isInitialLoading = orgById.loading || (!detailReady && !orgById.error);
 
   const convertToSlug = (text: string) => {
     return text
@@ -137,8 +163,13 @@ export const UpdateOrgPopup = ({
           </button>
         </div>
 
+        {orgById.error ? (
+          <AdminModalError onRetry={orgById.refetch} />
+        ) : isInitialLoading ? (
+          <AdminModalLoading />
+        ) : (
         <form
-          id="popup-form"
+          id={UPDATE_ORG_FORM_ID}
           className="popup-form"
           onSubmit={(e) => {
             e.preventDefault();
@@ -314,15 +345,18 @@ export const UpdateOrgPopup = ({
             />
           </div>
         </form>
-        <div className="popup-footer">
-          <button type="button" onClick={onClose}>
-            Cancel
-          </button>
+        )}
+        {detailReady && !orgById.error && (
+          <div className="popup-footer">
+            <button type="button" onClick={onClose}>
+              Cancel
+            </button>
 
-          <button type="submit" form="popup-form" disabled={uiLoading}>
-            {uiLoading ? "Save Changes..." : "Save Changes"}
-          </button>
-        </div>
+            <button type="submit" form={UPDATE_ORG_FORM_ID} disabled={uiLoading}>
+              {uiLoading ? "Save Changes..." : "Save Changes"}
+            </button>
+          </div>
+        )}
       </div>
     </div>,
     document.body,

@@ -43,6 +43,9 @@ type UseLoginFormOptions = {
 };
 
 const GOOGLE_SCRIPT_ID = "eventix-google-identity";
+const LAST_LOGIN_EMAIL_KEY = "eventix-last-login-email";
+const REMEMBER_EMAILS_KEY = "rememberEmails";
+const MAX_REMEMBER_EMAILS = 5;
 const GOOGLE_CLIENT_ID_KEYS = [
   "VITE_GOOGLE_CLIENT_ID",
   "VITE_GOOGLE_AUTH_CLIENT_ID",
@@ -64,6 +67,49 @@ function getApiMessage(err: unknown, fallback: string) {
 
 function getAccessTokenFromResponse(response: any) {
   return response?.data?.accessToken || response?.accessToken;
+}
+
+function normalizeRememberEmails(value: unknown) {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((email) => String(email || "").trim())
+    .filter(Boolean)
+    .filter((email, index, arr) => arr.indexOf(email) === index)
+    .slice(0, MAX_REMEMBER_EMAILS);
+}
+
+function getStoredLoginEmails() {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const stored = localStorage.getItem(REMEMBER_EMAILS_KEY);
+    const emails = normalizeRememberEmails(stored ? JSON.parse(stored) : []);
+    const legacyEmail = localStorage.getItem(LAST_LOGIN_EMAIL_KEY) || "";
+
+    return normalizeRememberEmails([...emails, legacyEmail]);
+  } catch {
+    return [];
+  }
+}
+
+function storeLoginEmail(email: string) {
+  if (typeof window === "undefined") return [];
+
+  const normalizedEmail = email.trim();
+  if (!normalizedEmail) return getStoredLoginEmails();
+
+  try {
+    const nextEmails = normalizeRememberEmails([
+      normalizedEmail,
+      ...getStoredLoginEmails().filter((item) => item !== normalizedEmail),
+    ]);
+    localStorage.setItem(REMEMBER_EMAILS_KEY, JSON.stringify(nextEmails));
+    localStorage.removeItem(LAST_LOGIN_EMAIL_KEY);
+    return nextEmails;
+  } catch {
+    return getStoredLoginEmails();
+  }
 }
 
 function loadGoogleIdentityScript() {
@@ -95,6 +141,9 @@ export const useLoginForm = ({ mode = "login" }: UseLoginFormOptions = {}) => {
 
   const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
+  const [savedLoginEmails, setSavedLoginEmails] = useState(() =>
+    mode === "login" ? getStoredLoginEmails() : [],
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -137,6 +186,7 @@ export const useLoginForm = ({ mode = "login" }: UseLoginFormOptions = {}) => {
 
   const handleLogin = async () => {
     const response = await login({ email, password, rememberMe } as LoginReq);
+    setSavedLoginEmails(storeLoginEmail(email));
     completeAuth(response, "Login successful");
   };
 
@@ -243,6 +293,7 @@ export const useLoginForm = ({ mode = "login" }: UseLoginFormOptions = {}) => {
   return {
     mode,
     fullName, setFullName,
+    savedLoginEmails,
     email, setEmail,
     password, setPassword,
     confirmPassword, setConfirmPassword,

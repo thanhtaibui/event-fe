@@ -1,4 +1,6 @@
 
+import type { CSSProperties } from "react";
+
 export const ROLE_STYLES: Record<string, { bg: string; text: string; border: string }> = {
   ADMIN: { bg: "#feb4b4", text: "#ef4444", border: "#fca5a5" },
   STAFF: { bg: "#add0fe", text: "#3b82f6", border: "#93c5fd" },
@@ -20,6 +22,33 @@ export const ROLE_COLOR_PALETTE = {
   rose: { bg: "#ffe4e6", text: "#e11d48", border: "#fda4af" },
   amber: { bg: "#fef3c7", text: "#d97706", border: "#fcd34d" },
   slate: { bg: "#f1f5f9", text: "#475569", border: "#cbd5e1" },
+};
+
+type RoleColorKey = keyof typeof ROLE_COLOR_PALETTE;
+type RoleBadgeStyle = CSSProperties & {
+  "--role-badge-bg": string;
+  "--role-badge-text": string;
+  "--role-badge-border": string;
+  "--role-badge-accent": string;
+};
+
+export const getRoleColorStyle = (colorKey?: string | null) => {
+  if (colorKey && colorKey in ROLE_COLOR_PALETTE) {
+    return ROLE_COLOR_PALETTE[colorKey as RoleColorKey];
+  }
+
+  return ROLE_COLOR_PALETTE.gray;
+};
+
+export const getRoleBadgeStyle = (colorKey?: string | null): RoleBadgeStyle => {
+  const roleColor = getRoleColorStyle(colorKey);
+
+  return {
+    "--role-badge-bg": roleColor.bg,
+    "--role-badge-text": roleColor.text,
+    "--role-badge-border": roleColor.border,
+    "--role-badge-accent": roleColor.text,
+  };
 };
 export const STATUS_STYLES: Record<string, { bg: string; text: string; border: string }> = {
   // Chờ duyệt khi User tạo

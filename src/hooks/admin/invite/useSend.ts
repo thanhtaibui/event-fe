@@ -8,10 +8,9 @@ export const useSend = () => {
   const sendEmail = async (send: sendEmail) => {
     try {
       setLoading(true);
-      await inviteService.sendInvites(send);
-      return true;
+      return await inviteService.sendInvites(send);
     } catch (error) {
-      return false;
+      throw error;
     } finally {
       setLoading(false);
     }

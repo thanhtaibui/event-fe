@@ -5,7 +5,18 @@ import { useCreateRole } from "./useCreate";
 import type { RolePayload } from "../../../types/role/payload";
 import { useUpdateRole } from "./useUpdate";
 
-export const useRoleForm = (onClose: () => void, onSuccess: () => void, roleById?: any) => {
+type RoleActorContext = {
+  actorRole?: "SUPER_ADMIN" | "OWNER" | null;
+  actorOrganizationId?: string;
+  actorOrganizationLoading?: boolean;
+};
+
+export const useRoleForm = (
+  onClose: () => void,
+  onSuccess: () => void,
+  roleById?: any,
+  actorContext: RoleActorContext = {},
+) => {
   const [selectedPerms, setSelectedPerms] = useState<string[]>([]);
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
   const [selectedColorHex, setSelectedColorHex] = useState(ROLE_COLOR_PALETTE.gray.text);
@@ -33,7 +44,7 @@ export const useRoleForm = (onClose: () => void, onSuccess: () => void, roleById
       if (!isChecked) {
         // Nếu CHƯA chọn: thêm con VÀ thêm luôn cha (nếu cha chưa có)
         const newArr = [...prev, permId];
-        if (!prev.includes(parentId)) {
+        if (parentId !== permId && !prev.includes(parentId)) {
           newArr.push(parentId);
         }
         return newArr;
@@ -90,8 +101,30 @@ export const useRoleForm = (onClose: () => void, onSuccess: () => void, roleById
   };
 
   const handleSubmit = async () => {
-    if (!form.role_name || !form.role_code || !form.orgId) {
+    if (
+      actorContext.actorRole === "OWNER" &&
+      actorContext.actorOrganizationLoading
+    ) {
+      toast.info("Preparing your organization context. Please try again.");
+      return;
+    }
+
+    const effectiveOrgId =
+      actorContext.actorRole === "OWNER"
+        ? actorContext.actorOrganizationId || form.orgId
+        : form.orgId;
+
+    if (!form.role_name || !form.role_code) {
       toast.warning("Please fill all required fields");
+      return;
+    }
+
+    if (!effectiveOrgId) {
+      toast.warning(
+        actorContext.actorRole === "OWNER"
+          ? "Could not identify your organization. Please reload and try again."
+          : "Please select an organization",
+      );
       return;
     }
 
@@ -100,7 +133,7 @@ export const useRoleForm = (onClose: () => void, onSuccess: () => void, roleById
     const payload: RolePayload = {
       role_name: form.role_name,
       role_code: form.role_code,
-      orgId: form.orgId,
+      orgId: effectiveOrgId,
       colorKey: form.colorKey,
       permissionIds: selectedPerms,
     };

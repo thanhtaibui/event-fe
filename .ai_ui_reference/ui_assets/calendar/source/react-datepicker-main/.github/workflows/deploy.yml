@@ -1,0 +1,44 @@
+name: "Deploy docs site"
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Corepack enable
+        run: corepack enable
+
+      - name: Yarn setup
+        run: corepack prepare --activate
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Install docs dependencies
+        run: yarn --cwd docs-site install
+
+      - name: Build datepicker
+        run: yarn build
+
+      - name: Build docs
+        run: yarn --cwd docs-site build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: docs-site/dist # The folder the action should deploy.

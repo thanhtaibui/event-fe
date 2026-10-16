@@ -3,8 +3,8 @@ import type { Query } from "../../types/query"
 import type { CreateUser } from "../../types/user/create";
 import type { UpdateUser } from "../../types/user/update";
 export const userService = {
-  getUsers: async (query?: Query) => {
-    const res = await api.get('users', { params: query });
+  getUsers: async (query?: Query, config?: Record<string, unknown>) => {
+    const res = await api.get('users', { params: query, ...config });
     return res.data;
   },
   getUserById: async (id: string) => {

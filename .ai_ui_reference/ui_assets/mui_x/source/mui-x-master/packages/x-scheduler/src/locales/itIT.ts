@@ -1,0 +1,172 @@
+import { getSchedulerLocalization } from '../utils/getSchedulerLocalization';
+import type {
+  SchedulerLocalization,
+  SchedulerDialogTranslations,
+  SchedulerEventTranslations,
+  SchedulerCalendarTranslations,
+  SchedulerTimelineTranslations,
+} from '../utils/getSchedulerLocalization';
+
+const itITDialog: SchedulerDialogTranslations = {
+  // EventDialog
+  colorPickerLabel: 'Colore evento',
+  // colorSectionLabel: 'Color',
+  dateTimeSectionLabel: 'Data e ora',
+  resourceColorSectionLabel: 'Risorsa e colore',
+  allDayLabel: 'Tutto il giorno',
+  closeButtonAriaLabel: 'Chiudi',
+  closeButtonLabel: 'Chiudi',
+  // editEventButtonAriaLabel: 'Edit event',
+  // deleteEventButtonAriaLabel: 'Delete event',
+  // eventActionsToolbarAriaLabel: 'Event actions',
+  deleteEvent: 'Elimina evento',
+  // editEvent: 'Edit event',
+  // showEventDetails: 'Show details',
+  // eventContextMenuAriaLabel: 'Event actions',
+  descriptionLabel: 'Descrizione',
+  endDateLabel: 'Data di fine',
+  endTimeLabel: 'Ora di fine',
+  eventTitleAriaLabel: 'Titolo evento',
+  generalTabLabel: 'Generale',
+  labelNoResource: 'Nessuna risorsa',
+  labelInvalidResource: 'Risorsa non valida',
+  recurrenceLabel: 'Ricorrenza',
+  recurrenceNoRepeat: 'Non ripetere',
+  recurrenceCustomRepeat: 'Regola di ripetizione personalizzata',
+  recurrenceDailyPresetLabel: 'Si ripete ogni giorno',
+  recurrenceDailyFrequencyLabel: 'giorni',
+  recurrenceEndsLabel: 'Termina',
+  recurrenceEndsAfterLabel: 'Dopo',
+  recurrenceEndsNeverLabel: 'Mai',
+  recurrenceEndsUntilLabel: 'Fino al',
+  recurrenceEndsTimesLabel: 'volte',
+  recurrenceEveryLabel: 'Ogni',
+  recurrenceRepeatLabel: 'Ripeti',
+  recurrenceTabLabel: 'Ricorrenza',
+  // recurrenceTimezoneLabel: timezone => `Timezone: ${timezone}`,
+  // recurrenceLabelTimezoneSuffix: timezone => `(${timezone})`,
+  recurrenceMainSelectCustomLabel: 'Ricorrenza',
+  recurrenceWeeklyFrequencyLabel: 'settimane',
+  recurrenceWeeklyPresetLabel: ({ weekdayName }) => `Si ripete ogni settimana il ${weekdayName}`,
+  recurrenceMonthlyFrequencyLabel: 'mesi',
+  recurrenceMonthlyDayOfMonthLabel: (dayNumber) => `Giorno ${dayNumber}`,
+  recurrenceMonthlyLastWeekAriaLabel: ({ weekdayName }) =>
+    `${weekdayName} dell'ultima settimana del mese`,
+  recurrenceMonthlyLastWeekLabel: ({ weekdayName }) => `${weekdayName} ultima settimana`,
+  recurrenceMonthlyPresetLabel: (dayNumber) => `Si ripete ogni mese il giorno ${dayNumber}`,
+  recurrenceMonthlyWeekNumberAriaLabel: ({ ord, weekdayName }) =>
+    `${weekdayName} settimana ${ord} del mese`,
+  recurrenceMonthlyWeekNumberLabel: ({ ord, weekdayName }) => `${weekdayName} settimana ${ord}`,
+  recurrenceWeeklyMonthlySpecificInputsLabel: 'Il',
+  recurrenceYearlyFrequencyLabel: 'anni',
+  recurrenceYearlyPresetLabel: (date) => `Si ripete ogni anno il ${date}`,
+  noResourceAriaLabel: 'Nessuna risorsa specifica',
+  // selectColorAriaLabel: color => `Select ${color} as event color`,
+  resourceLabel: 'Risorsa',
+  // invalidDateError: 'Enter a valid date.',
+  // invalidTimeError: 'Enter a valid time.',
+  // requiredResourceError: 'A resource is required.',
+  saveChanges: 'Salva',
+  startDateAfterEndDateError: 'La data di fine non può essere precedente alla data di inizio.',
+  startDateLabel: 'Data di inizio',
+  startTimeAfterEndTimeError: "L'ora di fine deve essere successiva all'ora di inizio.",
+  startTimeLabel: 'Ora di inizio',
+
+  // RecurringScopeDialog
+  all: 'Tutti gli eventi',
+  cancel: 'Annulla',
+  confirm: 'Conferma',
+  onlyThis: 'Solo questo evento',
+  radioGroupAriaLabel: 'Ambito di modifica eventi ricorrenti',
+  thisAndFollowing: 'Questo e gli eventi successivi',
+  title: 'Applica questa modifica a:',
+};
+
+const itITEvent: SchedulerEventTranslations = {
+  // Event accessible name
+  // eventAriaLabelTimeRange: (start, end) => `${start} to ${end}`,
+  // eventAriaLabelDateRange: (start, end) => `From ${start} to ${end}`,
+  // eventAriaLabelAllDay: 'All day',
+  // eventAriaLabelRecurring: 'Recurring',
+  resourceAriaLabel: (resourceName) => `Risorsa: ${resourceName}`,
+  // eventAriaLabel: ({
+  //   title,
+  //   when,
+  //   date,
+  //   resource,
+  //   recurring
+  // }) => [title, when, date, resource, recurring].filter(Boolean).join(', '),
+};
+
+const itITCalendar: SchedulerCalendarTranslations = {
+  // ResourcesTree
+  resourcesLabel: 'Risorse',
+
+  // ViewSwitcher
+  agenda: 'Agenda',
+  day: 'Giorno',
+  month: 'Mese',
+  other: 'Altro',
+  today: 'Oggi',
+  week: 'Settimana',
+  time: 'Ora',
+  days: 'Giorni',
+  months: 'Mesi',
+  weeks: 'Settimane',
+  years: 'Anni',
+
+  // DateNavigator
+  closeSidePanel: 'Chiudi pannello laterale',
+  openSidePanel: 'Apri pannello laterale',
+
+  // SidePanelDrawer (small screens)
+  // openMenu: 'Open menu',
+
+  // Preferences menu
+  amPm12h: '12 ore (1:00 PM)',
+  hour24h: '24 ore (13:00)',
+  preferencesMenu: 'Impostazioni',
+  showWeekends: 'Mostra fine settimana',
+  showEmptyDaysInAgenda: 'Mostra giorni vuoti',
+  showWeekNumber: 'Mostra numero della settimana',
+  timeFormat: 'Formato ora',
+  viewSpecificOptions: (view) => `Opzioni vista ${view}`,
+  // startWeekOn: 'Start week on',
+  // weekdaySunday: 'Sunday',
+  // weekdayMonday: 'Monday',
+  // weekdaySaturday: 'Saturday',
+
+  // WeekView
+  allDay: 'Tutto il giorno',
+  hiddenEvents: (hiddenEventsCount) => `${hiddenEventsCount} altri..`,
+  nextTimeSpan: (timeSpan) => `${timeSpan} successivo`,
+  previousTimeSpan: (timeSpan) => `${timeSpan} precedente`,
+  weekAbbreviation: 'S',
+  weekNumberAriaLabel: (weekNumber) => `Settimana ${weekNumber}`,
+
+  // EventItem
+  eventItemMultiDayLabel: (endDate) => `Termina il ${endDate}`,
+
+  // MiniCalendar
+  miniCalendarLabel: 'Calendario',
+  miniCalendarGoToPreviousMonth: 'Mostra il mese precedente nel calendario',
+  miniCalendarGoToNextMonth: 'Mostra il mese successivo nel calendario',
+
+  // Main calendar region
+  // calendarContentAriaLabel: 'Calendar content',
+
+  // Timeline title sub grid
+  timelineResourceTitleHeader: 'Titolo risorsa',
+};
+
+const itITTimeline: SchedulerTimelineTranslations = {
+  // Timeline title sub grid
+  timelineResourceTitleHeader: 'Titolo risorsa',
+};
+
+export const itIT: SchedulerLocalization = getSchedulerLocalization({
+  dialog: itITDialog,
+  event: itITEvent,
+  calendar: itITCalendar,
+  timeline: itITTimeline,
+});

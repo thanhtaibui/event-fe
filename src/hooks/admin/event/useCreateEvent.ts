@@ -9,13 +9,12 @@ export const useCreateEvent = () => {
   const [loading, setLoading] = useState(false);
   const createEvent = async (payload: EventPayload) => {
     try {
-
       setLoading(true)
-      await eventService.createEvent(payload)
+      const result = await eventService.createEvent(payload)
       await triggerNotification("EVENT_CREATED", { eventTitle: payload.title });
-      return true
+      return result
     } catch (error) {
-      return false
+      throw error
     } finally {
       setLoading(false);
     }
