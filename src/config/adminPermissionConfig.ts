@@ -23,6 +23,8 @@ export const ADMIN_PERMISSION_CODES = {
   EVENT_UPDATE: "EVENT_UPDATE",
   EVENT_MANAGE: "EVENT_MANAGE",
   DELETE_EVENT: "DELETE_EVENT",
+  ORGANIZATION_PAYMENT_MANAGE: "ORGANIZATION_PAYMENT_MANAGE",
+  PAYMENT_ACCOUNT: "PAYMENT_ACCOUNT",
 } as const;
 
 export type AdminPermissionCode =
@@ -37,11 +39,13 @@ export type AdminSidebarPermission = {
     | "events"
     | "reports"
     | "membership"
-    | "verifications";
+    | "verifications"
+    | "payment-account";
   label: string;
   path: string;
   permissionCode?: AdminPermissionCode;
   superOnly?: boolean;
+  ownerOnly?: boolean;
   icon: string;
   activeIcon: string;
   children: Partial<
@@ -153,6 +157,16 @@ export const ADMIN_SIDEBAR_PERMISSIONS: AdminSidebarPermission[] = [
       assign: ADMIN_PERMISSION_CODES.ORGANIZATION_MEMBER_MANAGE,
     },
   },
+  {
+    key: "payment-account",
+    label: "Payment Account",
+    path: "/admin/payment-account",
+    permissionCode: ADMIN_PERMISSION_CODES.ORGANIZATION_PAYMENT_MANAGE,
+    ownerOnly: true,
+    icon: "https://img.icons8.com/nolan/96/B0B0B0/2E2E2E/bank.png",
+    activeIcon: "https://img.icons8.com/nolan/64/bank.png",
+    children: {},
+  },
 ];
 
 export const ORG_WORKSPACE_SIDEBAR_PERMISSIONS: AdminSidebarPermission[] = [
@@ -166,7 +180,7 @@ export const ORG_WORKSPACE_SIDEBAR_PERMISSIONS: AdminSidebarPermission[] = [
     children: {},
   },
   ...ADMIN_SIDEBAR_PERMISSIONS.filter((item) =>
-    ["events", "reports", "roles", "membership"].includes(item.key),
+    ["events", "reports", "roles", "membership", "payment-account"].includes(item.key),
   ),
 ];
 
@@ -175,7 +189,9 @@ export function getOrgWorkspaceSidebarItems() {
 }
 
 export function getSystemAdminSidebarItems() {
-  return ADMIN_SIDEBAR_PERMISSIONS.filter((item) => item.key !== "membership");
+  return ADMIN_SIDEBAR_PERMISSIONS.filter(
+    (item) => item.key !== "membership" && item.key !== "payment-account",
+  );
 }
 
 type JwtPermissionPayload = {
@@ -451,8 +467,13 @@ export function getAllowedSidebarItems(codes: Set<string>) {
   );
 }
 
-export function getAllowedOrgWorkspaceSidebarItems(codes: Set<string>) {
+export function getAllowedOrgWorkspaceSidebarItems(
+  codes: Set<string>,
+  isOwner?: boolean,
+) {
   return ORG_WORKSPACE_SIDEBAR_PERMISSIONS.filter((item) => {
+    if (item.superOnly && !isSuperAdmin(codes)) return false;
+    if (item.ownerOnly && !isOwner && !isSuperAdmin(codes)) return false;
     if (item.key === "dashboard") {
       return hasAnyPermission(codes, [
         ADMIN_PERMISSION_CODES.DASHBOARD,
@@ -467,8 +488,12 @@ export function getFirstAllowedAdminPath(codes: Set<string>) {
   return getAllowedSidebarItems(codes)[0]?.path || "/admin/dashboard";
 }
 
-export function getFirstAllowedOrgWorkspacePath(codes: Set<string>, basePath: string) {
-  const firstItem = getAllowedOrgWorkspaceSidebarItems(codes)[0];
+export function getFirstAllowedOrgWorkspacePath(
+  codes: Set<string>,
+  basePath: string,
+  isOwner?: boolean,
+) {
+  const firstItem = getAllowedOrgWorkspaceSidebarItems(codes, isOwner)[0];
   return firstItem ? firstItem.path.replace("/admin", basePath) : "";
 }
 

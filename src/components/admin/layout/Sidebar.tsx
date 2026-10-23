@@ -11,6 +11,7 @@ import {
   getMembershipSlug,
   hasOrgWorkspacePermissionCodes,
   getSystemAdminSidebarItems,
+  isOrgOwnerForUser,
   normalizeUserMemberships,
 } from "../../../config/adminPermissionConfig";
 import { getAccessToken } from "../../../constants/authStorage";
@@ -116,8 +117,9 @@ export const Sidebar = ({ isCollapsed, onToggleSidebar }: SidebarProps) => {
     rolePermissionCodes?.forEach((code) => baseCodes.add(code));
     return baseCodes;
   }, [currentUserId, isOrgWorkspace, orgMembership, rolePermissionCodes]);
+  const isOwner = isOrgOwnerForUser(orgMembership, currentUserId);
   const visibleItems = isOrgWorkspace
-    ? getAllowedOrgWorkspaceSidebarItems(permissionCodes)
+    ? getAllowedOrgWorkspaceSidebarItems(permissionCodes, isOwner)
     : getSystemAdminSidebarItems();
   const basePath =
     isOrgWorkspace && slug ? `/org/${slug}` : "/admin";

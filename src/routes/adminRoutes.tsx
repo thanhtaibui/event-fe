@@ -17,6 +17,7 @@ const OrgVerification = lazy(() => import("../pages/admin/org/OrgVerification"))
 const Event = lazy(() => import("../pages/admin/event/Event"));
 const EventDetail = lazy(() => import("../pages/admin/event/EventDetail"));
 const Membership = lazy(() => import("../pages/admin/Membership"));
+const PaymentAccount = lazy(() => import("../pages/admin/org/PaymentAccount"));
 import { getAccessToken } from "../constants/authStorage";
 import {
   ADMIN_PERMISSION_CODES,
@@ -30,6 +31,7 @@ import {
   hasOrgWorkspacePermissionCodes,
   hasAnyPermission,
   isSuperAdmin as checkSuperAdmin,
+  isOrgOwnerForUser,
   normalizeUserMemberships,
 } from "../config/adminPermissionConfig";
 import { useOrgsByUser } from "../hooks/admin/org/useOrgsByUser";
@@ -164,9 +166,11 @@ function OrgWorkspaceGuard() {
   }
 
   if (location.pathname === basePath || location.pathname === `${basePath}/`) {
+    const isOwner = isOrgOwnerForUser(activeMembership, currentUserId);
     const firstAllowedPath = getFirstAllowedOrgWorkspacePath(
       orgPermissionCodes,
       basePath,
+      isOwner,
     );
 
     if (!firstAllowedPath) return <AccessBlocked scope="org" />;
@@ -194,6 +198,10 @@ function getOrgRoutePermission(pathname: string, slug: string) {
     reports: [ADMIN_PERMISSION_CODES.REPORT],
     roles: [ADMIN_PERMISSION_CODES.ROLE],
     membership: [ADMIN_PERMISSION_CODES.ORGANIZATION_MEMBER_MANAGE],
+    "payment-account": [
+      ADMIN_PERMISSION_CODES.ORGANIZATION_PAYMENT_MANAGE,
+      ADMIN_PERMISSION_CODES.PAYMENT_ACCOUNT,
+    ],
   };
 
   return routePermissions[modulePath] || null;
@@ -324,6 +332,10 @@ const orgChildren = [
   {
     path: "membership",
     element: <Membership />,
+  },
+  {
+    path: "payment-account",
+    element: <PaymentAccount />,
   },
 ];
 
