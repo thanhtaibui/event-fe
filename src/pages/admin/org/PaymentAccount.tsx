@@ -82,7 +82,7 @@ export function getBankByBin(bin?: string): PopularBank | null {
 }
 
 function maskAccountNumber(acc?: string): string {
-  if (!acc) return "Chưa cấu hình";
+  if (!acc) return "Not configured";
   if (acc.includes("*") || acc.includes("•")) return acc;
   const cleaned = acc.trim();
   if (cleaned.length <= 4) return cleaned;
@@ -94,12 +94,12 @@ function maskAccountNumber(acc?: string): string {
 export function parsePaymentAccountError(err: any): string {
   if (!err?.response) {
     if (err?.code === "ECONNABORTED" || (err?.message && err.message.toLowerCase().includes("timeout"))) {
-      return "Yêu cầu hết thời gian chờ (timeout). Vui lòng kiểm tra kết nối mạng và thử lại.";
+      return "Request timed out. Please check your network connection and try again.";
     }
     if (err?.message === "Network Error" || (err?.message && err.message.toLowerCase().includes("network"))) {
-      return "Không thể kết nối đến máy chủ. Vui lòng kiểm tra đường truyền internet.";
+      return "Unable to connect to the server. Please check your internet connection.";
     }
-    return "Không nhận được phản hồi từ máy chủ. Vui lòng thử lại sau.";
+    return "No response from the server. Please try again later.";
   }
 
   const status = err.response.status;
@@ -111,38 +111,38 @@ export function parsePaymentAccountError(err: any): string {
   const upperRaw = rawMsg.toString().toUpperCase();
 
   if (status === 401) {
-    return "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.";
+    return "Session expired. Please log in again to continue.";
   }
   if (status === 403) {
-    return "Bạn không có quyền quản lý tài khoản thanh toán của tổ chức này.";
+    return "You do not have permission to manage this organization's payment account.";
   }
   if (code === "BANK_BIN_REQUIRED" || upperRaw.includes("BANK_BIN_REQUIRED")) {
-    return "Vui lòng chọn ngân hàng thụ hưởng (mã BIN ngân hàng là bắt buộc).";
+    return "Beneficiary bank is required.";
   }
   if (code === "BANK_UNSUPPORTED" || upperRaw.includes("BANK_UNSUPPORTED")) {
-    return "Ngân hàng này hiện chưa được hỗ trợ liên kết thanh toán.";
+    return "This bank is currently not supported for payouts.";
   }
   if (code === "INVALID_BANK_ACCOUNT" || upperRaw.includes("INVALID_BANK_ACCOUNT")) {
-    return "Định dạng số tài khoản ngân hàng không hợp lệ (gồm từ 6 đến 19 chữ số).";
+    return "Invalid bank account number format (must be 6 to 19 digits).";
   }
   if (code === "ACCOUNT_HOLDER_NAME_REQUIRED" || upperRaw.includes("ACCOUNT_HOLDER_NAME_REQUIRED")) {
-    return "Vui lòng nhập tên chủ tài khoản.";
+    return "Account holder name is required.";
   }
   if (code === "INVALID_ACCOUNT_NAME" || upperRaw.includes("INVALID_ACCOUNT_NAME")) {
-    return "Tên chủ tài khoản không hợp lệ (không được để trống và tối đa 120 ký tự).";
+    return "Invalid account holder name (must not be empty, max 120 characters).";
   }
   if (rawMsg && rawMsg.includes("Cannot change receiving account while payments are pending")) {
-    return "Không thể thay đổi tài khoản nhận tiền khi đang có giao dịch thanh toán chờ xử lý.";
+    return "Cannot change receiving account while payments are pending.";
   }
   if (status === 400) {
-    return rawMsg || "Dữ liệu tài khoản không hợp lệ. Vui lòng kiểm tra lại thông tin.";
+    return rawMsg || "Invalid payment account details. Please check your information.";
   }
   if (status >= 500) {
     return rawMsg && !rawMsg.toLowerCase().includes("internal server error")
       ? rawMsg
-      : "Máy chủ gặp sự cố khi lưu tài khoản thanh toán. Vui lòng thử lại sau.";
+      : "Server encountered an error while saving payment account. Please try again later.";
   }
-  return rawMsg || "Không thể lưu tài khoản thanh toán.";
+  return rawMsg || "Failed to save payment account.";
 }
 
 export default function PaymentAccount() {
@@ -288,9 +288,9 @@ export default function PaymentAccount() {
       if (err?.response?.status === 404) {
         setAccountData(null);
       } else if (err?.response?.status === 403) {
-        setFetchError("Bạn không có quyền xem thông tin tài khoản thanh toán của tổ chức này.");
+        setFetchError("You do not have permission to view this organization's payment account.");
       } else {
-        setFetchError(err?.response?.data?.message || "Không thể tải thông tin tài khoản thanh toán.");
+        setFetchError(err?.response?.data?.message || "Failed to load payment account details.");
       }
     } finally {
       setLoading(false);
@@ -338,27 +338,27 @@ export default function PaymentAccount() {
       : VIETNAM_POPULAR_BANKS.find((b) => b.bin === selectedBankBin)?.name || "";
 
     if (!effectiveBin) {
-      errors.bankBin = "Vui lòng chọn hoặc nhập mã BIN ngân hàng gồm 6 chữ số.";
+      errors.bankBin = "Please select a beneficiary bank.";
     } else if (!/^\d{6}$/.test(effectiveBin)) {
-      errors.bankBin = "Mã BIN ngân hàng phải gồm đúng 6 chữ số theo chuẩn NAPAS.";
+      errors.bankBin = "Bank BIN must be exactly 6 digits.";
     }
 
     if (isCustomBank && !effectiveBankName) {
-      errors.bankName = "Vui lòng nhập tên ngân hàng.";
+      errors.bankName = "Please enter bank name.";
     }
 
     const cleanAccNum = accountNumber.trim();
     if (!cleanAccNum) {
-      errors.accountNumber = "Vui lòng nhập số tài khoản ngân hàng thụ hưởng.";
+      errors.accountNumber = "Please enter bank account number.";
     } else if (!/^\d{6,19}$/.test(cleanAccNum)) {
-      errors.accountNumber = "Số tài khoản ngân hàng không hợp lệ (gồm từ 6 đến 19 chữ số).";
+      errors.accountNumber = "Invalid bank account number (must be 6 to 19 digits).";
     }
 
     const cleanHolderName = accountHolderName.trim().replace(/\s+/g, " ");
     if (!cleanHolderName) {
-      errors.accountHolderName = "Vui lòng nhập tên chủ tài khoản.";
+      errors.accountHolderName = "Please enter account holder name.";
     } else if (cleanHolderName.length < 2 || cleanHolderName.length > 120) {
-      errors.accountHolderName = "Tên chủ tài khoản phải có độ dài từ 2 đến 120 ký tự.";
+      errors.accountHolderName = "Account holder name must be between 2 and 120 characters.";
     }
 
     setFormErrors(errors);
@@ -369,7 +369,7 @@ export default function PaymentAccount() {
     accountData && (accountData.bankBin || accountData.accountNumber || accountData.accountName)
   );
 
-  // Trạng thái tài khoản phản ánh trung thực từ Backend
+  // Reflect truthful verification status from Backend
   const effectiveVerificationStatus = useMemo(() => {
     if (!isConfigured) {
       return "NOT_CONFIGURED" as const;
@@ -383,18 +383,18 @@ export default function PaymentAccount() {
     return "PENDING" as const;
   }, [accountData, isConfigured]);
 
-  // Single Save Action: Validate cơ bản và lưu trực tiếp tài khoản theo Backend API contract mới
+  // Single Save Action: Validate and save directly according to Backend API contract
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (saving) return;
 
     if (!canManage) {
-      toast.error("Bạn không có quyền quản lý tài khoản thanh toán của tổ chức này.");
+      toast.error("You do not have permission to manage this organization's payment account.");
       return;
     }
 
     if (!organizationId) {
-      toast.error("Không xác định được mã định danh tổ chức.");
+      toast.error("Organization ID not found.");
       return;
     }
 
@@ -415,6 +415,7 @@ export default function PaymentAccount() {
         bankBin: effectiveBin,
         accountNumber: cleanAccNum,
         accountHolderName: cleanHolderName,
+        accountName: cleanHolderName,
       };
 
       const res = await orgService.updatePaymentAccount(organizationId, payload);
@@ -424,7 +425,7 @@ export default function PaymentAccount() {
         setAccountHolderName(res.accountHolderName || res.accountName || cleanHolderName);
       }
       setSaveSuccess(true);
-      toast.success("Lưu tài khoản thanh toán thành công.");
+      toast.success("Payment account saved successfully.");
     } catch (err: any) {
       setSaveSuccess(false);
       const displayMsg = parsePaymentAccountError(err);
@@ -436,7 +437,7 @@ export default function PaymentAccount() {
   };
 
   const displayMaskedAcc = useMemo(() => {
-    if (!accountData) return "Chưa cấu hình";
+    if (!accountData) return "Not configured";
     if (accountData.maskedAccountNumber) return accountData.maskedAccountNumber;
     return maskAccountNumber(accountData.accountNumber);
   }, [accountData]);
@@ -451,7 +452,7 @@ export default function PaymentAccount() {
       <div className="admin-page payment-account-page">
         <div className="payment-account-loading">
           <Loader2 className="payment-account-spinner" size={36} />
-          <p>Đang tải thông tin tài khoản thanh toán...</p>
+          <p>Loading payment account details...</p>
         </div>
       </div>
     );
@@ -463,13 +464,12 @@ export default function PaymentAccount() {
       <div className="admin-page payment-account-page">
         <section className="payment-account-blocked">
           <ShieldAlert size={48} className="payment-account-blocked__icon" />
-          <h2>Truy cập bị giới hạn</h2>
+          <h2>Access Restricted</h2>
           <p>
-            Chỉ <strong>Chủ tổ chức (Owner)</strong> hoặc thành viên được cấp quyền quản lý thanh toán
-            mới có thể cấu hình tài khoản nhận tiền.
+            Only the <strong>Organization Owner</strong> or authorized members can configure payout accounts.
           </p>
           <Link to={`/org/${slug}/dashboard`} className="payment-account-btn payment-account-btn--secondary">
-            Quay lại Dashboard
+            Return to Dashboard
           </Link>
         </section>
       </div>
@@ -483,11 +483,11 @@ export default function PaymentAccount() {
         <div className="payment-account-hero__content">
           <span className="payment-account-hero__eyebrow">
             <Landmark size={15} aria-hidden="true" />
-            Cài đặt thanh toán tổ chức
+            Payment Settings
           </span>
-          <h1>Tài khoản thanh toán VietQR</h1>
+          <h1>Payment Account</h1>
           <p>
-            Cấu hình tài khoản ngân hàng nhận tiền của tổ chức để tự động tạo mã Napas247 VietQR khi người tham dự mua vé sự kiện.
+            Configure your receiving bank account to receive event ticket payouts via VietQR.
           </p>
         </div>
         <div className="payment-account-hero__actions">
@@ -496,10 +496,10 @@ export default function PaymentAccount() {
             className="payment-account-btn payment-account-btn--outline"
             onClick={fetchPaymentAccount}
             disabled={loading || saving}
-            title="Tải lại dữ liệu từ máy chủ"
+            title="Refresh payment account details"
           >
             <RefreshCw size={16} className={loading ? "spin" : ""} />
-            Làm mới
+            Refresh
           </button>
         </div>
       </section>
@@ -511,10 +511,10 @@ export default function PaymentAccount() {
             <XCircle size={24} />
           </div>
           <div className="payment-account-failed-banner__body">
-            <strong>Tài khoản chưa thể xác minh</strong>
+            <strong>Verification Failed</strong>
             <p>
               {accountData.verificationFailureReason ||
-                "Thông tin tài khoản thụ hưởng không hợp lệ hoặc bị ngân hàng từ chối. Vui lòng kiểm tra và cập nhật lại."}
+                "Beneficiary account information could not be verified. Please review and update your details."}
             </p>
           </div>
         </section>
@@ -527,10 +527,9 @@ export default function PaymentAccount() {
             <CheckCircle2 size={24} />
           </div>
           <div className="payment-account-success-banner__body">
-            <strong>Đã lưu tài khoản thanh toán thành công.</strong>
+            <strong>Payment account saved successfully.</strong>
             <p>
-              Tài khoản của chủ sở hữu <strong>{accountData?.accountHolderName || accountData?.accountName || accountHolderName}</strong> tại ngân hàng <strong>{accountData?.bankName || currentSelectedBank?.name || "ngân hàng đã chọn"}</strong> đã được lưu trữ.
-              <span className="payment-account-verified-at"> · Ghi chú: Tài khoản được kiểm tra định dạng; tên chủ tài khoản chưa được ngân hàng xác minh.</span>
+              Beneficiary account details for <strong>{accountData?.accountHolderName || accountData?.accountName || accountHolderName}</strong> at <strong>{accountData?.bankName || currentSelectedBank?.name || "selected bank"}</strong> have been saved.
             </p>
           </div>
         </section>
@@ -544,47 +543,47 @@ export default function PaymentAccount() {
       )}
 
       {/* 4. OVERVIEW STATS CARDS */}
-      <section className="payment-account-stats" aria-label="Tóm tắt tài khoản thanh toán">
+      <section className="payment-account-stats" aria-label="Payment account summary">
         <article className="payment-account-stat-card">
-          <span className="payment-account-stat-card__label">Trạng thái xác thực</span>
+          <span className="payment-account-stat-card__label">Verification Status</span>
           <div className="payment-account-stat-card__value">
             {effectiveVerificationStatus === "VERIFIED" ? (
               <span className="payment-account-badge payment-account-badge--success">
-                <ShieldCheck size={14} /> Đã xác minh
+                <ShieldCheck size={14} /> Verified
               </span>
             ) : effectiveVerificationStatus === "FAILED" ? (
               <span className="payment-account-badge payment-account-badge--danger">
-                <XCircle size={14} /> Xác minh thất bại
+                <XCircle size={14} /> Failed
               </span>
             ) : isConfigured ? (
               <span className="payment-account-badge payment-account-badge--pending">
-                <Clock size={14} /> Chưa được ngân hàng xác minh
+                <Clock size={14} /> Not Verified by Bank
               </span>
             ) : (
               <span className="payment-account-badge payment-account-badge--warning">
-                <AlertTriangle size={14} /> Chưa cấu hình
+                <AlertTriangle size={14} /> Not Configured
               </span>
             )}
           </div>
           <small className="payment-account-stat-card__sub">
             {effectiveVerificationStatus === "VERIFIED"
-              ? "Sẵn sàng nhận thanh toán VietQR"
+              ? "Ready to receive VietQR payouts"
               : effectiveVerificationStatus === "FAILED"
-              ? "Tài khoản bị ngân hàng từ chối"
+              ? "Account rejected by bank"
               : isConfigured
-              ? "Tài khoản được kiểm tra định dạng; tên chủ tài khoản chưa được ngân hàng xác minh."
-              : "Cần thiết lập để kích hoạt VietQR"}
+              ? "Format validated"
+              : "Setup required to receive payouts"}
           </small>
         </article>
 
         <article className="payment-account-stat-card">
-          <span className="payment-account-stat-card__label">Ngân hàng thụ hưởng</span>
+          <span className="payment-account-stat-card__label">Bank</span>
           <div className="payment-account-stat-card__bank-row">
             {accountData?.bankBin && getBankByBin(accountData.bankBin)?.logo ? (
               <div className="payment-account-stat-card__logo-wrap">
                 <img
                   src={getBankByBin(accountData.bankBin)!.logo}
-                  alt={accountData?.bankName || "Logo ngân hàng"}
+                  alt={accountData?.bankName || "Bank logo"}
                   className="payment-account-stat-card__logo"
                   onError={(e) => {
                     (e.target as HTMLElement).style.display = "none";
@@ -594,34 +593,36 @@ export default function PaymentAccount() {
             ) : null}
             <div className="payment-account-stat-card__bank-texts">
               <strong className="payment-account-stat-card__title">
-                {accountData?.bankName || "Chưa cấu hình"}
+                {accountData?.bankName || "Not configured"}
               </strong>
               <small className="payment-account-stat-card__sub">
-                {accountData?.bankBin ? `Mã BIN: ${accountData.bankBin}` : "Chưa chọn ngân hàng"}
+                {accountData?.bankBin
+                  ? (getBankByBin(accountData.bankBin)?.shortName || "Supported Bank")
+                  : "No bank selected"}
               </small>
             </div>
           </div>
         </article>
 
         <article className="payment-account-stat-card">
-          <span className="payment-account-stat-card__label">Số tài khoản (Che một phần)</span>
+          <span className="payment-account-stat-card__label">Account Number</span>
           <strong className="payment-account-stat-card__title payment-account-stat-card__title--mono">
             {displayMaskedAcc}
           </strong>
-          <small className="payment-account-stat-card__sub">Che một phần theo dữ liệu hệ thống</small>
+          <small className="payment-account-stat-card__sub">Partially masked</small>
         </article>
 
         <article className="payment-account-stat-card">
-          <span className="payment-account-stat-card__label">Tên chủ tài khoản</span>
+          <span className="payment-account-stat-card__label">Account Holder Name</span>
           <strong className="payment-account-stat-card__title">
-            {accountData?.accountHolderName || accountData?.accountName || "Chưa cấu hình"}
+            {accountData?.accountHolderName || accountData?.accountName || "Not configured"}
           </strong>
           <small className="payment-account-stat-card__sub">
             {effectiveVerificationStatus === "VERIFIED"
-              ? "Đã xác minh bởi ngân hàng"
+              ? "Verified by bank"
               : isConfigured
-              ? "Chưa được ngân hàng xác minh"
-              : "Chưa cấu hình"}
+              ? "Registered beneficiary"
+              : "Not configured"}
           </small>
         </article>
       </section>
@@ -632,8 +633,8 @@ export default function PaymentAccount() {
         <section className="payment-account-panel">
           <div className="payment-account-panel__header">
             <div>
-              <h2>{isConfigured ? "Cập nhật tài khoản nhận tiền" : "Thiết lập tài khoản nhận tiền"}</h2>
-              <p>Nhập thông tin tài khoản ngân hàng thụ hưởng nhận tiền vé sự kiện qua VietQR.</p>
+              <h2>{isConfigured ? "Update Payment Account" : "Set Up Payment Account"}</h2>
+              <p>Configure receiving bank account details for ticket payouts.</p>
             </div>
           </div>
 
@@ -641,7 +642,7 @@ export default function PaymentAccount() {
             {/* Field: Beneficiary Bank Picker with Logo & Search */}
             <div className="payment-account-field" ref={bankPickerRef}>
               <label>
-                Ngân hàng thụ hưởng <span className="req">*</span>
+                Bank <span className="req">*</span>
               </label>
 
               {/* Custom Bank Selector Trigger */}
@@ -675,7 +676,6 @@ export default function PaymentAccount() {
                       <div className="bank-picker-trigger__title">
                         <strong>{currentSelectedBank.name}</strong>
                         <span className="bank-picker-tag">({currentSelectedBank.shortName})</span>
-                        <span className="bank-picker-bin-badge">BIN: {currentSelectedBank.bin}</span>
                       </div>
                       <small className="bank-picker-trigger__desc">{currentSelectedBank.fullName}</small>
                     </div>
@@ -687,18 +687,15 @@ export default function PaymentAccount() {
                     </div>
                     <div className="bank-picker-trigger__info">
                       <div className="bank-picker-trigger__title">
-                        <strong>{customBankName || "Ngân hàng khác"}</strong>
-                        <span className="bank-picker-bin-badge">
-                          BIN: {customBankBin || "Chưa nhập"}
-                        </span>
+                        <strong>{customBankName || "Other Bank"}</strong>
                       </div>
-                      <small className="bank-picker-trigger__desc">Nhập thủ công tên ngân hàng và mã BIN Napas</small>
+                      <small className="bank-picker-trigger__desc">Custom bank</small>
                     </div>
                   </div>
                 ) : (
                   <div className="bank-picker-trigger__placeholder">
                     <Landmark size={18} />
-                    <span>-- Chọn ngân hàng trong hệ thống Napas247 (23+ ngân hàng) --</span>
+                    <span>Select bank</span>
                   </div>
                 )}
 
@@ -714,7 +711,7 @@ export default function PaymentAccount() {
                     <Search size={16} className="bank-picker-search__icon" />
                     <input
                       type="text"
-                      placeholder="Tìm theo tên ngân hàng, mã viết tắt (MB, VCB, TCB), hoặc BIN..."
+                      placeholder="Search bank name or code..."
                       value={bankSearchQuery}
                       onChange={(e) => setBankSearchQuery(e.target.value)}
                       onClick={(e) => e.stopPropagation()}
@@ -758,7 +755,6 @@ export default function PaymentAccount() {
                             <div className="bank-picker-item__name-row">
                               <span className="bank-picker-item__name">{bank.name}</span>
                               <span className="bank-picker-item__code">({bank.shortName})</span>
-                              <span className="bank-picker-item__bin">BIN {bank.bin}</span>
                             </div>
                             <span className="bank-picker-item__full">{bank.fullName}</span>
                           </div>
@@ -773,7 +769,7 @@ export default function PaymentAccount() {
 
                     {filteredBanks.length === 0 && (
                       <div className="bank-picker-empty">
-                        <p>Không tìm thấy ngân hàng nào khớp với "{bankSearchQuery}"</p>
+                        <p>No banks match "{bankSearchQuery}"</p>
                       </div>
                     )}
                   </div>
@@ -784,8 +780,8 @@ export default function PaymentAccount() {
                       <Building size={18} />
                     </div>
                     <div className="bank-picker-footer__text">
-                      <strong>Ngân hàng khác</strong>
-                      <small>Nhập thủ công tên ngân hàng và mã BIN NAPAS 6 số</small>
+                      <strong>Other Bank</strong>
+                      <small>Enter bank details manually</small>
                     </div>
                   </div>
                 </div>
@@ -799,12 +795,12 @@ export default function PaymentAccount() {
               <div className="payment-account-field-row">
                 <div className="payment-account-field">
                   <label htmlFor="customBankName">
-                    Tên ngân hàng <span className="req">*</span>
+                    Bank Name <span className="req">*</span>
                   </label>
                   <input
                     id="customBankName"
                     type="text"
-                    placeholder="VD: Kienlongbank"
+                    placeholder="Enter bank name"
                     value={customBankName}
                     onChange={(e) => {
                       setCustomBankName(e.target.value);
@@ -819,13 +815,13 @@ export default function PaymentAccount() {
                 </div>
                 <div className="payment-account-field">
                   <label htmlFor="customBankBin">
-                    Mã BIN NAPAS (6 chữ số) <span className="req">*</span>
+                    Bank BIN (6 digits) <span className="req">*</span>
                   </label>
                   <input
                     id="customBankBin"
                     type="text"
                     maxLength={6}
-                    placeholder="VD: 970452"
+                    placeholder="Enter 6-digit BIN"
                     value={customBankBin}
                     onChange={(e) => {
                       setCustomBankBin(e.target.value.replace(/\D/g, ""));
@@ -843,17 +839,13 @@ export default function PaymentAccount() {
             {/* Bank Account Number */}
             <div className="payment-account-field">
               <label htmlFor="accountNumber">
-                Số tài khoản ngân hàng <span className="req">*</span>
+                Account Number <span className="req">*</span>
               </label>
               <input
                 id="accountNumber"
                 type="text"
                 maxLength={19}
-                placeholder={
-                  isConfigured
-                    ? `Hiện tại: ${displayMaskedAcc} (Nhập số mới để thay đổi)`
-                    : "Nhập số tài khoản ngân hàng (6 - 19 chữ số)"
-                }
+                placeholder={isConfigured ? "Enter new account number" : "Enter account number"}
                 value={accountNumber}
                 onChange={(e) => {
                   setAccountNumber(e.target.value.replace(/\D/g, ""));
@@ -867,9 +859,6 @@ export default function PaymentAccount() {
                 className={formErrors.accountNumber ? "input-error" : ""}
                 autoComplete="off"
               />
-              <span className="field-hint">
-                Chỉ gồm chữ số, từ 6 đến 19 ký tự, không bao gồm khoảng trắng hay ký tự đặc biệt.
-              </span>
               {formErrors.accountNumber && (
                 <span className="field-error">{formErrors.accountNumber}</span>
               )}
@@ -878,13 +867,13 @@ export default function PaymentAccount() {
             {/* Account Holder Name */}
             <div className="payment-account-field">
               <label htmlFor="accountHolderName">
-                Tên chủ tài khoản <span className="req">*</span>
+                Account Holder Name <span className="req">*</span>
               </label>
               <input
                 id="accountHolderName"
                 type="text"
                 maxLength={120}
-                placeholder="VD: NGUYEN VAN A"
+                placeholder="Enter account holder name"
                 value={accountHolderName}
                 onChange={(e) => {
                   setAccountHolderName(e.target.value.toUpperCase());
@@ -898,9 +887,6 @@ export default function PaymentAccount() {
                 className={formErrors.accountHolderName ? "input-error" : ""}
                 autoComplete="off"
               />
-              <span className="field-hint">
-                Nhập tên chủ tài khoản theo đăng ký tại ngân hàng.
-              </span>
               {formErrors.accountHolderName && (
                 <span className="field-error">{formErrors.accountHolderName}</span>
               )}
@@ -914,7 +900,7 @@ export default function PaymentAccount() {
               </div>
             )}
 
-            {/* Actions: Chỉ giữ một nút Lưu tài khoản */}
+            {/* Actions: Save Changes and Cancel */}
             <div className="payment-account-form-actions">
               <button
                 type="submit"
@@ -923,11 +909,11 @@ export default function PaymentAccount() {
               >
                 {saving ? (
                   <>
-                    <Loader2 size={16} className="spin" /> Đang lưu tài khoản...
+                    <Loader2 size={16} className="spin" /> Saving...
                   </>
                 ) : (
                   <>
-                    <Save size={16} /> Lưu tài khoản
+                    <Save size={16} /> Save Changes
                   </>
                 )}
               </button>
@@ -946,7 +932,7 @@ export default function PaymentAccount() {
                 }}
                 disabled={saving}
               >
-                Hủy thay đổi
+                Cancel
               </button>
             </div>
           </form>
@@ -961,19 +947,19 @@ export default function PaymentAccount() {
               <div className="payment-account-card-preview__top-right">
                 {effectiveVerificationStatus === "VERIFIED" ? (
                   <span className="card-preview-indicator card-preview-indicator--verified">
-                    <ShieldCheck size={11} /> Đã xác minh
+                    <ShieldCheck size={11} /> Verified
                   </span>
                 ) : effectiveVerificationStatus === "FAILED" ? (
                   <span className="card-preview-indicator card-preview-indicator--failed">
-                    <XCircle size={11} /> Thất bại
+                    <XCircle size={11} /> Failed
                   </span>
                 ) : isConfigured ? (
                   <span className="card-preview-indicator card-preview-indicator--pending">
-                    <Clock size={11} /> Chưa xác minh
+                    <Clock size={11} /> Not Verified by Bank
                   </span>
                 ) : (
                   <span className="card-preview-indicator card-preview-indicator--unverified">
-                    Chưa cấu hình
+                    Not Configured
                   </span>
                 )}
                 <span className="payment-account-card-preview__brand">NAPAS 247 · VietQR</span>
@@ -985,7 +971,7 @@ export default function PaymentAccount() {
                 <div className="payment-account-card-preview__logo-wrap">
                   <img
                     src={getBankByBin(currentPreviewBin)!.logo}
-                    alt="Logo ngân hàng"
+                    alt="Bank logo"
                     className="payment-account-card-preview__logo"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = "none";
@@ -997,36 +983,34 @@ export default function PaymentAccount() {
               )}
               <span>
                 {isCustomBank
-                  ? customBankName || "NGÂN HÀNG"
+                  ? customBankName || "BANK"
                   : currentSelectedBank?.name ||
                     accountData?.bankName ||
-                    "CHỌN NGÂN HÀNG"}
+                    "SELECT BANK"}
               </span>
             </div>
 
             <div className="payment-account-card-preview__number">
               {accountNumber
                 ? maskAccountNumber(accountNumber)
-                : displayMaskedAcc !== "Chưa cấu hình"
+                : displayMaskedAcc !== "Not configured"
                 ? displayMaskedAcc
                 : "•••• •••• •••• ••••"}
             </div>
 
             <div className="payment-account-card-preview__bottom">
               <div>
-                <small>CHỦ TÀI KHOẢN</small>
+                <small>ACCOUNT HOLDER</small>
                 <strong>
                   {accountHolderName ||
                     accountData?.accountHolderName ||
                     accountData?.accountName ||
-                    "CHỦ TÀI KHOẢN"}
+                    "ACCOUNT HOLDER"}
                 </strong>
               </div>
               <div className="payment-account-card-preview__bin">
-                <small>MÃ BIN</small>
-                <strong>
-                  {currentPreviewBin || "------"}
-                </strong>
+                <small>NETWORK</small>
+                <strong>NAPAS 247</strong>
               </div>
             </div>
           </div>
@@ -1034,7 +1018,7 @@ export default function PaymentAccount() {
           {/* Note minh bạch theo spec */}
           <div className="payment-account-verified-card-note">
             <Landmark size={16} />
-            <span>Tài khoản được kiểm tra định dạng; tên chủ tài khoản chưa được ngân hàng xác minh.</span>
+            <span>Account details are validated for format only. The bank has not verified the account holder's name.</span>
           </div>
         </aside>
       </div>
