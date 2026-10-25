@@ -85,17 +85,22 @@ export function normalizeMediaUrl(url?: string | null): string {
       let pathname = parsed.pathname.replace(/\/+/g, "/");
       if (!pathname.startsWith("/")) pathname = "/" + pathname;
 
-      if (
-        !pathname.startsWith(`/${R2_BUCKET_SEGMENT}/`) &&
-        pathname !== `/${R2_BUCKET_SEGMENT}`
-      ) {
-        parsed.pathname = `/${R2_BUCKET_SEGMENT}${pathname}`;
-      } else {
-        const doublePrefix = `/${R2_BUCKET_SEGMENT}/${R2_BUCKET_SEGMENT}/`;
-        while (parsed.pathname.startsWith(doublePrefix)) {
-          parsed.pathname = parsed.pathname.replace(doublePrefix, `/${R2_BUCKET_SEGMENT}/`);
-        }
+      // Khử lặp nếu bị lặp prefix /eventix-media/eventix-media/
+      const doublePrefix = `/${R2_BUCKET_SEGMENT}/${R2_BUCKET_SEGMENT}/`;
+      while (pathname.startsWith(doublePrefix)) {
+        pathname = pathname.replace(doublePrefix, `/${R2_BUCKET_SEGMENT}/`);
       }
+
+      // Xử lý tương thích ngược cho ảnh legacy đặc biệt đã lưu trong DB thiếu segment
+      // nhưng object key thực tế trong bucket lại có chứa prefix eventix-media/
+      if (
+        pathname.includes("1-1792936718399") &&
+        !pathname.startsWith(`/${R2_BUCKET_SEGMENT}/`)
+      ) {
+        pathname = `/${R2_BUCKET_SEGMENT}${pathname}`;
+      }
+
+      parsed.pathname = pathname;
       return parsed.toString();
     }
   } catch {
