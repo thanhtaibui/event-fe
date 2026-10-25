@@ -51,8 +51,17 @@ export function validateUploadFile(
   return { valid: true };
 }
 
+export {
+  R2_PUBLIC_HOSTNAME,
+  R2_BUCKET_SEGMENT,
+  normalizeMediaUrl,
+  deepNormalizeMediaUrls,
+} from "../../utils/imageUtils";
+import { normalizeMediaUrl } from "../../utils/imageUtils";
+
 /**
  * Trích xuất URL hợp lệ từ response của Backend upload API (Cloudflare R2, S3, hoặc Cloudinary fallback).
+ * Tự động chuẩn hóa đường dẫn nếu URL R2 bị thiếu segment 'eventix-media'.
  * Tuyệt đối từ chối blob: hoặc data: preview URLs hoặc các chuỗi không phải HTTP/HTTPS.
  */
 export function extractUploadUrl(response: unknown): string {
@@ -62,7 +71,7 @@ export function extractUploadUrl(response: unknown): string {
 
   if (typeof response === "string") {
     const trimmed = response.trim();
-    if (isValidHttpUrl(trimmed)) return trimmed;
+    if (isValidHttpUrl(trimmed)) return normalizeMediaUrl(trimmed);
     if (isTemporaryPreviewUrl(trimmed)) {
       throw new Error("Temporary preview URL cannot be used as permanent storage URL");
     }
@@ -88,15 +97,15 @@ export function extractUploadUrl(response: unknown): string {
   for (const key of candidateKeys) {
     const directVal = payload[key];
     if (typeof directVal === "string" && isValidHttpUrl(directVal.trim())) {
-      return directVal.trim();
+      return normalizeMediaUrl(directVal.trim());
     }
     if (data && typeof data[key] === "string" && isValidHttpUrl(data[key].trim())) {
-      return data[key].trim();
+      return normalizeMediaUrl(data[key].trim());
     }
   }
 
   if (directDataString && isValidHttpUrl(directDataString)) {
-    return directDataString;
+    return normalizeMediaUrl(directDataString);
   }
 
   // Kiểm tra nếu response vô tình chứa blob: hoặc data:

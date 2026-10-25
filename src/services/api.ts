@@ -5,6 +5,7 @@ import {
   getAccessToken,
   setAccessToken,
 } from "../constants/authStorage";
+import { deepNormalizeMediaUrls } from "../utils/imageUtils";
 
 const normalizeApiBaseUrl = (baseUrl: string) => {
   const normalizedBaseUrl = baseUrl.trim().replace(/\/+$/, "");
@@ -81,7 +82,12 @@ api.interceptors.request.use(
 // [RESPONSE INTERCEPTOR]: Xử lý lỗi 401 & Kiểm soát cơ chế Auto-Refresh
 // =================================================================
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data && typeof response.data === "object") {
+      response.data = deepNormalizeMediaUrls(response.data);
+    }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
 
