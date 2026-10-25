@@ -29,7 +29,7 @@ import { getAccessToken, setAccessToken } from "../../constants/authStorage";
 import api from "../../services/api";
 import { orgService } from "../../services/admin/organization.service";
 import { orgVerificationService } from "../../services/admin/org-verification.service";
-import { uploadService } from "../../services/admin/uploadCloud";
+import { extractUploadUrl, uploadService } from "../../services/admin/uploadCloud";
 import { triggerNotification } from "../../hooks/notification/useNotificationTrigger";
 import type { JwtPayloadCustom } from "../../types/JwtPayloadCustom";
 import type { PayloadOrganizationDto } from "../../types/organization/create";
@@ -89,31 +89,12 @@ function getCreatedOrgId(response: unknown): string | null {
 }
 
 function getUploadedDocumentUrl(response: unknown): string | null {
-  if (!response) return null;
-  if (typeof response === "string") return response;
-
-  const payload = response as any;
-  if (typeof payload.data === "string") return payload.data;
-
-  return (
-    payload.secure_url ||
-    payload.url ||
-    payload.imageUrl ||
-    payload.documentUrl ||
-    payload.fileUrl ||
-    payload.location ||
-    payload.Location ||
-    payload.path ||
-    payload.data?.secure_url ||
-    payload.data?.url ||
-    payload.data?.imageUrl ||
-    payload.data?.documentUrl ||
-    payload.data?.fileUrl ||
-    payload.data?.location ||
-    payload.data?.Location ||
-    payload.data?.path ||
-    null
-  );
+  try {
+    return extractUploadUrl(response);
+  } catch (error) {
+    console.error("[OrgRegisterPage] Failed to extract document URL:", error);
+    return null;
+  }
 }
 
 export default function OrgRegisterPage() {

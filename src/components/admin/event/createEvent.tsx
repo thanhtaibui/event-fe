@@ -269,9 +269,13 @@ export const CreateEventPopup = ({
       formData.append("file", banner as File);
       formData.append("folder", "banner");
       const res = await upload(formData);
+      const bannerUrl = res?.url || res?.secure_url;
+      if (!bannerUrl) {
+        throw new Error("Máy chủ không trả về URL ảnh hợp lệ. Vui lòng thử lại.");
+      }
       const submitForm: EventPayload = {
         title: form.title!.trim(),
-        eventBanner: res.secure_url,
+        eventBanner: bannerUrl,
         startDateTime: form.startDateTime!,
         endDateTime: form.endDateTime!,
         registrationEndDate: form.registrationEndDate!,

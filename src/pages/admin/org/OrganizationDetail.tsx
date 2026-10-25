@@ -1,4 +1,4 @@
-﻿import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { ArrowLeft, BadgeCheck, FileCheck2, ShieldCheck, UploadCloud, X } from "lucide-react";
 import { useOrgBySlug } from "../../../hooks/admin/org/useOrgBySlug";
@@ -114,11 +114,11 @@ export default function OrganizationDetail() {
       await toastHot.promise(
         (async () => {
           const res = await upload(formData);
-          // Lưu ý: check res.data.secure_url tùy theo cấu trúc ApiResponse của ông
-          const success = await updateBanner(
-            data.id,
-            res.secure_url || res.data?.secure_url,
-          );
+          const bannerUrl =
+            res?.url || res?.secure_url || res?.data?.url || res?.data?.secure_url;
+          if (!bannerUrl) throw new Error("Máy chủ không trả về URL ảnh banner hợp lệ");
+
+          const success = await updateBanner(data.id, bannerUrl);
           await refetch();
           if (!success) throw new Error("Update banner failed");
           return success;
@@ -155,7 +155,8 @@ export default function OrganizationDetail() {
       formData.append("file", file);
       formData.append("folder", "org-verification");
       const res = await upload(formData);
-      const url = res.secure_url || res.data?.secure_url || res.url || res.data?.url;
+      const url =
+        res?.url || res?.secure_url || res?.data?.url || res?.data?.secure_url;
 
       if (!url) throw new Error("Upload response missing document URL");
 
@@ -166,6 +167,51 @@ export default function OrganizationDetail() {
       toast.error(error?.message || "Upload document failed");
     } finally {
       setUploadingDocument(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Vui lòng chọn file hình ảnh hợp lệ (JPG, PNG, WEBP)");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Kích thước logo tối đa là 5MB");
+      e.target.value = "";
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "logo");
+
+      await toastHot.promise(
+        (async () => {
+          const res = await upload(formData);
+          const logoUrl =
+            res?.url || res?.secure_url || res?.data?.url || res?.data?.secure_url;
+          if (!logoUrl) throw new Error("Máy chủ không trả về URL logo hợp lệ");
+
+          await orgService.updateLogo(data.id, logoUrl);
+          await refetch();
+          return true;
+        })(),
+        {
+          loading: "Đang tải lên logo...",
+          success: "Cập nhật logo tổ chức thành công!",
+          error: (err) => `${err.message || "Không thể cập nhật logo"}`,
+        },
+      );
+    } catch (err: any) {
+      console.error(err);
+    } finally {
       e.target.value = "";
     }
   };
@@ -315,16 +361,33 @@ export default function OrganizationDetail() {
             <ArrowLeft size={16} aria-hidden="true" />
             Back
           </button>
-          {/* AVATAR */}
-          <div className="org-detail__avatar">
+          {/* AVATAR / LOGO */}
+          <div
+            className="org-detail__avatar"
+            onClick={() => document.getElementById("org-logo-file-input")?.click()}
+            title="Click to change organization logo"
+            style={{ cursor: "pointer", position: "relative" }}
+          >
             <img
               src={
                 data.logoUrl ||
+                data.logo ||
                 "https://img.icons8.com/nolan/256/user-default.png"
               }
-              alt="avatar"
+              alt="Organization logo"
+              onError={(e) => {
+                e.currentTarget.src =
+                  "https://img.icons8.com/nolan/256/user-default.png";
+              }}
             />
             {verified && <div className="org-detail__badge">✓</div>}
+            <input
+              id="org-logo-file-input"
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleLogoUpload}
+            />
           </div>
           <span className="org-detail__subtitle">ORGANIZATION PROFILE</span>
           <h1 className="org-detail__title">{data.name}</h1>

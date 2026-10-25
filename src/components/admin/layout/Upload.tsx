@@ -1,7 +1,12 @@
 // PosterUpload.tsx
 import { useCallback, useEffect, useState } from "react";
 import type { ClipboardEvent as ReactClipboardEvent, KeyboardEvent } from "react";
+import { toast } from "react-toastify";
 import "../../../styles/admin/popup/popup.css";
+import {
+  DEFAULT_IMAGE_TYPES,
+  validateUploadFile,
+} from "../../../services/admin/uploadCloud";
 
 interface PosterUploadProps {
   value?: File | null;
@@ -48,7 +53,15 @@ export function PosterUpload({
   }, [defaultUrl, value]);
   const handleFile = useCallback(
     (file: File) => {
-      if (!file.type.startsWith("image/")) return;
+      const validation = validateUploadFile(file, {
+        maxSizeBytes: 10 * 1024 * 1024,
+        allowedTypes: DEFAULT_IMAGE_TYPES,
+      });
+
+      if (!validation.valid) {
+        toast.error(validation.error || "File không hợp lệ");
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (e) => setPreview(e.target?.result as string);
       reader.readAsDataURL(file);
@@ -172,7 +185,14 @@ export function PosterUpload({
           </div>
         ) : (
           <div className="dropzone__preview">
-            <img src={preview} alt={previewAlt} className="dropzone__img" />
+            <img
+              src={preview}
+              alt={previewAlt}
+              className="dropzone__img"
+              onError={(e) => {
+                e.currentTarget.src = "/default-banner.png";
+              }}
+            />
             <div className="dropzone__overlay">
               <button
                 type="button"

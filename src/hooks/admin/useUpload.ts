@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { uploadService } from "../../services/admin/uploadCloud";
+import { extractUploadUrl, uploadService } from "../../services/admin/uploadCloud";
 
 export const useUpload = () => {
   const [loading, setLoading] = useState(false);
@@ -8,11 +8,18 @@ export const useUpload = () => {
     try {
       setLoading(true);
       const res = await uploadService.upload(formData);
-      // console.log(res.data)
-      return res.data;
+      const extractedUrl = extractUploadUrl(res);
+
+      const normalized: Record<string, any> =
+        typeof res === "object" && res !== null ? { ...res } : { data: res };
+
+      normalized.url = extractedUrl;
+      normalized.secure_url = extractedUrl;
+
+      return normalized;
     } catch (error) {
-      console.error(error);
-      return null;
+      console.error("[useUpload] Upload failed or returned invalid URL:", error);
+      throw error;
     } finally {
       setLoading(false);
     }

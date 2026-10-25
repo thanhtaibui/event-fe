@@ -58,6 +58,15 @@ export const orgService = {
     const res = await api.patch(`organizations/${id}/banner`, { bannerUrl });
     return res.data;
   },
+  updateLogo: async (id: string, logoUrl: string) => {
+    try {
+      const res = await api.patch(`organizations/${id}/logo`, { logoUrl });
+      return res.data;
+    } catch {
+      const res = await api.patch(`organizations/${id}`, { logoUrl } as any);
+      return res.data;
+    }
+  },
   deleteSort: async (ids: string[]) => {
     // console.log(ids)
     const res = await api.patch(`organizations/delete`, { ids: ids });

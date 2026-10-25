@@ -76,7 +76,9 @@ export default function ItemForm({
         formData.append("folder", "item-img");
         await toast.promise(
           upload(formData).then((res) => {
-            posterUrlFinal = res.secure_url;
+            const nextUrl = res?.url || res?.secure_url;
+            if (!nextUrl) throw new Error("Máy chủ không trả về URL ảnh hợp lệ");
+            posterUrlFinal = nextUrl;
           }),
           {
             pending: "Uploading image...",

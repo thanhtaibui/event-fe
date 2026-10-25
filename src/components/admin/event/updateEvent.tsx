@@ -338,10 +338,11 @@ export const UpdateEventPopup = ({
         formData.append("folder", "banner");
 
         const uploadRes = await upload(formData);
-        if (uploadRes?.secure_url || uploadRes?.url) {
-          bannerFinal = uploadRes.secure_url || uploadRes.url;
+        const nextUrl = uploadRes?.url || uploadRes?.secure_url;
+        if (nextUrl) {
+          bannerFinal = nextUrl;
         } else {
-          throw new Error("Không thể tải lên ảnh banner");
+          throw new Error("Không thể tải lên ảnh banner. Vui lòng thử lại.");
         }
       }
 
