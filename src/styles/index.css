@@ -44,12 +44,12 @@
   --type-ui: 0.92rem;
   --type-caption: 0.78rem;
 
-  /* ============== Radius ============== */
+  /* ============== Radius (Clean, Structured SaaS Scale) ============== */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
-  --radius-xl: 18px;
-  --radius-2xl: 22px;
+  --radius-xl: 16px;
+  --radius-2xl: 18px;
 
   /* ============== Spacing ============== */
   --space-4: 4px;
@@ -751,6 +751,32 @@ a,
   }
 }
 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin,
+.spin,
+[class*="animate-spin"],
+.admin-modal-state__spinner,
+.role-permission-matrix__spinner,
+.admin-skeleton__spinner,
+.login-loading__spinner,
+.eventix-auth-spinner,
+.invite-spin,
+.spinnerWrap,
+.ai-spin-icon {
+  display: inline-block;
+  animation: spin 0.8s linear infinite !important;
+  transform-origin: center center;
+  will-change: transform;
+}
+
 .Toastify__spinner {
   width: 20px !important;
   height: 20px !important;
@@ -762,9 +788,9 @@ a,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *:not(.Toastify):not(.Toastify *):not([class*="Toastify"]):not([class*="Toastify"] *):not(.animate-spin),
-  *:not([class*="Toastify"]):not([class*="Toastify"] *)::before,
-  *:not([class*="Toastify"]):not([class*="Toastify"] *)::after {
+  *:not(.Toastify):not(.Toastify *):not([class*="Toastify"]):not([class*="Toastify"] *):not(.animate-spin):not([class*="spin"]):not([class*="spinner"]):not([class*="loader"]):not([class*="loading"]):not(.admin-modal-state__spinner):not(.role-permission-matrix__spinner):not(.admin-skeleton__spinner):not(.login-loading__spinner):not(.eventix-auth-spinner):not(.invite-spin):not(.spinnerWrap):not(.ai-spin-icon),
+  *:not([class*="Toastify"]):not([class*="Toastify"] *):not(.animate-spin):not([class*="spin"]):not([class*="spinner"]):not([class*="loader"]):not([class*="loading"]):not(.admin-modal-state__spinner):not(.role-permission-matrix__spinner):not(.admin-skeleton__spinner):not(.login-loading__spinner):not(.eventix-auth-spinner):not(.invite-spin):not(.spinnerWrap):not(.ai-spin-icon)::before,
+  *:not([class*="Toastify"]):not([class*="Toastify"] *):not(.animate-spin):not([class*="spin"]):not([class*="spinner"]):not([class*="loader"]):not([class*="loading"]):not(.admin-modal-state__spinner):not(.role-permission-matrix__spinner):not(.admin-skeleton__spinner):not(.login-loading__spinner):not(.eventix-auth-spinner):not(.invite-spin):not(.spinnerWrap):not(.ai-spin-icon)::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
@@ -772,9 +798,21 @@ a,
   }
 
   .Toastify__spinner,
-  .animate-spin {
-    animation: Toastify__spin 0.75s linear infinite !important;
-    animation-duration: 0.75s !important;
+  .animate-spin,
+  .spin,
+  [class*="spin"],
+  [class*="spinner"],
+  [class*="loader"],
+  .admin-modal-state__spinner,
+  .role-permission-matrix__spinner,
+  .admin-skeleton__spinner,
+  .login-loading__spinner,
+  .eventix-auth-spinner,
+  .invite-spin,
+  .spinnerWrap,
+  .ai-spin-icon {
+    animation: spin 0.8s linear infinite !important;
+    animation-duration: 0.8s !important;
     animation-iteration-count: infinite !important;
   }
 
@@ -864,7 +902,7 @@ a,
   font-weight: 500 !important;
 }
 
-/* Human polish: reduce over-centered and over-bold generated-looking UI. */
+/* Anti-AI polish: enforce clear left-alignment for operational text, headings, forms, tables */
 :where(
   .card,
   [class*="Card"],
@@ -880,8 +918,15 @@ a,
   .membership-panel,
   .report-review-modal,
   .user-event-detail__card,
-  .myTicketCard
+  .myTicketCard,
+  .stat-card,
+  .chart-box,
+  .event-card,
+  .dashboard-hero,
+  .payment-account-panel,
+  .payment-account-stat-card
 ) :where(
+  h1, h2, h3, h4, h5, h6,
   p,
   label,
   dt,
@@ -894,7 +939,17 @@ a,
   [class*="description"],
   [class*="Description"],
   [class*="label"],
-  [class*="Label"]
+  [class*="Label"],
+  [class*="heading"],
+  [class*="Heading"]
+):not(
+  .confirm-dialog *,
+  .admin-modal-state *,
+  .empty-state *,
+  [class*="empty"] *,
+  [class*="Empty"] *,
+  .pie-chart-card *,
+  .checkout-vietqr__qrSide *
 ) {
   text-align: left;
 }
@@ -984,9 +1039,41 @@ a,
   .myTicketRow,
   .myTicketRow *,
   .verification-modal,
-  .verification-modal *
+  .verification-modal *,
+  .payment-account-page,
+  .payment-account-page *
 ) {
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* Structured radius system:
+   - Inputs/Selects: 8px
+   - Standard Buttons: 8px-10px (anti-pill)
+   - Standard Cards: 12px-14px (anti-bubble)
+   - Large Modals/Heroes: 16px
+*/
+:where(
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea
+) {
+  border-radius: 8px !important;
+}
+
+:where(
+  button,
+  .btn,
+  [role="button"]
+):not(
+  .avatar,
+  [class*="avatar"],
+  [class*="Avatar"],
+  .round-button,
+  [class*="round-btn"],
+  .close-btn,
+  .carousel-nav-btn
+) {
+  border-radius: min(var(--radius-md), 10px);
 }
 
 :where(
@@ -995,29 +1082,17 @@ a,
   [class*="card"],
   .panel,
   [class*="Panel"],
-  [class*="panel"],
-  .modal-content,
-  .popup-content,
-  .dialog-content,
-  input,
-  select,
-  textarea,
-  button
+  [class*="panel"]
 ):not(
+  .payment-account-card-preview,
   .avatar,
   [class*="avatar"],
   [class*="Avatar"],
   .badge,
   [class*="badge"],
-  [class*="Badge"],
-  .pill,
-  [class*="pill"],
-  [class*="Pill"],
-  .myTicketsPage *,
-  .myTicketOrderCard *,
-  .myTicketRow *
+  [class*="Badge"]
 ) {
-  border-radius: min(var(--radius-md), 10px);
+  border-radius: min(var(--radius-lg), 14px);
 }
 
 /* Shared admin dark modal fallback for portal and page-specific dialogs. */

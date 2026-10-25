@@ -106,7 +106,7 @@
   gap: 8px;
   padding: 6px 14px 6px 11px;
   border: 1px solid rgba(124, 58, 237, 0.2);
-  border-radius: 999px;
+  border-radius: 6px;
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(99, 102, 241, 0.04) 100%);
   color: #6d28d9;
   font-size: 0.76rem;

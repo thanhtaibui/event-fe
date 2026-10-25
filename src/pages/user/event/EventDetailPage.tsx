@@ -307,7 +307,6 @@ export default function EventDetailPage() {
           {/* 1. About this event */}
           <section className="user-event-detail__card user-event-detail__aboutCard">
             <div className="user-event-detail__cardHead">
-              <span className="user-event-detail__eyebrow">Overview</span>
               <h2>About this event</h2>
             </div>
             <div className="user-event-detail__description">
@@ -367,7 +366,6 @@ export default function EventDetailPage() {
           {/* 2. Event timeline / plan: Vertical Stepper UI */}
           <section className="user-event-detail__card user-event-detail__timelineCard">
             <div className="user-event-detail__cardHead">
-              <span className="user-event-detail__eyebrow">Timeline</span>
               <h2>Event schedule & plan</h2>
             </div>
 
@@ -401,7 +399,6 @@ export default function EventDetailPage() {
           <section className="user-event-detail__card user-event-detail__relatedCardSection">
             <div className="user-event-detail__cardHead user-event-detail__relatedHead">
               <div>
-                <span className="user-event-detail__eyebrow">Explore more</span>
                 <h2>Related events</h2>
               </div>
               <Link to="/app/events" className="user-event-detail__viewAllLink">
@@ -455,7 +452,6 @@ export default function EventDetailPage() {
           {/* 1. Ticket selection */}
           <div className="user-event-detail__card user-event-detail__ticketSection">
             <div className="user-event-detail__ticketHeader">
-              <span className="user-event-detail__eyebrow">Tickets</span>
               <h2>Select tickets</h2>
               <p>Choose your ticket tier and add to cart to proceed.</p>
             </div>

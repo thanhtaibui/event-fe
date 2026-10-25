@@ -191,7 +191,7 @@ h1 span, h2 span, h3 span {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(.user-layout, .auth-layout, .admin-layout) :where(*, *::before, *::after) {
+  :where(.user-layout, .auth-layout, .admin-layout) :where(*, *::before, *::after):not([class*="spin"]):not([class*="spinner"]):not([class*="loader"]):not([class*="loading"]):not(.animate-spin) {
     transition: none !important;
     animation: none !important;
   }

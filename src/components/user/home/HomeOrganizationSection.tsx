@@ -35,7 +35,6 @@ export default function HomeOrganizationSection() {
     <section className="user-home-org" aria-label="Event operating flow">
       <div className="user-home-org__layout">
         <div className="user-home-org__copy" data-reveal="true">
-          <span className="user-home-org__eyebrow">Event workflow</span>
           <h2 className="user-home-org__title">
             From idea to check-in, your event stays <span>organized.</span>
           </h2>

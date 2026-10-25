@@ -41,9 +41,6 @@ export default function HomeCommunityPlatform() {
     <section className="user-home-platform" aria-label="Eventix modules">
       <div className="user-home-platform__layout">
         <div className="user-home-platform__intro" data-reveal="true">
-          <span className="user-home-platform__eyebrow">
-            All-in-one platform
-          </span>
           <h2 className="user-home-platform__title">
             Everything you need to build <span>communities.</span>
           </h2>

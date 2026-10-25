@@ -387,10 +387,15 @@
 /* ── Spin animation ── */
 .invite-spin {
   display: inline-block;
-  animation: invite-spin 1s linear infinite;
+  animation: invite-spin 1s linear infinite !important;
+  transform-origin: center center;
+  will-change: transform;
 }
 @keyframes invite-spin {
-  to {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
     transform: rotate(360deg);
   }
 }

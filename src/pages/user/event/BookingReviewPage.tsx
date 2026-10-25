@@ -74,7 +74,6 @@ export default function BookingReviewPage() {
           <span className="booking-review__emptyIcon">
             <Ticket size={28} aria-hidden="true" />
           </span>
-          <span className="booking-review__eyebrow">REVIEW BOOKING</span>
           <h1>No tickets selected</h1>
           <p>Please add tickets before reviewing your booking.</p>
           <Link
@@ -119,7 +118,6 @@ export default function BookingReviewPage() {
               ) : null}
 
               <div className="booking-review__eventContent">
-                <span className="booking-review__eyebrow">EVENT SUMMARY</span>
                 <h1 className="booking-review__eventTitle">{event.title}</h1>
 
                 <div className="booking-review__metaGrid">
@@ -172,7 +170,6 @@ export default function BookingReviewPage() {
             <section className="booking-review__card booking-review__ticketsCard">
               <div className="booking-review__sectionHead">
                 <div>
-                  <span className="booking-review__eyebrow">TICKETS</span>
                   <h2>Your tickets</h2>
                 </div>
                 <span className="booking-review__ticketBadge">
@@ -226,7 +223,6 @@ export default function BookingReviewPage() {
           {/* RIGHT SIDEBAR (30%) */}
           <aside className="booking-review__sidebar">
             <div className="booking-review__card booking-review__summaryCard">
-              <span className="booking-review__eyebrow">ORDER SUMMARY</span>
               <h2>Booking Summary</h2>
 
               <div className="booking-review__summaryRows">

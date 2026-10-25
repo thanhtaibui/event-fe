@@ -384,16 +384,20 @@ export default function LoginForm({ mode = "login" }: LoginFormProps) {
             },
           },
           "@keyframes eventix-auth-spin": {
-            to: { transform: "rotate(360deg)" },
+            "0%": { transform: "rotate(0deg)" },
+            "100%": { transform: "rotate(360deg)" },
           },
-          ".auth-layout .eventix-auth-spinner": {
+          ".eventix-auth-spinner, .auth-layout .eventix-auth-spinner": {
+            display: "inline-block",
             animation: "eventix-auth-spin 760ms linear infinite !important",
             transformOrigin: "center center",
             willChange: "transform",
           },
           "@media (prefers-reduced-motion: reduce)": {
-            ".auth-layout .eventix-auth-spinner": {
-              animation: "eventix-auth-spin 900ms linear infinite !important",
+            ".eventix-auth-spinner, .auth-layout .eventix-auth-spinner": {
+              animation: "eventix-auth-spin 760ms linear infinite !important",
+              animationDuration: "760ms !important",
+              animationIterationCount: "infinite !important",
             },
           },
         }}

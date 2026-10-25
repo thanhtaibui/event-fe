@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import { Pencil } from "lucide-react";
 import { useTicketTypeByIdEvent } from "../../../hooks/admin/event/useTicketTypes";
 import { CreateTT } from "./createTT";
 import { UpdateTT } from "./updateTT";
 
 interface TicketCardProps {
   id: string;
+  canManage?: boolean;
 }
-export const TicketCard: React.FC<TicketCardProps> = ({ id }) => {
+export const TicketCard: React.FC<TicketCardProps> = ({ id, canManage = true }) => {
   const [ticketId, setTicketId] = useState<string>("");
   const { data: ticketTypes, refetch: refTicketType } =
     useTicketTypeByIdEvent(id);
@@ -39,12 +41,14 @@ export const TicketCard: React.FC<TicketCardProps> = ({ id }) => {
       )}
       <div className="tickets-title">
         <h3>Ticket Types</h3>
-        <button onClick={() => setShowPopup("createTT")}>Add Tier +</button>
+        {canManage && (
+          <button onClick={() => setShowPopup("createTT")}>Add Tier +</button>
+        )}
       </div>
       {ticketTypes && ticketTypes.length > 0 ? (
         ticketTypes.map((ticketType: any) => {
-          const percentage =
-            (ticketType.quantity / ticketType.total_quantity) * 100;
+          const totalQty = ticketType.total_quantity || ticketType.totalQuantity || ticketType.quantity || 1;
+          const percentage = (ticketType.quantity / totalQty) * 100;
 
           let statusStyle: React.CSSProperties = {
             color: "#2fc96a",
@@ -68,11 +72,13 @@ export const TicketCard: React.FC<TicketCardProps> = ({ id }) => {
               key={ticketType.id}
               className="ticket-item"
               style={{
-                cursor: `url('https://img.icons8.com/external-basicons-solid-edtgraphics/24/external-Touch-gesture-touch-gestures-basicons-solid-edtgraphics-16.png'), auto`,
+                cursor: canManage ? "pointer" : "default",
               }}
               onDoubleClick={() => {
-                setTicketId(ticketType.id);
-                setShowPopup("updateTT");
+                if (canManage) {
+                  setTicketId(ticketType.id);
+                  setShowPopup("updateTT");
+                }
               }}
             >
               <div className="ticket-info">
@@ -86,9 +92,44 @@ export const TicketCard: React.FC<TicketCardProps> = ({ id }) => {
                     : "Sold Out"}
                 </span>
               </div>
-              <div className="ticket-price">
-                {formatPrice(ticketType.price)}{" "}
-                <span className="currency">VND</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div className="ticket-price">
+                  {formatPrice(ticketType.price)}{" "}
+                  <span className="currency">VND</span>
+                </div>
+                {canManage && (
+                  <button
+                    type="button"
+                    title="Edit ticket tier"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTicketId(ticketType.id);
+                      setShowPopup("updateTT");
+                    }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: "4px",
+                      color: "#64748b",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "6px",
+                      transition: "color 0.15s ease, background 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = "#7c3aed";
+                      e.currentTarget.style.background = "#f5f3ff";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = "#64748b";
+                      e.currentTarget.style.background = "none";
+                    }}
+                  >
+                    <Pencil size={15} aria-hidden="true" />
+                  </button>
+                )}
               </div>
             </div>
           );
@@ -107,14 +148,16 @@ export const TicketCard: React.FC<TicketCardProps> = ({ id }) => {
           <p className="empty__description">
             Create your first ticket tier to start selling
           </p>
-          <button
-            className="btn-tier"
-            onClick={() => {
-              setShowPopup("createTT");
-            }}
-          >
-            + Create Ticket Tier
-          </button>
+          {canManage && (
+            <button
+              className="btn-tier"
+              onClick={() => {
+                setShowPopup("createTT");
+              }}
+            >
+              + Create Ticket Tier
+            </button>
+          )}
         </div>
       )}
     </div>

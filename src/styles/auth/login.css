@@ -371,6 +371,8 @@
 }
 
 .login-loading__spinner {
+  display: inline-block;
+  box-sizing: border-box;
   width: 42px;
   height: 42px;
   border: 0;
@@ -381,6 +383,15 @@
   mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 0);
   animation: login-spin 760ms linear infinite !important;
   transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.eventix-auth-spinner {
+  display: inline-block !important;
+  box-sizing: border-box !important;
+  animation: login-spin 760ms linear infinite !important;
+  transform-origin: center center !important;
+  will-change: transform !important;
 }
 
 .login-loading strong {
@@ -967,14 +978,20 @@
 }
 
 @keyframes login-spin {
-  to {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
     transform: rotate(360deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .login-loading__spinner {
+  .login-loading__spinner,
+  .eventix-auth-spinner {
     animation: login-spin 760ms linear infinite !important;
+    animation-duration: 760ms !important;
+    animation-iteration-count: infinite !important;
   }
 }
 

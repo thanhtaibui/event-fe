@@ -50,7 +50,6 @@ export default function BookingCartDrawer() {
       <aside className="booking-cart__drawer" aria-label="Your Cart">
         <header className="booking-cart__header">
           <div className="booking-cart__headerText">
-            <span className="booking-cart__eyebrow">BOOKING</span>
             <div className="booking-cart__titleRow">
               <h2>Your Cart</h2>
               <span className="booking-cart__badgeCount">

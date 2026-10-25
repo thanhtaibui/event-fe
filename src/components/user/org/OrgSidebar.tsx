@@ -70,9 +70,6 @@ export default function OrgSidebar({ topOrgs }: OrgSidebarProps) {
           <div className="org-sidebar__promo-shape" />
         </div>
         <div className="org-sidebar__promo-content">
-          <p className="org-sidebar__promo-eyebrow">
-            Ready to build your community?
-          </p>
           <h3>Create and launch a futuristic organization today.</h3>
           <Link className="org-sidebar__promo-btn" to="/register-organization">
             Create Organization

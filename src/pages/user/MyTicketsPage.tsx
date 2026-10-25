@@ -256,10 +256,6 @@ export default function MyTicketsPage() {
         <header className="myTicketsHeader" aria-label="Ticket wallet header">
           <div className="myTicketsHeader__glow" aria-hidden="true" />
           <div className="myTicketsHeader__left">
-            <div className="myTicketsEyebrow">
-              <Ticket size={13} aria-hidden="true" />
-              <span>DIGITAL TICKET WALLET</span>
-            </div>
             <div className="myTicketsHeader__titleRow">
               <h1>My Tickets</h1>
               <span className="myTicketsBadgeCount">

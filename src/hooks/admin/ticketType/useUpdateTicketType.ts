@@ -8,10 +8,8 @@ export const useUpdateTicketType = () => {
   const updateTicketType = async (id: string, payload: TicketType) => {
     try {
       setLoading(true);
-      await ticketTypeService.updateTicketType(id, payload);
-      return true;
-    } catch (error) {
-      return false;
+      const res = await ticketTypeService.updateTicketType(id, payload);
+      return res;
     } finally {
       setLoading(false);
     }

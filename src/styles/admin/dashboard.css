@@ -53,7 +53,7 @@
   gap: 32px;
   overflow: hidden;
   padding: clamp(24px, 3.4vw, 42px);
-  border-radius: 22px;
+  border-radius: 16px;
 }
 
 .dashboard-hero::before {
@@ -79,7 +79,7 @@
   margin-bottom: 12px;
   padding: 7px 11px;
   border: 1px solid rgba(91, 33, 182, 0.14);
-  border-radius: 999px;
+  border-radius: 6px;
   background: rgba(91, 33, 182, 0.08);
   color: var(--dashboard-accent);
   font-size: 0.72rem;
@@ -124,7 +124,7 @@
   align-items: center;
   justify-content: center;
   gap: 9px;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 0 17px;
   font-size: 0.9rem;
   font-weight: 500;
@@ -165,7 +165,7 @@
   gap: 8px;
   padding: 22px;
   border: 1px solid var(--dashboard-border-strong);
-  border-radius: 18px;
+  border-radius: 12px;
   background:
     linear-gradient(135deg, rgba(91, 33, 182, 0.08), rgba(37, 99, 235, 0.04)),
     var(--dashboard-surface);
@@ -209,7 +209,7 @@
   flex-direction: column;
   overflow: hidden;
   padding: 22px;
-  border-radius: 18px;
+  border-radius: 12px;
   user-select: none;
   transition:
     border-color 180ms ease,
@@ -223,7 +223,7 @@
   top: 22px;
   bottom: 22px;
   width: 3px;
-  border-radius: 0 999px 999px 0;
+  border-radius: 0 4px 4px 0;
   background: linear-gradient(180deg, var(--dashboard-accent), var(--dashboard-blue));
   content: "";
 }
@@ -246,7 +246,7 @@
   height: 48px;
   place-items: center;
   border: 1px solid rgba(91, 33, 182, 0.15);
-  border-radius: 14px;
+  border-radius: 10px;
   background:
     linear-gradient(135deg, rgba(91, 33, 182, 0.12), rgba(37, 99, 235, 0.07)),
     var(--dashboard-surface);
@@ -264,7 +264,7 @@
   min-height: 28px;
   padding: 0 10px;
   border: 1px solid rgba(16, 185, 129, 0.16);
-  border-radius: 999px;
+  border-radius: 6px;
   background: rgba(16, 185, 129, 0.08);
   color: #059669;
   font-size: 0.72rem;
@@ -308,7 +308,7 @@
   min-width: 0;
   min-height: 330px;
   padding: 22px;
-  border-radius: 18px;
+  border-radius: 12px;
 }
 
 .chart-box__header {
@@ -330,7 +330,7 @@
   min-height: 34px;
   padding: 0 12px;
   border: 1px solid var(--dashboard-border);
-  border-radius: 999px;
+  border-radius: 8px;
   background: var(--dashboard-surface-soft);
   color: var(--dashboard-accent);
   font-size: 0.78rem;
@@ -387,7 +387,7 @@
   align-items: flex-start;
   padding: 12px;
   border: 1px solid var(--dashboard-border);
-  border-radius: 14px;
+  border-radius: 10px;
   background: var(--dashboard-surface-soft);
 }
 
@@ -396,7 +396,7 @@
   width: 34px;
   height: 34px;
   place-items: center;
-  border-radius: 11px;
+  border-radius: 8px;
   background: rgba(91, 33, 182, 0.09);
   color: var(--dashboard-accent-strong);
 }
@@ -429,7 +429,7 @@
   gap: 10px;
   padding: 28px;
   border: 1px dashed var(--dashboard-border);
-  border-radius: 18px;
+  border-radius: 12px;
   background:
     radial-gradient(circle at 50% 0%, rgba(91, 33, 182, 0.07), transparent 34%),
     var(--dashboard-surface-soft);
@@ -495,7 +495,7 @@
   .dashboard-hero,
   .chart-box,
   .stat-card {
-    border-radius: 16px;
+    border-radius: 12px;
   }
 
   .dashboard-hero {

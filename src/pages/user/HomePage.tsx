@@ -5,7 +5,6 @@ import {
   CalendarDays,
   Search,
   ShieldCheck,
-  Sparkles,
   Ticket,
   UsersRound,
 } from "lucide-react";
@@ -63,11 +62,6 @@ export default function HomePage() {
       <section className="home-hero" aria-label="Eventix home">
         <div className="home-shell home-hero__grid">
           <div className="home-hero__copy" data-home-reveal="true">
-            <div className="home-eyebrow">
-              <Sparkles size={13} className="home-eyebrow__icon" aria-hidden="true" />
-              <span>All your events, in one place</span>
-            </div>
-
             <h1>
               Events made <span className="home-hero__highlight">simple.</span>
             </h1>
@@ -115,7 +109,6 @@ export default function HomePage() {
       <section className="home-section home-how" aria-label="How Eventix works">
         <div className="home-shell">
           <div className="home-sectionHeader">
-            <span className="home-eyebrow">How Eventix works</span>
             <h2>From discovery to attendance in a few clear steps.</h2>
           </div>
 
@@ -139,7 +132,6 @@ export default function HomePage() {
       <section className="home-section home-platform" aria-label="Eventix platform support">
         <div className="home-shell home-platform__grid">
           <div className="home-platform__copy">
-            <span className="home-eyebrow">Event platform</span>
             <h2>One platform for the event experience.</h2>
             <p>
               Discover events, manage experiences and give organizers the tools
@@ -160,7 +152,6 @@ export default function HomePage() {
       <section className="home-section home-organizer" aria-label="Organizer onboarding">
         <div className="home-shell home-organizer__grid">
           <div className="home-organizer__copy">
-            <span className="home-eyebrow">For organizers</span>
             <h2>Turn your ideas into events.</h2>
             <p>
               Create your organization, publish events and manage everything
@@ -189,7 +180,6 @@ export default function HomePage() {
       <section className="home-section home-why" aria-label="Everything you need to run great events">
         <div className="home-shell">
           <div className="home-sectionHeader">
-            <span className="home-eyebrow">Organizer toolkit</span>
             <h2>Everything you need to run great events.</h2>
           </div>
 

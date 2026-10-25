@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import {
-  CalendarDays,
   MapPin,
   MoreHorizontal,
   QrCode,
@@ -46,10 +45,6 @@ export default function MyTicketCard({ ticket }: Props) {
         </div>
 
         <div className="myTicketCard__textInfo">
-          <div className="myTicketCard__eyebrow">
-            <CalendarDays size={14} aria-hidden="true" />
-            <span>{isUpcoming ? "Live Ticket" : "Past Event"}</span>
-          </div>
           <span className="myTicketCard__category">{ticket.organizationName}</span>
           <h3 className="myTicketCard__eventName">{ticket.eventName}</h3>
           <p className="myTicketCard__desc">{ticket.shortDescription}</p>

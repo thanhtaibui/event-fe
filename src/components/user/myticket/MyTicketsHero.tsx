@@ -9,9 +9,6 @@ export default function MyTicketsHero() {
             <TicketCheck className="myTicketsHero__icon" size={26} />
           </div>
           <div className="myTicketsHero__text">
-            <div className="myTicketsHero__kicker">
-              Your event wallet
-            </div>
             <h1 className="myTicketsHero__title">My Tickets</h1>
             <p className="myTicketsHero__desc">
               Manage your upcoming and past tickets in one place.

@@ -43,21 +43,45 @@ export const CreateTT: React.FC<CreateTTProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (uiLoading) return;
+
+    if (!form.name?.trim()) {
+      toast.warning("Vui lòng nhập tên loại vé.");
+      return;
+    }
+
+    const price = parseNumber(form.price?.toString() || "0");
+    if (isNaN(price) || price < 0) {
+      toast.warning("Giá vé không hợp lệ.");
+      return;
+    }
+
+    const quantity = Number(form.quantity);
+    if (isNaN(quantity) || quantity <= 0) {
+      toast.warning("Số lượng vé phải lớn hơn 0.");
+      return;
+    }
+
     try {
       setUiLoading(true);
       const payload = {
         ...form,
-        price: parseNumber(form.price?.toString() || "0"),
-        quantity: Number(form.quantity),
+        name: form.name.trim(),
+        price,
+        quantity,
+        eventId: id,
       } as TicketType;
-      const res = await createTicketType(payload);
-      if (res) {
-        toast.success("Ticket Tier created successfully!");
-        await onSuccess();
-        onClose();
-      }
-    } catch (error) {
-      console.error(error);
+      await createTicketType(payload);
+      toast.success("Tạo loại vé thành công!");
+      await onSuccess();
+      onClose();
+    } catch (error: any) {
+      console.error("Create ticket type error:", error);
+      const backendMessage = error?.response?.data?.message || error?.message;
+      const message = Array.isArray(backendMessage)
+        ? backendMessage[0]
+        : backendMessage || "Không thể tạo loại vé. Vui lòng thử lại.";
+      toast.error(message);
     } finally {
       setUiLoading(false);
     }

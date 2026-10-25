@@ -208,17 +208,17 @@
 .event-page .category-tabs {
   max-width: 1320px !important;
   margin: 0 auto 30px !important;
-  padding: 8px !important;
-  border-radius: 20px !important;
+  padding: 6px !important;
+  border-radius: 10px !important;
   background: #ffffff !important;
   box-shadow: none !important;
 }
 
 .event-page .category-tabs__pill {
-  min-height: 42px !important;
-  padding: 0 18px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
   border: 1px solid transparent !important;
-  border-radius: 999px !important;
+  border-radius: 8px !important;
   background: transparent !important;
   color: var(--eventix-event-muted) !important;
   font-size: 0.86rem !important;
@@ -265,7 +265,7 @@
   display: flex !important;
   flex-direction: column !important;
   min-height: 0 !important;
-  border-radius: 20px !important;
+  border-radius: 14px !important;
 }
 
 .event-page .event-card--spotlight .event-card__media {
@@ -301,7 +301,7 @@
 }
 
 .event-page .event-card {
-  border-radius: 20px !important;
+  border-radius: 14px !important;
   background: var(--eventix-event-surface-solid) !important;
   box-shadow: 0 12px 28px rgba(42, 38, 92, 0.07) !important;
 }
@@ -311,7 +311,7 @@
 }
 
 .event-page .event-card__detailLink {
-  border-radius: 13px !important;
+  border-radius: 8px !important;
 }
 
 @media (max-width: 1120px) {

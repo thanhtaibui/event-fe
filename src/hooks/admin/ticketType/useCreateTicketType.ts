@@ -8,10 +8,8 @@ export const useCreateTicketType = () => {
   const createTicketType = async (payload: TicketType) => {
     try {
       setLoading(true);
-      await ticketTypeService.createTicketType(payload);
-      return true;
-    } catch (error) {
-      return false;
+      const res = await ticketTypeService.createTicketType(payload);
+      return res;
     } finally {
       setLoading(false);
     }

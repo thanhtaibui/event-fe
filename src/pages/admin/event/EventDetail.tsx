@@ -72,6 +72,7 @@ type EventDetailHeaderProps = {
   onShowItems: () => void;
   onPublish: () => void;
   canPublish: boolean;
+  canEdit: boolean;
 };
 
 function EventHeader({
@@ -84,6 +85,7 @@ function EventHeader({
   onShowItems,
   onPublish,
   canPublish,
+  canEdit,
 }: EventDetailHeaderProps) {
   return (
     <section className="admin-event-hero admin-event-detail-card">
@@ -127,13 +129,15 @@ function EventHeader({
           </button>
         </div>
         <div className="admin-event-actions">
-          <button
-            className="admin-event-action admin-event-action--primary"
-            onClick={onEdit}
-          >
-            <Edit3 size={16} aria-hidden="true" />
-            Edit Event
-          </button>
+          {canEdit && (
+            <button
+              className="admin-event-action admin-event-action--primary"
+              onClick={onEdit}
+            >
+              <Edit3 size={16} aria-hidden="true" />
+              Edit Event
+            </button>
+          )}
           <button className="admin-event-action" onClick={onShowItems}>
             <Layers3 size={16} aria-hidden="true" />
             Show Items
@@ -290,7 +294,13 @@ function EventLocation({
   );
 }
 
-function EventRelatedSidebar({ eventId }: { eventId: string }) {
+function EventRelatedSidebar({
+  eventId,
+  canManage,
+}: {
+  eventId: string;
+  canManage: boolean;
+}) {
   return (
     <aside className="admin-event-side">
       <section className="admin-event-related admin-event-detail-card">
@@ -300,7 +310,7 @@ function EventRelatedSidebar({ eventId }: { eventId: string }) {
         </div>
         <Suspense fallback={<AdminSkeleton variant="table" rows={2} />}>
           <div className="admin-event-related__stack">
-            <TicketCard id={eventId} />
+            <TicketCard id={eventId} canManage={canManage} />
             <InviteCard id={eventId} />
           </div>
         </Suspense>
@@ -369,6 +379,11 @@ const EventDetail: React.FC = () => {
     ? Math.min(Math.round((soldTickets / capacity) * 100), 100)
     : 0;
   const isDraftEvent = String(event.status || "").toLowerCase() === "draft";
+  const canEditEvent = hasAnyPermission(permissionCodes, [
+    ADMIN_PERMISSION_CODES.EVENT,
+    ADMIN_PERMISSION_CODES.EVENT_UPDATE,
+    ADMIN_PERMISSION_CODES.EVENT_MANAGE,
+  ]);
   const canPublishEvent =
     isDraftEvent &&
     hasAnyPermission(permissionCodes, [
@@ -443,6 +458,7 @@ const EventDetail: React.FC = () => {
         onShowItems={() => setShowPopup("items")}
         onPublish={() => setPublishConfirmOpen(true)}
         canPublish={canPublishEvent}
+        canEdit={canEditEvent}
       />
 
       <EventStats
@@ -462,7 +478,7 @@ const EventDetail: React.FC = () => {
           />
         </main>
 
-        <EventRelatedSidebar eventId={event.id} />
+        <EventRelatedSidebar eventId={event.id} canManage={canEditEvent} />
       </div>
     </div>
   );

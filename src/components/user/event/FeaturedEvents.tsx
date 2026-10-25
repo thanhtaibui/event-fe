@@ -181,7 +181,6 @@ export default function FeaturedEvents({
     <section className="featured-events">
       <div className="event-section-heading">
         <div>
-          <span className="event-section-heading__eyebrow">Curated marketplace</span>
           <h2>Featured Events</h2>
         </div>
         <Link to="/app/events" aria-label="View all featured events">
@@ -252,7 +251,6 @@ export default function FeaturedEvents({
 
           <div className="event-section-heading event-section-heading--all">
             <div>
-              <span className="event-section-heading__eyebrow">All events</span>
               <h2>Explore every experience</h2>
             </div>
           </div>

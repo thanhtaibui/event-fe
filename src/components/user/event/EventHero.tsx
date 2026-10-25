@@ -1,6 +1,5 @@
 import {
   CalendarDays,
-  Compass,
   MapPin,
   Search,
 } from "lucide-react";
@@ -63,10 +62,6 @@ export default function EventHero({
   return (
     <section className="event-hero">
       <div className="event-hero__content">
-        <p className="event-hero__eyebrow">
-          <Compass size={15} aria-hidden="true" />
-          Premium event discovery
-        </p>
         <h1>
           Discover events that move your <span>community</span>.
         </h1>

@@ -12,7 +12,7 @@
   margin: 0 auto;
   padding: clamp(28px, 5vw, 54px);
   border: 1px solid rgba(109, 40, 217, 0.12);
-  border-radius: 22px;
+  border-radius: 16px;
   background: #ffffff;
   box-shadow: none;
 }
@@ -65,7 +65,7 @@
   min-height: 214px;
   padding: 22px;
   border: 1px solid rgba(109, 40, 217, 0.11);
-  border-radius: 16px;
+  border-radius: 12px;
   background: #fbfbff;
   transition:
     transform 200ms ease,
@@ -96,7 +96,7 @@
   width: 48px;
   height: 48px;
   margin-bottom: 38px;
-  border-radius: 14px;
+  border-radius: 10px;
   color: #ffffff;
   background: linear-gradient(135deg, #4c1d95, #7c3aed 58%, #2563eb);
   box-shadow: none;

@@ -19,10 +19,6 @@ export default function HomeHero() {
 
       <div className="user-home-hero__grid">
         <div className="user-home-hero__copy" data-reveal="true">
-          <div className="user-home-hero__badge">
-            Premium event discovery
-          </div>
-
           <h1 className="user-home-hero__title">{HOME_CONTENT.hero.title}</h1>
 
           <p className="user-home-hero__subtitle">

@@ -9,9 +9,6 @@ export default function HomeCTA() {
     <section className="user-home-cta" aria-label="Growing organizations">
       <div className="user-home-cta__layout">
         <div className="user-home-cta__copy" data-reveal="true">
-          <span className="user-home-cta__eyebrow">
-            Built for growing organizations
-          </span>
           <h2 className="user-home-cta__title">
             Built for growing <span>organizations.</span>
           </h2>

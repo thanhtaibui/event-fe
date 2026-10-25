@@ -480,9 +480,6 @@ export default function OrgRegisterPage() {
             </div>
 
             <div className="org-onboarding-copy">
-              <span className="org-onboarding-eyebrow">
-                Build a trusted community
-              </span>
               <h1>Launch your organization workspace.</h1>
               <p>
                 Create an organizer profile, add contact details, and request

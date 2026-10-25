@@ -47,11 +47,11 @@
   --pf-space-2xl: 48px;
   --pf-space-3xl: 64px;
 
-  /* Radius scale */
-  --pf-radius-small: 8px;
-  --pf-radius-medium: 12px;
-  --pf-radius-large: 20px;
-  --pf-radius-xl: 28px;
+  /* Radius scale (streamlined modern SaaS tokens) */
+  --pf-radius-small: 6px;
+  --pf-radius-medium: 10px;
+  --pf-radius-large: 14px;
+  --pf-radius-xl: 18px;
   --pf-radius-pill: 999px;
 
   /* Shadow scale */

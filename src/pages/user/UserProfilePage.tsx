@@ -123,7 +123,6 @@ export default function UserProfilePage() {
             alt={`${displayName} profile avatar`}
           />
           <div>
-            <p className="user-profileHero__kicker">Eventix Personal Experience</p>
             <h1>{displayName}</h1>
             {email && (
               <p className="user-profileHero__email">
@@ -152,7 +151,6 @@ export default function UserProfilePage() {
       <main className="user-profileMain">
         <section className="user-profilePanel user-profilePanel--info">
           <div className="user-profilePanel__head">
-            <span>Personal information</span>
             <h2>Your Eventix identity</h2>
           </div>
 
@@ -182,7 +180,6 @@ export default function UserProfilePage() {
 
         <aside className="user-profilePanel user-profilePanel--account">
           <div className="user-profilePanel__head">
-            <span>Account information</span>
             <h2>Access and workspace</h2>
           </div>
 
@@ -206,7 +203,6 @@ export default function UserProfilePage() {
 
         <section className="user-profilePanel user-profilePanel--actions">
           <div className="user-profilePanel__head">
-            <span>Quick action</span>
             <h2>Continue where it matters</h2>
           </div>
 
@@ -232,7 +228,6 @@ export default function UserProfilePage() {
 
         <section className="user-profilePanel user-profilePanel--activity">
           <div className="user-profilePanel__head">
-            <span>Activity</span>
             <h2>Recent activity</h2>
           </div>
 
