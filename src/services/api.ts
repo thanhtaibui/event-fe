@@ -9,8 +9,8 @@ import {
 const normalizeApiBaseUrl = (baseUrl: string) => {
   const normalizedBaseUrl = baseUrl.trim().replace(/\/+$/, "");
   return normalizedBaseUrl.endsWith("/api")
-    ? normalizedBaseUrl
-    : `${normalizedBaseUrl}/api`;
+    ? normalizedBaseUrl.slice(0, -4)
+    : normalizedBaseUrl;
 };
 
 const API_BASE_URL = normalizeApiBaseUrl(

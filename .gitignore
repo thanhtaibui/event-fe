@@ -29,6 +29,7 @@ coverage/
 *.tgz
 # External references
 _ref/
+/hallmark/
 .codegraph/
 # Local operations state
 _ops/
