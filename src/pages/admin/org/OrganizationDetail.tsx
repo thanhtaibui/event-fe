@@ -16,6 +16,10 @@ import { getCroppedImg } from "../../../utils/imageUtils";
 import { useSubmitOrgVerification } from "../../../hooks/admin/orgVerification/useOrgVerification";
 import { triggerNotification } from "../../../hooks/notification/useNotificationTrigger";
 import { orgService } from "../../../services/admin/organization.service";
+import {
+  extractDocumentKey,
+  orgVerificationService,
+} from "../../../services/admin/org-verification.service";
 import { OrgRequestStatus } from "../../../types/enum";
 
 const formatOrgStatus = (status?: string) => {
@@ -37,7 +41,8 @@ export default function OrganizationDetail() {
   const [tempImage, setTempImage] = useState<string | null>(null);
   const [showVerification, setShowVerification] = useState(false);
   const [verificationTax, setVerificationTax] = useState("");
-  const [verificationDocumentUrl, setVerificationDocumentUrl] = useState("");
+  const [verificationDocumentKey, setVerificationDocumentKey] = useState("");
+  const [verificationPreviewUrl, setVerificationPreviewUrl] = useState("");
   const [verificationFileName, setVerificationFileName] = useState("");
   const [uploadingDocument, setUploadingDocument] = useState(false);
   const [approvingOrganization, setApprovingOrganization] = useState(false);
@@ -141,6 +146,12 @@ export default function OrganizationDetail() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (!data?.id) {
+      toast.error("Organization ID is missing");
+      e.target.value = "";
+      return;
+    }
+
     const isAllowed =
       file.type === "application/pdf" || file.type.startsWith("image/");
     if (!isAllowed) {
@@ -149,20 +160,28 @@ export default function OrganizationDetail() {
       return;
     }
 
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size cannot exceed 10MB");
+      e.target.value = "";
+      return;
+    }
+
+    if (verificationPreviewUrl && verificationPreviewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(verificationPreviewUrl);
+    }
+    const previewUrl = URL.createObjectURL(file);
+    setVerificationPreviewUrl(previewUrl);
+
     try {
       setUploadingDocument(true);
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", "org-verification");
-      const res = await upload(formData);
-      const url =
-        res?.url || res?.secure_url || res?.data?.url || res?.data?.secure_url;
+      const res = await orgVerificationService.uploadDocument(data.id, file);
+      const docKey = extractDocumentKey(res);
 
-      if (!url) throw new Error("Upload response missing document URL");
+      if (!docKey) throw new Error("Upload response missing document key");
 
-      setVerificationDocumentUrl(url);
+      setVerificationDocumentKey(docKey);
       setVerificationFileName(file.name);
-      toast.success("Verification document uploaded");
+      toast.success("Verification document uploaded securely");
     } catch (error: any) {
       toast.error(error?.message || "Upload document failed");
     } finally {
@@ -219,7 +238,11 @@ export default function OrganizationDetail() {
   const closeVerificationModal = () => {
     setShowVerification(false);
     setVerificationTax("");
-    setVerificationDocumentUrl("");
+    setVerificationDocumentKey("");
+    if (verificationPreviewUrl && verificationPreviewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(verificationPreviewUrl);
+    }
+    setVerificationPreviewUrl("");
     setVerificationFileName("");
   };
 
@@ -234,15 +257,23 @@ export default function OrganizationDetail() {
       return;
     }
 
-    if (!verificationDocumentUrl) {
+    if (!verificationDocumentKey) {
       toast.warn("Please upload a verification document");
+      return;
+    }
+
+    if (
+      verificationDocumentKey.startsWith("blob:") ||
+      verificationDocumentKey.startsWith("data:")
+    ) {
+      toast.error("Invalid document key: cannot submit local preview URL");
       return;
     }
 
     const success = await submitVerification(
       data.id,
       verificationTax.trim(),
-      verificationDocumentUrl,
+      verificationDocumentKey,
     );
 
     if (success) {
@@ -653,15 +684,18 @@ export default function OrganizationDetail() {
                 </span>
               </button>
 
-              {verificationDocumentUrl && (
+              {(verificationPreviewUrl || verificationDocumentKey) && (
                 <a
                   className="org-verification-request__preview"
-                  href={verificationDocumentUrl}
-                  target="_blank"
+                  href={verificationPreviewUrl || "#"}
+                  target={verificationPreviewUrl ? "_blank" : undefined}
                   rel="noreferrer"
+                  onClick={(e) => {
+                    if (!verificationPreviewUrl) e.preventDefault();
+                  }}
                 >
                   <FileCheck2 size={18} aria-hidden="true" />
-                  View uploaded document
+                  {verificationFileName ? `Preview: ${verificationFileName}` : "View uploaded document"}
                 </a>
               )}
             </div>

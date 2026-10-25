@@ -65,14 +65,15 @@ export function useSubmitOrgVerification() {
   const submitVerification = async (
     organizationId: string,
     taxIdNumber: string,
-    documentUrl: string,
+    documentKeyOrUrl: string,
   ) => {
     try {
       setLoading(true);
       await orgVerificationService.create({
         organizationId,
         taxIdNumber,
-        documentUrl,
+        documentKey: documentKeyOrUrl,
+        documentUrl: documentKeyOrUrl,
       });
       return true;
     } catch {

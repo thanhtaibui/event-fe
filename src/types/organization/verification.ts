@@ -13,6 +13,7 @@ export type OrgVerificationRequest = {
   taxIdNumber?: string;
   taxNumber?: string;
   documentUrl?: string;
+  documentKey?: string;
   status?: OrgVerificationStatus;
   createdAt?: string | Date;
   updatedAt?: string | Date;
@@ -23,7 +24,8 @@ export type OrgVerificationRequest = {
 export type CreateOrgVerificationPayload = {
   organizationId: string;
   taxIdNumber: string;
-  documentUrl: string;
+  documentKey?: string;
+  documentUrl?: string;
 };
 
 export type UpdateOrgVerificationPayload = {

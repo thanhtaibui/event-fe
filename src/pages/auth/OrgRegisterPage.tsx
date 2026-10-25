@@ -28,8 +28,10 @@ import { toast } from "react-toastify";
 import { getAccessToken, setAccessToken } from "../../constants/authStorage";
 import api from "../../services/api";
 import { orgService } from "../../services/admin/organization.service";
-import { orgVerificationService } from "../../services/admin/org-verification.service";
-import { extractUploadUrl, uploadService } from "../../services/admin/uploadCloud";
+import {
+  extractDocumentKey,
+  orgVerificationService,
+} from "../../services/admin/org-verification.service";
 import { triggerNotification } from "../../hooks/notification/useNotificationTrigger";
 import type { JwtPayloadCustom } from "../../types/JwtPayloadCustom";
 import type { PayloadOrganizationDto } from "../../types/organization/create";
@@ -55,7 +57,7 @@ const initialForm = {
 
 const initialVerification = {
   taxIdNumber: "",
-  documentUrl: "",
+  documentKey: "",
 };
 
 const STEPS = [
@@ -88,11 +90,11 @@ function getCreatedOrgId(response: unknown): string | null {
   );
 }
 
-function getUploadedDocumentUrl(response: unknown): string | null {
+function getUploadedDocumentKey(response: unknown): string | null {
   try {
-    return extractUploadUrl(response);
+    return extractDocumentKey(response);
   } catch (error) {
-    console.error("[OrgRegisterPage] Failed to extract document URL:", error);
+    console.error("[OrgRegisterPage] Failed to extract document key:", error);
     return null;
   }
 }
@@ -100,7 +102,7 @@ function getUploadedDocumentUrl(response: unknown): string | null {
 export default function OrgRegisterPage() {
   const navigate = useNavigate();
   const [createdOrgId, setCreatedOrgId] = useState<string | null>(null);
-  const [uploadedDocUrl, setUploadedDocUrl] = useState<string>("");
+  const [uploadedDocKey, setUploadedDocKey] = useState<string>("");
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(initialForm);
   const [verification, setVerification] = useState(initialVerification);
@@ -166,7 +168,7 @@ export default function OrgRegisterPage() {
     setDocumentFile(file);
     setDocumentFileName(file.name);
     setDocumentPreviewUrl(previewUrl);
-    setUploadedDocUrl("");
+    setUploadedDocKey("");
     toast.success("Verification document selected.");
   };
 
@@ -216,7 +218,7 @@ export default function OrgRegisterPage() {
     setDocumentFile(null);
     setDocumentFileName("");
     setDocumentPreviewUrl("");
-    setUploadedDocUrl("");
+    setUploadedDocKey("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -339,34 +341,37 @@ export default function OrgRegisterPage() {
       }
 
       // ==========================================
-      // BƯỚC 2: Gọi API Upload Image (Lấy documentUrl)
-      // Tái sử dụng uploadedDocUrl nếu đã upload thành công trước đó
+      // BƯỚC 2: Gọi API Upload Document Private (Lấy documentKey)
+      // Tái sử dụng uploadedDocKey nếu đã upload thành công trước đó
       // ==========================================
-      let docUrl = uploadedDocUrl;
-      if (!docUrl) {
+      let docKey = uploadedDocKey;
+      if (!docKey) {
         if (documentFile) {
-          toast.update(toastId, { render: "Uploading verification document to cloud..." });
-          const formData = new FormData();
-          formData.append("file", documentFile);
+          toast.update(toastId, { render: "Uploading verification document securely..." });
+          const uploadResponse = await orgVerificationService.uploadDocument(
+            orgId,
+            documentFile,
+            { skipGlobalToast: true }
+          );
+          docKey = getUploadedDocumentKey(uploadResponse) || "";
 
-          const uploadResponse = await uploadService.upload(formData);
-          docUrl = getUploadedDocumentUrl(uploadResponse) || "";
-
-          if (!docUrl) {
-            throw new Error("Failed to upload verification document. Please try again.");
+          if (!docKey) {
+            throw new Error("Failed to upload verification document. Server did not return a valid document key.");
           }
-          setUploadedDocUrl(docUrl);
-        } else if (documentPreviewUrl && !documentPreviewUrl.startsWith("blob:")) {
-          docUrl = documentPreviewUrl;
-          setUploadedDocUrl(docUrl);
+          setUploadedDocKey(docKey);
         } else {
           throw new Error("Verification proof document is missing. Please upload a document.");
         }
       }
 
+      // Đảm bảo tuyệt đối không lưu blob: hoặc data: vào database
+      if (docKey.startsWith("blob:") || docKey.startsWith("data:")) {
+        throw new Error("Invalid document key: cannot submit local preview URL.");
+      }
+
       // ==========================================
       // BƯỚC 3: Gọi API tạo Verification
-      // Body chuẩn: { organizationId, taxIdNumber, documentUrl }
+      // Body chuẩn: { organizationId, taxIdNumber, documentKey }
       // ==========================================
       toast.update(toastId, { render: "Submitting verification request..." });
       try {
@@ -374,7 +379,7 @@ export default function OrgRegisterPage() {
           {
             organizationId: orgId,
             taxIdNumber: verification.taxIdNumber.trim(),
-            documentUrl: docUrl,
+            documentKey: docKey,
           },
           { skipGlobalToast: true }
         );

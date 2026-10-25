@@ -9,6 +9,7 @@ import {
   Eye,
   FileCheck2,
   FileText,
+  RefreshCw,
   Search,
   ShieldAlert,
   ShieldCheck,
@@ -89,6 +90,8 @@ export default function OrgVerification() {
   const [reviewerNote, setReviewerNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [copiedTax, setCopiedTax] = useState(false);
+  const [refreshingDoc, setRefreshingDoc] = useState(false);
+  const [docLoadError, setDocLoadError] = useState(false);
 
   const apiQuery = useMemo(
     () => ({
@@ -107,6 +110,7 @@ export default function OrgVerification() {
     setReviewStatus(request.status === "PROCESSING" ? "PROCESSING" : "APPROVED");
     setReviewerNote(request.reviewerNote || "");
     setCopiedTax(false);
+    setDocLoadError(false);
   };
 
   const closeReview = () => {
@@ -114,6 +118,29 @@ export default function OrgVerification() {
     setReviewerNote("");
     setReviewStatus("APPROVED");
     setCopiedTax(false);
+    setDocLoadError(false);
+  };
+
+  const handleRefreshDocUrl = async (id: string) => {
+    try {
+      setRefreshingDoc(true);
+      const res = await orgVerificationService.getById(id);
+      const item = res?.data ?? res;
+      const freshUrl = item?.documentUrl;
+      if (freshUrl) {
+        setSelected((prev) =>
+          prev && prev.id === id ? { ...prev, documentUrl: freshUrl } : prev,
+        );
+        setDocLoadError(false);
+        toast.success("Document signed URL refreshed");
+      } else {
+        toast.warn("Server did not return a refreshed document URL");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to refresh document URL");
+    } finally {
+      setRefreshingDoc(false);
+    }
   };
 
   const handleCopyTax = (taxNumber: string) => {
@@ -340,24 +367,63 @@ export default function OrgVerification() {
                     </div>
                     {selected.documentUrl ? (
                       <div className="verification-doc-box">
-                        {isImageDoc && (
+                        {isImageDoc && !docLoadError && (
                           <div className="verification-doc-thumb">
-                            <img src={selected.documentUrl} alt="Document preview" />
+                            <img
+                              src={selected.documentUrl}
+                              alt="Document preview"
+                              onError={() => setDocLoadError(true)}
+                            />
+                          </div>
+                        )}
+                        {docLoadError && (
+                          <div
+                            className="verification-doc-empty"
+                            style={{
+                              borderColor: "#f59e0b",
+                              background: "#fffbeb",
+                              color: "#b45309",
+                            }}
+                          >
+                            <FileText size={16} aria-hidden="true" />
+                            <span>
+                              Document URL might have expired (valid for 5 mins). Click &ldquo;Refresh&rdquo; below to renew.
+                            </span>
                           </div>
                         )}
                         <div className="verification-doc-meta">
-                          <span className="verification-doc-name" title={selected.documentUrl}>
-                            {selected.documentUrl.split("/").pop() || "Verification document"}
-                          </span>
-                          <a
-                            className="verification-doc-open-btn"
-                            href={selected.documentUrl}
-                            target="_blank"
-                            rel="noreferrer"
+                          <span
+                            className="verification-doc-name"
+                            title={selected.documentUrl}
                           >
-                            <ExternalLink size={13} aria-hidden="true" />
-                            <span>Open</span>
-                          </a>
+                            {selected.documentUrl.split("?")[0].split("/").pop() ||
+                              "Verification document"}
+                          </span>
+                          <div style={{ display: "inline-flex", gap: "6px", alignItems: "center" }}>
+                            <button
+                              type="button"
+                              className="verification-copy-btn"
+                              onClick={() => handleRefreshDocUrl(selected.id)}
+                              disabled={refreshingDoc}
+                              title="Refresh temporary document URL"
+                            >
+                              <RefreshCw
+                                size={12}
+                                className={refreshingDoc ? "animate-spin" : ""}
+                                aria-hidden="true"
+                              />
+                              <span>{refreshingDoc ? "Refreshing..." : "Refresh"}</span>
+                            </button>
+                            <a
+                              className="verification-doc-open-btn"
+                              href={selected.documentUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <ExternalLink size={13} aria-hidden="true" />
+                              <span>Open</span>
+                            </a>
+                          </div>
                         </div>
                       </div>
                     ) : (
