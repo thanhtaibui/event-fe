@@ -15,3 +15,12 @@ export interface GoogleLoginReq {
   idToken: string;
   rememberMe?: boolean;
 }
+
+export interface ForgotPasswordReq {
+  email: string;
+}
+
+export interface ResetPasswordReq {
+  token: string;
+  newPassword: string;
+}

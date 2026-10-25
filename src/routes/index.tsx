@@ -9,6 +9,9 @@ const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/auth/RegisterPage"));
 const OrgRegisterPage = lazy(() => import("../pages/auth/OrgRegisterPage"));
+const PasswordRecoveryPage = lazy(
+  () => import("../pages/auth/PasswordRecoveryPage"),
+);
 const AcceptInvitePage = lazy(() => import("../pages/invite/AcceptInvitePage"));
 const CheckoutPage = lazy(() => import("../pages/user/CheckoutPage"));
 export const router = createBrowserRouter([
@@ -43,6 +46,26 @@ export const router = createBrowserRouter([
       {
         path: "",
         element: <OrgRegisterPage />,
+      },
+    ],
+  },
+  {
+    path: "/forgot-password",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "",
+        element: <PasswordRecoveryPage mode="forgot" />,
+      },
+    ],
+  },
+  {
+    path: "/reset-password",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "",
+        element: <PasswordRecoveryPage mode="reset" />,
       },
     ],
   },

@@ -925,8 +925,8 @@ export default function LoginForm({ mode = "login" }: LoginFormProps) {
                     }}
                   />
                   <Box
-                    component="a"
-                    href="#"
+                    component={RouterLink}
+                    to="/forgot-password"
                     sx={{
                       color: isDark ? "#c4b5fd" : palette.accent,
                       fontSize: 14,

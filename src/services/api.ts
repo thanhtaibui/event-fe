@@ -23,7 +23,10 @@ const api = axios.create({
 let isRefreshing = false;
 let failedQueue: any[] = [];
 
-const isAuthPage = () => ["/login", "/register"].includes(window.location.pathname);
+const isAuthPage = () =>
+  ["/login", "/register", "/forgot-password", "/reset-password"].includes(
+    window.location.pathname,
+  );
 const shouldSkipGlobalToast = (config?: any) => Boolean(config?.skipGlobalToast);
 const shouldSkipAuthorization = (config?: any) => Boolean(config?.skipAuth);
 
@@ -50,6 +53,8 @@ api.interceptors.request.use(
       "/auth/register",
       "/auth/google",
       "/auth/refresh",
+      "/auth/forgot-password",
+      "/auth/reset-password",
     ];
     const requestUrl = config.url || "";
     const shouldSkipAuthHeader = shouldSkipAuthorization(config) || authFreeEndpoints.some((endpoint) =>
@@ -91,7 +96,9 @@ api.interceptors.response.use(
     if (
       originalRequest.url.includes("/auth/login") ||
       originalRequest.url.includes("/auth/register") ||
-      originalRequest.url.includes("/auth/google")
+      originalRequest.url.includes("/auth/google") ||
+      originalRequest.url.includes("/auth/forgot-password") ||
+      originalRequest.url.includes("/auth/reset-password")
     ) {
       return Promise.reject(error);
     }
