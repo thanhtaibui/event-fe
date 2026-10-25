@@ -6,8 +6,16 @@ import {
   setAccessToken,
 } from "../constants/authStorage";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://event-be-sg.onrender.com";
+const normalizeApiBaseUrl = (baseUrl: string) => {
+  const normalizedBaseUrl = baseUrl.trim().replace(/\/+$/, "");
+  return normalizedBaseUrl.endsWith("/api")
+    ? normalizedBaseUrl
+    : `${normalizedBaseUrl}/api`;
+};
+
+const API_BASE_URL = normalizeApiBaseUrl(
+  import.meta.env.VITE_API_BASE_URL || "https://event-be-sg.onrender.com",
+);
 
 // 1. Khởi tạo Axios Instance với cấu hình chuẩn dự án
 const api = axios.create({
